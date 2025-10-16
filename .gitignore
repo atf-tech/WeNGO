@@ -1,0 +1,58 @@
+# -----------------------------
+# Django & Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.py.class
+*.so
+
+# SQLite database
+db.sqlite3
+*.db
+
+# Virtual environment
+env/
+venv/
+ENV/
+.venv/
+
+# Static and media files (collected or generated)
+staticfiles/
+media/
+
+# Local environment files
+*.env
+.env
+
+# Logs
+*.log
+logs/
+debug.log
+
+# VSCode / PyCharm / JetBrains IDEs
+.vscode/
+.idea/
+*.iml
+
+# macOS / Windows system files
+.DS_Store
+Thumbs.db
+
+# Migrations cache
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# Compiled / temporary files
+*.pot
+*.mo
+*.bak
+*.swp
+*.swo
+*~
+
+# Node / frontend builds (if you add React, etc.)
+node_modules/
+dist/
+build/
