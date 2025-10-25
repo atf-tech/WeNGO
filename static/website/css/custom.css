@@ -1,0 +1,51 @@
+.gradient-text {
+  display: inline-block; 
+  background-image: linear-gradient(to right, #f4a6c5, #a6e7f5);
+  background-image: -webkit-linear-gradient(left, #f4a6c5, #a6e7f5);
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.mainmenu-nav .current > a {
+  color: var(--color-primary) !important; /* Light pink color for active menu item */
+}
+
+
+
+input:required,
+textarea:required,
+select {
+  border-left: 3px solid red !important;
+}
+
+input:required:hover,
+textarea:required:hover,
+select {
+  border-left: 3px solid red !important;
+}
+input:required:focus,
+textarea:required:focus,
+select {
+  border-left: 3px solid red !important;
+}
+
+.req-border {
+  border-left: 3px solid red !important;
+      border-radius: 7px 0px 0px 7px;
+}
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}

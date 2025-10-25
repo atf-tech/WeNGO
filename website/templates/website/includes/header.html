@@ -1,0 +1,332 @@
+{% load static %}
+
+<style>
+    .nav_section_silder .rbt-arrow-right,
+    .nav_section_silder .rbt-arrow-left {
+        display: none !important;
+    }
+</style>
+
+<!-- Start Header Area -->
+<header class="rbt-header rbt-header-10">
+    <div class="rbt-sticky-placeholder"></div>
+
+    <!-- Start Header Top  -->
+    <div
+        class="d-none d-xl-block rbt-header-top rbt-header-top-1 header-space-betwween bg-not-transparent bg-color-darker top-expended-activation">
+        <div class="container-fluid">
+            <div class="top-expended-wrapper">
+                <div class="top-expended-inner rbt-header-sec align-items-center ">
+                    <div class="rbt-header-sec-col rbt-header-left d-none d-xl-block">
+                        <div class="rbt-header-content">
+                            <!-- Start Header Information List  -->
+                            <div class="header-info">
+                                <ul class="rbt-information-list">
+                                    <li>
+                                        <a href="#"><i class="fab fa-instagram"></i>100k <span
+                                                class="d-none d-xxl-block">Followers</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-facebook-square"></i>500k <span
+                                                class="d-none d-xxl-block">Followers</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="feather-phone"></i>+91 987 654 3210</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End Header Information List  -->
+                        </div>
+                    </div>
+                    <div class="rbt-header-sec-col rbt-header-right mt_md--10 mt_sm--10">
+                        <div class="rbt-header-content justify-content-start justify-content-lg-end">
+                            <div class="header-info d-none d-xl-block">
+                                <ul class="social-share-transparent">
+                                    <li>
+                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fab fa-instagram"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="top-bar-expended d-block d-lg-none">
+                        <button class="topbar-expend-button rbt-round-btn"><i class="feather-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Header Top  -->
+    <div class="rbt-header-wrapper header-space-betwween header-sticky">
+        <div class="container-fluid">
+            <div class="mainbar-row rbt-navigation-center align-items-center">
+                <div class="header-left rbt-header-content">
+                    <div class="header-info">
+                        <div class="logo logo-dark">
+                            <a href="/">
+                                <img src="{% static 'website/images/logo/logo.png' %}" alt="Education Logo Images">
+                            </a>
+                        </div>
+
+                        <div class="logo d-none logo-light">
+                            <a href="/">
+                                <img src="{% static 'website/images/logo/logo.png' %}" alt="Education Logo Images">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rbt-main-navigation d-none d-xl-block">
+                    <nav class="mainmenu-nav">
+                        <ul class="mainmenu">
+                            <li class="{% if request.resolver_match.url_name == 'index' %}current{% endif %}">
+                                <a href="/">Home</a>
+                            </li>
+                            <li class="{% if request.resolver_match.url_name == 'about' %}current{% endif %}">
+                                <a href="{% url 'about' %}">Who We Are</a>
+                            </li>
+                            <li class="with-megamenu has-menu-child-item position-static {% if request.resolver_match.url_name == 'service' %}current{% endif %}">
+                                <a href="{% url 'service' %}">What We Do <i class="feather-chevron-down"></i></a>
+                                <!-- Start Mega Menu  -->
+                                <div class="rbt-megamenu grid-item-2">
+                                    <div class="wrapper">
+                                        <div class="row row--15">
+                                            <div class="col-lg-12 col-xl-6 col-xxl-6 single-mega-item">
+                                                <h3 class="rbt-short-title">Our Service</h3>
+                                                <ul class="mega-menu-item">
+                                                    <li><a href="#">service 1</a></li>
+                                                    <li><a href="#">service 2</a></li>
+                                                    <li><a href="#">service 3</a></li>
+                                                    <li><a href="#">Service 4<span
+                                                                class="rbt-badge-card">Coming</span></a></li>
+                                                    <li><a href="#">Service 5<span
+                                                                class="rbt-badge-card">Coming</span></a></li>
+                                                    <li><a href="#">Service 6<span
+                                                                class="rbt-badge-card">Coming</span></a></li>
+                                                    <li><a href="#">Service 7<span
+                                                                class="rbt-badge-card">Coming</span></a></li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="col-lg-12 col-xl-6 col-xxl-6 single-mega-item">
+                                                <div class="rbt-ads-wrapper">
+
+                                                    <div
+                                                        class="swiper nav_section_silder rbt-arrow-between rbt-dot-bottom-center pb-0  icon-bg-primary">
+
+                                                        <div class="swiper-wrapper">
+                                                            <!-- Start Single Slide  -->
+                                                            <div class="swiper-slide">
+                                                                <div class="single-slide">
+                                                                    <div
+                                                                        class="rbt-card event-grid-card variation-01 rbt-hover">
+                                                                        <div class="rbt-card-img">
+                                                                            <a href="#">
+                                                                                <img src="{% static 'website/images/sample/710-488.jpg' %}"
+                                                                                    alt="Card image">
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="rbt-card-body">
+                                                                            <h6 class="fs-3 rbt-card-title"><a
+                                                                                    href="#">Service 1</a></h6>
+                                                                            <p>Lorem ipsum dolor sit amet.</p>
+                                                                            <div class="read-more-btn">
+                                                                                <a class="rbt-btn btn-border hover-icon-reverse btn-sm radius-round"
+                                                                                    href="#">
+                                                                                    <span class="icon-reverse-wrapper">
+                                                                                        <span class="btn-text">Donate Now</span>
+                                                                                        <span class="btn-icon"><i
+                                                                                                class="feather-heart"></i></span>
+                                                                                        <span class="btn-icon"><i
+                                                                                                class="feather-heart"></i></span>
+                                                                                    </span>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- End Single Slide  -->
+                                                        </div>
+
+                                                        <div class="rbt-swiper-arrow rbt-arrow-left">
+                                                            <div class="custom-overfolow">
+                                                                <i class="rbt-icon feather-arrow-left"></i>
+                                                                <i class="rbt-icon-top feather-arrow-left"></i>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="rbt-swiper-arrow rbt-arrow-right">
+                                                            <div class="custom-overfolow">
+                                                                <i class="rbt-icon feather-arrow-right"></i>
+                                                                <i class="rbt-icon-top feather-arrow-right"></i>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="rbt-swiper-pagination"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Mega Menu  -->
+                            </li>
+                            <li class="{% if request.resolver_match.url_name == 'join_us' %}current{% endif %}">
+                                <a href="{% url 'join_us' %}">Join Us</a>
+                            </li>
+                            <li class="{% if request.resolver_match.url_name == 'contact' %}current{% endif %}">
+                                <a href="{% url 'contact' %}">Connect</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="header-right">
+                    <div class="rbt-btn-wrapper d-none d-xl-block">
+                        <a class="rbt-btn rbt-marquee-btn marquee-auto btn-border-gradient radius-round btn-sm hover-transform-none"
+                            href="#">
+                            <span data-text="Donate Now">Donate Now</span>
+                        </a>
+                    </div>
+
+                    <!-- Start Mobile-Menu-Bar -->
+                    <div class="mobile-menu-bar d-block d-xl-none">
+                        <div class="hamberger">
+                            <button class="hamberger-button rbt-round-btn">
+                                <i class="feather-menu"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Start Mobile-Menu-Bar -->
+
+                </div>
+            </div>
+        </div>
+        <!-- End Side Vav -->
+        <a class="rbt-close_side_menu" href="javascript:void(0);"></a>
+
+</header>
+
+<!-- Mobile Menu Section -->
+<div class="popup-mobile-menu">
+    <div class="inner-wrapper">
+        <div class="inner-top">
+            <div class="content">
+                <div class="logo">
+                    <div class="logo logo-dark">
+                        <a href="/">
+                            <img src="{% static 'website/images/logo/logo.png' %}" alt="Education Logo Images">
+                        </a>
+                    </div>
+
+                    <div class="logo d-none logo-light">
+                        <a href="/">
+                            <img src="{% static 'website/images/logo/logo.png' %}"
+                                alt="Education Logo Images">
+                        </a>
+                    </div>
+                </div>
+                <div class="rbt-btn-close">
+                    <button class="close-button rbt-round-btn"><i class="feather-x"></i></button>
+                </div>
+            </div>
+            <ul class="navbar-top-left rbt-information-list justify-content-start">
+                <li>
+                    <a href="mailto:hello@example.com"><i class="feather-mail"></i>example@gmail.com</a>
+                </li>
+                <li>
+                    <a href="#"><i class="feather-phone"></i>9876543210</a>
+                </li>
+            </ul>
+        </div>
+
+        <nav class="mainmenu-nav">
+            <ul class="mainmenu">
+                <li class="{% if request.resolver_match.url_name == 'index' %}current{% endif %}">
+                    <a href="/">Home</a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'about' %}current{% endif %}">
+                    <a href="{% url 'about' %}">Who We Are</a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'service' %}current{% endif %} with-megamenu has-menu-child-item position-static">
+                    <a href="{% url 'service' %}">What We Do <i class="feather-chevron-down"></i></a>
+                    <!-- Start Mega Menu  -->
+                    <div class="rbt-megamenu grid-item-1">
+                        <div class="wrapper">
+                            <div class="row row--15">
+                                <div class="col-lg-12 col-xl-12 col-xxl-12 single-mega-item">
+                                    <h3 class="rbt-short-title">Our Service</h3>
+                                    <ul class="mega-menu-item">
+                                        <li><a href="#">Service 1</a></li>
+                                        <li><a href="#">Service 2</a></li>
+                                        <li><a href="#">Service 3</a></li>
+                                        <li><a href="#">Service 4<span class="rbt-badge-card">Coming</span></a>
+                                        </li>
+                                        <li><a href="#">Service 5<span class="rbt-badge-card">Coming</span></a>
+                                        </li>
+                                        <li><a href="#">Service 6<span class="rbt-badge-card">Coming</span></a></li>
+                                        <li><a href="#">Service 7<span class="rbt-badge-card">Coming</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Mega Menu  -->
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'join_us' %}current{% endif %}">
+                    <a href="{% url 'join_us' %}">Join Us</a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'contact' %}current{% endif %}">
+                    <a href="{% url 'contact' %}">Connect</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="mobile-menu-bottom">
+            <div class="rbt-btn-wrapper mb--20">
+                <a class="rbt-btn btn-border-gradient radius-round btn-sm hover-transform-none w-100 justify-content-center text-center"
+                    href="#">
+                    <span>Donate Now</span>
+                </a>
+            </div>
+
+            <div class="social-share-wrapper">
+                <span class="rbt-short-title d-block">Find With Us</span>
+                <ul class="social-icon social-default transparent-with-border justify-content-start mt--20">
+                    <li><a href="https://www.facebook.com/">
+                            <i class="feather-facebook"></i>
+                        </a>
+                    </li>
+                    <li><a href="https://www.twitter.com">
+                            <i class="feather-twitter"></i>
+                        </a>
+                    </li>
+                    <li><a href="https://www.instagram.com/">
+                            <i class="feather-instagram"></i>
+                        </a>
+                    </li>
+                    <li><a href="https://www.linkdin.com/">
+                            <i class="feather-linkedin"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End Side Vav -->
+<a class="close_side_menu" href="javascript:void(0);"></a>

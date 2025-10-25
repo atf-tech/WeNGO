@@ -1,7 +1,628 @@
-<!DOCTYPE html>
-<html>
-<head><title>Website Home</title></head>
-<body>
-  <h1>Welcome to the Website!</h1>
-</body>
-</html>
+{% extends 'website/base.html' %} {% load static %}
+
+
+{% block title %} Home - WeNGO {% endblock %}
+
+
+{% block content %}
+
+<div class="rbt-banner-area rbt-banner-1">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 pb--120 pt--20">
+                <div class="content">
+                    <div class="inner">
+                        <div class="rbt-new-badge rbt-new-badge-one">
+                            <span class="rbt-new-badge-icon">🏆</span> Lorem ipsum dolor sit amet,
+                        </div>
+
+                        <h1 class="title">
+                            Lorem, ipsum dolor. <br> Lorem ipsum dolor sit.
+                        </h1>
+                        <p class="description">
+                            Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
+                            <strong>Velit
+                                officia consequat.</strong>
+                        </p>
+                        <div class="slider-btn">
+                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                <span class="icon-reverse-wrapper">
+                                    <span class="btn-text">Donate Now</span>
+                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="shape-wrapper" id="scene">
+                        <img src="{% static 'website/images/sample/1200-1400.png' %}" alt="Hero Image">
+                        <div class="hero-bg-shape-1 layer" data-depth="0.4">
+                            <img src="{% static 'website/images/shape/shape-01.png' %}"
+                                alt="Hero Image Background Shape">
+                        </div>
+                        <div class="hero-bg-shape-2 layer" data-depth="0.4">
+                            <img src="{% static 'website/images/shape/shape-02.png' %}"
+                                alt="Hero Image Background Shape">
+                        </div>
+                    </div>
+
+                    <div class="banner-card pb--60 mb--50 swiper rbt-dot-bottom-center banner-swiper-active">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="rbt-card variation-01 rbt-hover">
+                                    <div class="rbt-card-img">
+                                        <a href="#">
+                                            <img src="{% static 'website/images/sample/710-488.jpg' %}"
+                                                alt="Card image">
+                                        </a>
+                                    </div>
+                                    <div class="rbt-card-body">
+                                        <h4 class="rbt-card-title"><a href="#">Service 1</a>
+                                        </h4>
+                                        <p class="rbt-card-text">Lorem ipsum dolor sit amet, consectetur adipisicing
+                                            elit. Quasi tenetur sint.</p>
+                                        <div class="rbt-card-bottom">
+                                            <div class="rbt-price">
+                                                <span class="current-price">₹ 70</span>
+                                            </div>
+                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                                <span class="icon-reverse-wrapper">
+                                                    <span class="btn-text">Donate Now</span>
+                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="rbt-card variation-01 rbt-hover">
+                                    <div class="rbt-card-img">
+                                        <a href="#">
+                                            <img src="{% static 'website/images/sample/710-488.jpg' %}"
+                                                alt="Card image">
+                                        </a>
+                                    </div>
+                                    <div class="rbt-card-body">
+                                        <h4 class="rbt-card-title"><a href="#">Service 2</a>
+                                        </h4>
+                                        <p class="rbt-card-text">Lorem ipsum dolor sit amet, consectetur adipisicing
+                                            elit. Quasi tenetur sint.</p>
+                                        <div class="rbt-card-bottom">
+                                            <div class="rbt-price">
+                                                <span class="current-price">₹ 70</span>
+                                            </div>
+                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                                <span class="icon-reverse-wrapper">
+                                                    <span class="btn-text">Donate Now</span>
+                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="rbt-card variation-01 rbt-hover">
+                                    <div class="rbt-card-img">
+                                        <a href="#">
+                                            <img src="{% static 'website/images/sample/710-488.jpg' %}"
+                                                alt="Card image">
+                                        </a>
+                                    </div>
+                                    <div class="rbt-card-body">
+                                        <h4 class="rbt-card-title"><a href="#">Service 3</a>
+                                        </h4>
+                                        <p class="rbt-card-text">Lorem ipsum dolor sit amet, consectetur adipisicing
+                                            elit. Quasi tenetur sint.</p>
+                                        <div class="rbt-card-bottom">
+                                            <div class="rbt-price">
+                                                <span class="current-price">₹ 70</span>
+                                            </div>
+                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                                <span class="icon-reverse-wrapper">
+                                                    <span class="btn-text">Donate Now</span>
+                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rbt-swiper-pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rbt-course-area rbt-section-gap bg-gradient-8 masonary-wrapper-activation">
+    <div class="container">
+        <div class="row mb--55 g-5 align-items-end">
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="section-title text-start">
+                    <span class="subtitle bg-white-opacity">Top Popular Service</span>
+                    <h2 class="title color-white">Most Popular Service</h2>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="load-more-btn text-start text-md-end">
+                    <a class="rbt-btn rbt-switch-btn btn-white" href="#">
+                        <span data-text="View All Service">View All Service</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row g-5">
+
+            <!-- Start Single Course  -->
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'service_detail' %}">
+                            <img src="{% static 'website/images/sample/710-488.jpg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="#">Lorem ipsum dolor sit.</a>
+                        </h4>
+                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
+                            <li><i class="feather-user"></i>40 Donor</li>
+                            <li><i class="feather-gift"></i>₹ 40,000</li>
+                        </ul>
+
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 60</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'service_detail' %}">Donate<i class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Single Course  -->
+
+
+
+        </div>
+        <!-- <div class="row mt--55 mt_sm--50">
+            <div class="col-lg-12">
+                <div class="load-more-btn text-center">
+                    <a class="rbt-btn rbt-switch-btn btn-white" href="#">
+                        <span data-text="View More">View More</span>
+                    </a>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>
+
+
+
+<div class="rbt-banner-area rbt-section-gapTop">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="swiper viral-banner-activation rbt-arrow-between">
+                    <div class="swiper-wrapper">
+                        <!-- Start Single Banner  -->
+                        <div class="swiper-slide">
+                            <div class="thumbnail">
+                                <a href="#">
+                                    <img class="rbt-radius w-100"
+                                        src="{% static 'website/images/sample/1920-626.png' %}" alt="Banner Images">
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Single Banner  -->
+                        <!-- Start Single Banner  -->
+                        <div class="swiper-slide">
+                            <div class="thumbnail">
+                                <a href="#">
+                                    <img class="rbt-radius w-100"
+                                        src="{% static 'website/images/sample/1920-626.png' %}" alt="Banner Images">
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Single Banner  -->
+                        <!-- Start Single Banner  -->
+                        <div class="swiper-slide">
+                            <div class="thumbnail">
+                                <a href="#">
+                                    <img class="rbt-radius w-100"
+                                        src="{% static 'website/images/sample/1920-626.png' %}" alt="Banner Images">
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Single Banner  -->
+                    </div>
+                    <div class="rbt-swiper-arrow rbt-arrow-left">
+                        <div class="custom-overfolow">
+                            <i class="rbt-icon feather-arrow-left"></i>
+                            <i class="rbt-icon-top feather-arrow-left"></i>
+                        </div>
+                    </div>
+                    <div class="rbt-swiper-arrow rbt-arrow-right">
+                        <div class="custom-overfolow">
+                            <i class="rbt-icon feather-arrow-right"></i>
+                            <i class="rbt-icon-top feather-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rbt-about-area rbt-section-gap about-style-3">
+    <div class="container">
+        <div class="row row--40 mt_dec--40">
+            <div class="col-xl-6 col-12 mt--40">
+                <div class="content">
+                    <div class="section-title text-start mb--50">
+                        <span class="subtitle bg-primary-opacity">Our About</span>
+                        <h2 class="title w-600">Lorem ipsum dolor sit. <br> <span class="theme-gradient">Lorem, ipsum
+                                dolor.</span></h2>
+                        <p class="mt--20">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus veritatis,
+                            eius porro excepturi, iusto minima repellendus pariatur facere tempore fugit optio, ad ipsa
+                            dolorem minus!
+                        </p>
+                    </div>
+                    <div class="row g-5">
+                        <!-- Start Single Counter  -->
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="rbt-counterup style-2">
+                                <div class="inner">
+                                    <div class="content">
+                                        <h3 class="counter w-500"><span class="odometer" data-count="500">00</span>
+                                        </h3>
+                                        <h5 class="mb--5 mt--5 w-500">Verifed Donor</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Single Counter  -->
+
+                        <!-- Start Single Counter  -->
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="rbt-counterup style-2">
+                                <div class="inner">
+                                    <div class="content">
+                                        <h3 class="counter w-500"><span class="odometer" data-count="800">00</span>
+                                        </h3>
+                                        <h5 class="mb--5 mt--5 w-500">Successfully Donated</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-12 mt--40">
+                <div class="thumbnail-wrapper">
+                    <div class="shape-1">
+                        <img src="{% static 'website/images/shape/coach-a-dot.png' %}" alt="Shape">
+                    </div>
+                    <div class="shadow-shape"></div>
+                    <div class="experience">
+                        <span>
+                            <img src="{% static 'website/images/icons/award-gd-01.png' %}" alt="Award Icon">
+                        </span>
+                        <div class="title-wrap">
+                            <h4 class="number"><span class="odometer rbt-font-primary" data-count="30">00</span><span
+                                    class="plus">+</span></h4>
+                            <p class="subtitle">Years Experience</p>
+                        </div>
+                    </div>
+                    <div class="thumbnail-1">
+                        <img data-parallax='{"x": 0, "y": -30}' src="{% static 'website/images/sample/420-500.png' %}"
+                            alt="Thumbnail">
+                    </div>
+                    <div class="thumbnail-2">
+                        <img data-parallax='{"x": 0, "y": 30}' src="{% static 'website/images/sample/370-420.png' %}"
+                            alt="Thumbnail">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rbt-advance-tab-area rbt-section-gapTop bg-color-white">
+    <div class="container">
+        <div class="row mb--60">
+            <div class="col-lg-12">
+                <div class="section-title text-center">
+                    <h1 class="title">Read More About Our
+                        <span class="header-caption">
+                            <span class="cd-headline clip is-full-width">
+                                <span class="cd-words-wrapper">
+                                    <b class="is-visible theme-gradient">Mission.</b>
+                                    <b class="is-hidden theme-gradient">Vission.</b>
+                                    <b class="is-hidden theme-gradient">Goal.</b>
+                                </span>
+                            </span>
+                        </span>
+                    </h1>
+                    <p class="description mt--30">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae,
+                        dignissimos necessitatibus! Ipsam harum perferendis ab molestias. Sequi consectetur
+                        reprehenderit earum!</p>
+                </div>
+            </div>
+        </div>
+        <div class="row g-5">
+            <div class="col-lg-4 col-md-12 col-sm-12 col-12 mt_md--30 mt_sm--30 order-2 order-lg-1">
+                <div class="advance-tab-button advance-tab-button-1">
+                    <ul class="nav nav-tabs tab-button-list" id="aboutmyTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a href="#" class="nav-link tab-button active" id="home-tab" data-bs-toggle="tab"
+                                data-bs-target="#home" role="tab" aria-controls="home" aria-selected="true">
+                                <div class="tab">
+                                    <h4 class="title">WeNGO Mission.</h4>
+                                    <p class="description">Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                                        Autem, esse?</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <a href="#" class="nav-link tab-button" id="profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                                <div class="tab">
+                                    <h4 class="title">WeNGO Vision.</h4>
+                                    <p class="description">Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                                        Autem, esse?</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <a href="#" class="nav-link tab-button" id="contact-tab" data-bs-toggle="tab"
+                                data-bs-target="#contact" role="tab" aria-controls="contact" aria-selected="false">
+                                <div class="tab">
+                                    <h4 class="title">WeNGO Planning.</h4>
+                                    <p class="description">Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                                        Autem, esse?</p>
+                                </div>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12 col-sm-12 col-12 order-1 order-lg-2">
+                <div class="tab-content">
+                    <div class="tab-pane fade advance-tab-content-1 active show" id="home" role="tabpanel"
+                        aria-labelledby="home-tab">
+                        <div class="thumbnail">
+                            <img src="{% static 'website/images/sample/860-620.jpg' %}" alt="advance-tab-image">
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade advance-tab-content-1" id="profile" role="tabpanel"
+                        aria-labelledby="profile-tab">
+                        <div class="thumbnail">
+                            <img src="{% static 'website/images/sample/860-620.jpg' %}" alt="advance-tab-image">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade advance-tab-content-1" id="contact" role="tabpanel"
+                        aria-labelledby="contact-tab">
+                        <div class="thumbnail">
+                            <img src="{% static 'website/images/sample/860-620.jpg' %}" alt="advance-tab-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="rbt-banner-area rbt-banner-22">
+    <div class="wrapper">
+        <div class="container">
+            <div class="inner">
+                <div class="shape-wrapper">
+                    <div class="shape-1">
+                        <img src="{% static 'website/images/shape/w-hello.png' %}" alt="Banner Shape">
+                    </div>
+                    <div class="shape-2 scene">
+                        <span data-depth="1">
+                            <img src="{% static 'website/images/shape/w-color-elemt.png' %}" alt="Banner Shape">
+                        </span>
+                    </div>
+                    <div class="shape-3 scene">
+                        <span data-depth="1">
+                            <img src="{% static 'website/images/shape/w-tools-elemt.png' %}" alt="Banner Shape">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="banner">
+                <div class="shape-shadow">
+                    <img src="{% static 'website/images/shape/w-shadow.png' %}" alt="Banner Shadow">
+                </div>
+                <div class="browser">
+                    <div class="browser-img">
+                        <img src="{% static 'website/images/banner/w-banner.png' %}" alt="Banner Brwoser">
+                    </div>
+                    <video autoplay muted loop>
+                        <source src="{% static 'website/videos/wishlist-video-01.mp4' %}" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="rbt-newsletter-area newsletter-style-2 bg-gradient-7 py-5">
+    <div class="container">
+        <div class="row row--15 align-items-center">
+            <div class="col-lg-12">
+                <div class="inner text-center">
+                    <div class="section-title text-center">
+                        <h2 class="title color-white w-600"><strong>WeNGO</strong> Achieved</h2>
+                    </div>
+                    <div class="row row--15 mt--50 justify-content-center">
+                        <!-- Start Single Counter -->
+                        <div class="col-lg-3 col-md-6 col-sm-6 single-counter">
+                            <div class="rbt-counterup rbt-hover-03 style-2 text-color-white">
+                                <div class="inner">
+                                    <div class="content">
+                                        <h3 class="counter color-white w-600"><span class="odometer rbt-font-primary"
+                                                data-count="500">00</span>
+                                        </h3>
+                                        <h5 class="title color-white">Successfully Trained</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Single Counter -->
+
+                        <!-- Start Single Counter -->
+                        <div class="col-lg-3 col-md-6 col-sm-6 single-counter mt_mobile--30">
+                            <div class="rbt-counterup rbt-hover-03 style-2 text-color-white">
+                                <div class="inner">
+                                    <div class="content">
+                                        <h3 class="counter color-white w-600"><span class="odometer rbt-font-primary"
+                                                data-count="100">00</span>
+                                        </h3>
+                                        <h5 class="title color-white">Skill Development</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 single-counter mt_mobile--30">
+                            <div class="rbt-counterup rbt-hover-03 style-2 text-color-white">
+                                <div class="inner">
+                                    <div class="content">
+                                        <h3 class="counter color-white w-600"><span class="odometer rbt-font-primary"
+                                                data-count="100">00</span>
+                                        </h3>
+                                        <h5 class="title color-white">Certification Students</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 single-counter mt_mobile--30">
+                            <div class="rbt-counterup rbt-hover-03 style-2 text-color-white">
+                                <div class="inner">
+                                    <div class="content">
+                                        <h3 class="counter color-white w-600"><span class="odometer rbt-font-primary"
+                                                data-count="100">00</span>
+                                        </h3>
+                                        <h5 class="title color-white">Certification Students</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Single Counter -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="rbt-gallery-area">
+    <div class="row g-0 parent-gallery-container">
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+        <a href="{% static 'website/images/sample/317-343.jpg' %}"
+            class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
+            <div class="rbt-gallery">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
+                    alt="Gallery Images">
+            </div>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

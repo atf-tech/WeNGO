@@ -1,0 +1,160 @@
+{% extends 'website/base.html' %} {% load static %}
+
+
+{% block title %} Service Details - WeNGO {% endblock %}
+
+
+{% block content %}
+
+
+<!-- Start breadcrumb Area -->
+<div class="rbt-breadcrumb-default rbt-breadcrumb-style-3 version-02">
+    <div class="breadcrumb-inner">
+        <img src="{% static 'website/images/bg/breadcrumb-bg-01.png' %}" alt="Education Images">
+    </div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="content text-start">
+                    <ul class="page-list mb--80 mb_md--60 mb_sm--40">
+                        <li class="rbt-breadcrumb-item"><a href="#">Home</a></li>
+                        <li>
+                            <div class="icon-right"><i class="feather-chevron-right"></i></div>
+                        </li>
+                        <li class="rbt-breadcrumb-item active">Service Name</li>
+                    </ul>
+                    <h2 class="w-600 mb--10">Service Name </h2>
+                    <p class="mb--20">Orem Ipsum is that it has a more-or-less normal distribution of letters.</p>
+
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="radius-10 overflow-hidden p-4 bg-color-white-opacity mt_md--60 mt_sm--60 mt_mobile--40">
+                    <div class="plyr__video-embed rbtplayer">
+                        <video style="width: 100%;height: auto;display: block;" class="radius-10 overflow-hidden"
+                            autoplay muted loop playsinline>
+                            <source src="{% static 'website/videos/wishlist-video-01.mp4' %}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb Area -->
+
+
+<div class="rbt-course-details-area ptb--60">
+    <div class="container">
+        <div class="row g-5">
+
+            <div class="col-lg-8">
+                <div class="course-details-content">
+                    <div class="rbt-course-feature-box rbt-shadow-box thuumbnail">
+                        <div id="billing-form">
+                            <h3 class="title">Donation Form</h3>
+                            <hr class="mb--30">
+                            <div class="row">
+                                <div class="col-md-4 col-12 mb--20">
+                                    <label>Donor Name</label>
+                                    <input required type="text" placeholder="First Name">
+                                </div>
+
+                                <div class="col-md-4 col-12 mb--20">
+                                    <label>Donor Mobile No</label>
+                                    <input required type="number" placeholder="Phone number">
+                                </div>
+
+                                <div class="col-md-4 col-12 mb--20">
+                                    <label>Donor Email Address</label>
+                                    <input required type="email" placeholder="Email Address">
+                                </div>
+
+                                <div class="col-12 mb--20">
+                                    <label>Address</label>
+                                    <textarea required placeholder="Address line 1"> </textarea>
+                                </div>
+
+
+
+                                <div class="col-md-12 col-12 mb--20">
+                                    <label>Donation Amount</label>
+                                    <input required type="number" value="500" min="500">
+                                </div>
+                                <div class="col-md-12 text-center mb--20">
+                                    <div class="submit-btn">
+                                        <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                            <span class="icon-reverse-wrapper">
+                                                <span class="btn-text">Donate Now</span>
+                                                <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                                <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div style="top: 100px;" class="course-sidebar sticky-top rbt-shadow-box  rbt-gradient-border">
+                    <div class="inner">
+
+                        <!-- Start Viedo Wrapper  -->
+
+                        <div class="video-content">
+                            <img class="w-100 rbt-radius" src="{% static 'website/images/others/video-01.jpg' %}"
+                                alt="Video Images">
+                        </div>
+                        <!-- End Viedo Wrapper  -->
+
+                        <div class="content-item-content">
+                            <h4 class="w-600 mb--10 mt--10">service Name</h4>
+                            <div class="rbt-price-wrapper d-flex flex-wrap align-items-center justify-content-between">
+                                <div class="rbt-price">
+                                    <span class="current-price">₹ 600</span>
+                                </div>
+                                <div class="discount-time">
+                                    <span class="rbt-badge color-danger bg-color-danger-opacity"><i
+                                            class="feather-clock"></i> 3 days left!</span>
+                                </div>
+                            </div>
+
+                            
+
+                            <span class="subtitle"><i class="feather-heart"></i> Give a little. Change a lot.</span>
+
+
+                            <div class="rbt-widget-details has-show-more">
+                                <ul class="has-show-more-inner-content rbt-course-details-list-wrapper">
+                                    <li><span><i class="feather-target"></i>Target Amount</span><span class="rbt-feature-value rbt-badge-5">₹ 20000</span>
+                                    </li>
+                                    <li><span><i class="feather-heart"></i>Donoted Amount</span><span class="rbt-feature-value rbt-badge-5">₹ 0</span>
+                                    </li>
+                                    <li><span><i class="feather-arrow-down-left"></i>Target Left</span><span class="rbt-feature-value rbt-badge-5">₹ 20000</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="social-share-wrapper text-center">
+                                
+                                <hr class="mt--20">
+                                <div class="contact-with-us text-center">
+                                    <p>For details about the Service Please reach us</p>
+                                    <p class="rbt-badge-2 mt--10 justify-content-center w-100">
+                                        <i class="fab fa-whatsapp mr--5"></i> Whatsapp 
+                                        <a href="#"><strong>+91 987 654 3210</strong></a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

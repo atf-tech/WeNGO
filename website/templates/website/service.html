@@ -1,0 +1,202 @@
+{% extends 'website/base.html' %} {% load static %}
+
+
+{% block title %} What We Do - WeNGO {% endblock %}
+
+
+{% block content %}
+
+<div class="rbt-course-area bg-color-extra2 rbt-section-gap">
+    <div class="container">
+        <div class="row mb--60 g-5 align-items-end">
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="section-title text-start">
+                    <span class="subtitle bg-primary-opacity">Top Popular Service</span>
+                    <h2 class="title">Most Popular Service</h2>
+                </div>
+            </div>
+        </div>
+        <!-- Start Card Area -->
+        <div class="row g-5">
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="#">
+                            <img src="{% static 'website/images/sample/710-488.jpg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="#">Lorem ipsum dolor sit.</a>
+                        </h4>
+                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
+                            <li><i class="feather-user"></i>40 Donor</li>
+                            <li><i class="feather-gift"></i>₹ 40,000</li>
+                        </ul>
+
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 60</span>
+                            </div>
+                            <a class="rbt-btn-link" href="#">Donate<i class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Card Area -->
+    </div>
+</div>
+
+<div class="rbt-about-area bg-color-darker rbt-section-gap">
+    <div class="container">
+        <div class="row gy-5 align-items-center row--30">
+            <div class="col-lg-7">
+                <div class="content radius-6 overflow-hidden">
+                    <div class="plyr__video-embed rbtplayer">
+                        <video style="width: 100%;height: auto;display: block;" class="radius-10 overflow-hidden"
+                            autoplay muted loop playsinline>
+                            <source src="{% static 'website/videos/wishlist-video-01.mp4' %}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="inner">
+                    <div class="section-title text-start">
+                        <h2 class="title">What is WeNGO does ?.</h2>
+                        <p class="description mt--20"><strong>Histudy educational platform</strong> ipsum dolor sit amet
+                            consectetur adipisicing elit. Nam inventore praesentium alias incidunt! Veritatis,
+                            necessitatibus fuga dolore tenetur, beatae suscipit fugit est ea perspiciatis quo provident
+                            nisi dolor similique architecto nihil.</p>
+                        <div class="read-more-btn mt--40">
+                            <a class="rbt-btn btn-gradient rbt-switch-btn rbt-switch-y" href="#">
+                                <span data-text="About Histudy">About WeNGO</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rbt-service-area service-section-01 rbt-section-gap rbt-section-box">
+    <div class="container">
+        <div class="row mb--60 mb_sm--50">
+            <div class="col-lg-12">
+                <div class="section-title text-center">
+                    <span class="subtitle bg-primary-opacity">Services</span>
+                    <h2 class="title w-600">What We Do For Our Donor</h2>
+                </div>
+            </div>
+        </div>
+        <!-- Start Card Area -->
+        <div class="row row--15 mt_dec--30">
+            <!-- Start Single Card  -->
+            <div class="col-xl-3 col-md-6 col-sm-6 col-12 mt--30">
+                <div class="rbt-flipbox">
+
+                    <div class="rbt-flipbox-wrap rbt-service rbt-service-1 card-bg-1">
+                        <div class="rbt-flipbox-front rbt-flipbox-face inner">
+                            <div class="icon">
+                                <img src="{% static 'website/images/icons/card-icon-1.png' %}" alt="card-icon">
+                            </div>
+                            <div class="content">
+                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
+                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                </p>
+                                <!-- <a class="rbt-btn-link stretched-link" href="#">Learn More<i class="feather-arrow-right"></i></a> -->
+                            </div>
+                        </div>
+
+                        <div class="rbt-flipbox-back rbt-flipbox-face inner">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
+                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
+                                blanditiis, </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Single Card  -->
+
+            <!-- Start Single Card  -->
+            <div class="col-xl-3 col-md-6 col-sm-6 col-12 mt--30">
+                <div class="rbt-flipbox">
+                    <div class="rbt-flipbox-wrap rbt-service rbt-service-1 card-bg-2">
+                        <div class="rbt-flipbox-front rbt-flipbox-face inner">
+                            <div class="icon">
+                                <img src="{% static 'website/images/icons/card-icon-2.png' %}" alt="card-icon">
+                            </div>
+                            <div class="content">
+                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
+                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="rbt-flipbox-back rbt-flipbox-face inner">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
+                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
+                                blanditiis, </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Single Card  -->
+
+            <!-- Start Single Card  -->
+            <div class="col-xl-3 col-md-6 col-sm-6 col-12 mt--30">
+                <div class="rbt-flipbox">
+                    <div class="rbt-flipbox-wrap rbt-service rbt-service-1 card-bg-3">
+                        <div class="rbt-flipbox-front rbt-flipbox-face inner">
+                            <div class="icon">
+                                <img src="{% static 'website/images/icons/card-icon-3.png' %}" alt="card-icon">
+                            </div>
+                            <div class="content">
+                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
+                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="rbt-flipbox-back rbt-flipbox-face inner">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
+                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
+                                blanditiis, </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Single Card  -->
+
+            <!-- Start Single Card  -->
+            <div class="col-xl-3 col-md-6 col-sm-6 col-12 mt--30">
+                <div class="rbt-flipbox">
+                    <div class="rbt-flipbox-wrap rbt-service rbt-service-1 card-bg-4">
+                        <div class="rbt-flipbox-front rbt-flipbox-face inner">
+                            <div class="icon">
+                                <img src="{% static 'website/images/icons/card-icon-4.png' %}" alt="card-icon">
+                            </div>
+                            <div class="content">
+                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
+                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="rbt-flipbox-back rbt-flipbox-face inner">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
+                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
+                                blanditiis, </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Single Card  -->
+
+        </div>
+        <!-- End Card Area -->
+    </div>
+</div>
+{% endblock %}
