@@ -10157,7 +10157,7 @@ Primary style
   display: block;
 }
 .logo a img {
-  max-height: 110px;
+  max-height: 120px;
   object-fit: cover;
 }
 
@@ -11529,7 +11529,7 @@ ul.rbt-dropdown-menu.currency-menu li .sub-menu {
   z-index: 99;
 }
 .rbt-header .logo a img {
-  max-height: 75px;
+  max-height: 85px;
   object-fit: cover;
 }
 @media only screen and (max-width: 575px) {
