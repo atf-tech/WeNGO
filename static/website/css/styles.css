@@ -14078,7 +14078,7 @@ span.transparent-button:hover i {
   margin-bottom: 0;
 }
 .section-title.text-center .description {
-  padding: 0 23%;
+  padding: 0 20%;
   letter-spacing: -0.5px;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -16993,7 +16993,7 @@ span.transparent-button:hover i {
   top: 43px;
   left: -51px;
   border-radius: var(--radius-big);
-  min-width: 203px;
+  min-width: 383px;
   max-width: 220px;
   background: rgba(246, 247, 254, 0.46);
   border: 2px solid var(--color-white);
@@ -26743,7 +26743,7 @@ blockquote.has-text-align-right cite,
 }
 @media only screen and (min-width: 1200px) and (max-width: 1599px) {
   .rbt-banner-1 .content .inner .title {
-    font-size: 40px;
+    font-size: 30px;
   }
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -26764,7 +26764,7 @@ blockquote.has-text-align-right cite,
 }
 @media only screen and (max-width: 575px) {
   .rbt-banner-1 .content .inner .title {
-    font-size: 32px;
+    font-size: 20px;
   }
 }
 .rbt-banner-1 .content .inner .description {
