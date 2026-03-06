@@ -1,0 +1,183 @@
+{% extends 'website/base.html' %} {% load static %}
+
+{% block title %}
+Wheel Chair - WeNGO
+{% endblock %}
+
+{% block content %}
+<!-- Start breadcrumb Area -->
+<div class="rbt-breadcrumb-default rbt-breadcrumb-style-3 version-02">
+    <div class="breadcrumb-inner">
+        <img src="{% static 'website/images/bg/breadcrumb-bg-01.png' %}" alt="Bg Image" />
+    </div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="content text-start">
+                    <ul class="page-list mb--80 mb_md--60 mb_sm--40">
+                        <li class="rbt-breadcrumb-item">
+                            <a href="#">Home</a>
+                        </li>
+                        <li>
+                            <div class="icon-right">
+                                <i class="feather-chevron-right"></i>
+                            </div>
+                        </li>
+                        <li class="rbt-breadcrumb-item active">Wheel Chair</li>
+                    </ul>
+                    <h2 class="w-600 mb--10">Wheel Chair</h2>
+                    <p class="mb--20">Help someone move toward a better tomorrow.
+                        Donate a wheelchair today.</p>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="radius-10 overflow-hidden p-4 bg-color-white-opacity mt_md--60 mt_sm--60 mt_mobile--40">
+                    <div class="content">
+                        <img src="/static/website/images/causes/wheel_chair.jpeg" alt="Veg Briyani" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb Area -->
+
+<div class="rbt-course-details-area ptb--60">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <div class="course-details-content">
+                    <div class="rbt-course-feature-box rbt-shadow-box thuumbnail">
+                        <div id="billing-form">
+                            <h3 class="title">Donation Form</h3>
+                            <hr class="mb--30" />
+                            <div class="row">
+                                <div class="col-md-4 col-12 mb--20">
+                                    <label>Donor Name</label>
+                                    <input required type="text" placeholder="First Name" />
+                                </div>
+
+                                <div class="col-md-4 col-12 mb--20">
+                                    <label>Donor Mobile No</label>
+                                    <input required type="number" placeholder="Phone number" />
+                                </div>
+
+                                <div class="col-md-4 col-12 mb--20">
+                                    <label>Donor Email Address</label>
+                                    <input required type="email" placeholder="Email Address" />
+                                </div>
+
+                                <div class="col-12 mb--20">
+                                    <label>Address</label>
+                                    <textarea required placeholder="Address line 1"></textarea>
+                                </div>
+
+                                <!-- ── Food Item Display ── -->
+                                <div class="col-md-12 col-12 mb--20">
+                                    <label>Item</label>
+                                    <div class="rbt-food-item-box">
+                                        <div class="food-item-info">
+                                            <span class="food-item-name"><i class="feather-package"></i> Wheel
+                                                Chair</span>
+                                            <span class="food-item-price">
+                                                ₹<span id="unit-price" data-unit="chair">6000</span> per chair
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ── Quantity Selector ── -->
+                                <div class="col-md-12 col-12 mb--20">
+                                    <label>Select Quantity (No. of Chairs)</label>
+                                    <div class="quantity-selector">
+                                        <div class="qty-quick-btns">
+                                            <button type="button" class="qty-btn" data-qty="1">1</button>
+                                            <button type="button" class="qty-btn" data-qty="2">2</button>
+                                            <button type="button" class="qty-btn" data-qty="3">3</button>
+                                            <button type="button" class="qty-btn" data-qty="10">10</button>
+                                        </div>
+                                        <div class="qty-manual-wrap">
+                                            <span class="qty-label-or">or enter custom</span>
+                                            <div class="qty-input-group">
+                                                <button type="button" id="qty-minus">−</button>
+                                                <input type="number" id="quantity-input" value="1" min="1" placeholder="Qty">
+                                                <button type="button" id="qty-plus">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ── Donation Amount (auto-calculated) ── -->
+                                <div class="col-md-12 col-12 mb--20">
+                                    <label>Donation Amount</label>
+                                    <div class="donation-amount-display">
+                                        <input type="number" id="donation-amount" name="donation_amount" readonly />
+                                        <span class="amount-breakdown" id="amount-breakdown"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 text-center mb--20">
+                                    <div class="submit-btn">
+                                        <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'payment_success' %}">
+                                            <span class="icon-reverse-wrapper">
+                                                <span class="btn-text">Donate Now</span>
+                                                <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                                <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div style="top: 100px;" class="course-sidebar sticky-top rbt-shadow-box rbt-gradient-border">
+                    <div class="inner">
+                        <!-- Start Viedo Wrapper -->
+
+                        <div class="video-content">
+                            <img class="w-100 rbt-radius" src="{% static 'website/images/causes/wheel_chair.jpeg' %}"
+                                alt="Video Images" />
+                        </div>
+                        <!-- End Viedo Wrapper -->
+
+                        <div class="content-item-content">
+                            <h4 class="w-600 mb--10 mt--10">Wheel Chair</h4>
+                            <div class="rbt-price-wrapper d-flex flex-wrap align-items-center justify-content-between">
+                                <div class="rbt-price">
+                                    <span class="current-price">₹ 6000</span>
+                                </div>
+                                <div class="discount-time">
+                                    <span class="rbt-badge color-primary bg-color-primary-opacity"><i
+                                            class="feather-heart"></i> Give a little. Change a lot.</span>
+                                </div>
+                            </div>
+
+                            <div class="rbt-widget-details has-show-more">
+                                <p class="">Help someone move toward a better tomorrow.
+                                    Donate a wheelchair today.
+                                </p>
+                            </div>
+
+                            <div class="social-share-wrapper text-center">
+                                <hr class="mt--20" />
+                                <div class="contact-with-us text-center">
+                                    <p>For details about the Service Please reach us</p>
+                                    <p class="rbt-badge-2 mt--10 justify-content-center w-100">
+                                        <i class="fab fa-whatsapp mr--5"></i> Whatsapp
+                                        <a href="https://wa.me/919087249777?text=Hello%20I%20would%20like%20to%20make%20a%20donation.%20Please%20share%20the%20details."
+                                            target="_blank"><strong>+91 908 724 9777</strong></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -49,3 +49,144 @@ input[type=number]::-webkit-outer-spin-button {
     appearance: none;
     margin: 0; 
 }
+
+
+
+
+/* ── Food Item Box ──────────────────────────────────────────── */
+.rbt-food-item-box {
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    background: #f9f9ff;
+}
+.food-item-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.food-item-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+}
+.food-item-name i {
+    margin-right: 6px;
+    color: #7c5cbf;
+}
+.food-item-price {
+    background: #7c5cbf;
+    color: #fff;
+    padding: 3px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ── Quantity Selector ──────────────────────────────────────── */
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.qty-quick-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.qty-btn {
+    padding: 8px 20px;
+    border: 2px solid var(--color-primary);
+    background: #fff;
+    color: var(--color-primary);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    animation: none !important;
+    -webkit-animation: none !important;
+}
+.qty-btn.active,
+.qty-btn:hover {
+    background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary), var(--color-secondary), var(--color-primary));
+    border-color: transparent;
+    background-size: 300% 100%;
+    color: #fff;
+}
+/* Extra safety — stop theme targeting last-child */
+.qty-btn:last-child,
+.qty-btn:last-of-type {
+    animation: none !important;
+    -webkit-animation: none !important;
+}
+.qty-label-or {
+    color: #999;
+    font-size: 13px;
+    white-space: nowrap;
+}
+.qty-manual-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.qty-input-group {
+    display: flex;
+    align-items: center;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.qty-input-group button {
+    width: 40px;
+    height: 50px;
+    border: none;
+    background: #f0f0f0;
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+    line-height: 1;
+    transition: background 0.2s;
+    animation: none !important;
+    -webkit-animation: none !important;
+}
+.qty-input-group button:hover {
+    background: #7c5cbf;
+    color: #fff;
+}
+.qty-input-group input {
+    width: 64px;
+    text-align: center;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+    padding: 6px 4px;
+    -moz-appearance: textfield;
+}
+.qty-input-group input::-webkit-outer-spin-button,
+.qty-input-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ── Donation Amount ────────────────────────────────────────── */
+.donation-amount-display input {
+    font-size: 22px;
+    font-weight: 700;
+    color: #7c5cbf;
+    background: #f4f0ff;
+    border: 2px solid #c9b8f0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    width: 100%;
+    cursor: not-allowed;
+}
+.amount-breakdown {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #888;
+}

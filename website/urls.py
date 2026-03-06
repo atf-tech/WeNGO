@@ -12,4 +12,15 @@ urlpatterns = [
     path('shippingPolicy', views.shippingPolicy, name='shippingPolicy'),
     path('privacyPolicy', views.privacyPolicy, name='privacyPolicy'),
     path('cancellationRefunds', views.cancellationRefunds, name='cancellationRefunds'),
+    
+    path('payment_success', views.payment_success, name='payment_success'),
+    path('payment_failed', views.payment_failed, name='payment_failed'),
+    
+    path('wheel_chair', views.wheel_chair, name='wheel_chair'),
+    path('veg_briyani', views.veg_briyani, name='veg_briyani'),
+    path('school_bag', views.school_bag, name='school_bag'),
+    path('grocery_kit', views.grocery_kit, name='grocery_kit'),
+    path('dresses', views.dresses, name='dresses'),
+    path('birds_feeding', views.birds_feeding, name='birds_feeding'),
+    
 ]

@@ -7,10 +7,10 @@
 {% block content %}
 
 <div class="rbt-course-area bg-color-extra2 rbt-section-gap">
-    <div class="container">
-        <div class="row mb--60 g-5 align-items-end">
+    <div class="container-fluid">
+        <div class="row mb--60 g-5 align-items-end justify-content-center">
             <div class="col-lg-6 col-md-6 col-12">
-                <div class="section-title text-start">
+                <div class="section-title text-center">
                     <span class="subtitle bg-primary-opacity">Top Popular Service</span>
                     <h2 class="title">Most Popular Service</h2>
                 </div>
@@ -21,23 +21,114 @@
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="#">
-                            <img src="{% static 'website/images/sample/710-488.jpg' %}" alt="Card image">
+                        <a href="{% url 'veg_briyani' %}">
+                            <img src="{% static 'website/images/causes/veg_briyani.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Lorem ipsum dolor sit.</a>
+                        <h4 class="rbt-card-title"><a href="{% url 'veg_briyani' %}">Veg Briyani</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul>
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
-                                <span class="current-price">₹ 60</span>
+                                <span class="current-price">₹ 80</span>
                             </div>
-                            <a class="rbt-btn-link" href="#">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'veg_briyani' %}">Donate<i class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'school_bag' %}">
+                            <img src="{% static 'website/images/causes/schoolbag.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'school_bag' %}">School bag</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 599</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'school_bag' %}">Donate<i class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'dresses' %}">
+                            <img src="{% static 'website/images/causes/saree.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'dresses' %}">Dress</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 599</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'dresses' %}">Donate<i class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'grocery_kit' %}">
+                            <img src="{% static 'website/images/causes/grocery_kit.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'grocery_kit' %}">Grocery Kit</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 700</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'grocery_kit' %}">Donate<i class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'wheel_chair' %}">
+                            <img src="{% static 'website/images/causes/wheel_chair.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'wheel_chair' %}"> Wheel Chair</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 6000</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'wheel_chair' %}">Donate<i class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'birds_feeding' %}">
+                            <img src="{% static 'website/images/causes/bird.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'birds_feeding' %}">Birds Feeding</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 199</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'birds_feeding' %}">Donate<i class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
@@ -55,7 +146,7 @@
                     <div class="plyr__video-embed rbtplayer">
                         <video style="width: 100%;height: auto;display: block;" class="radius-10 overflow-hidden"
                             autoplay muted loop playsinline>
-                            <source src="{% static 'website/videos/wishlist-video-01.mp4' %}" type="video/mp4">
+                            <source src="{% static 'website/videos/website_small.mp4' %}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
@@ -65,12 +156,9 @@
                 <div class="inner">
                     <div class="section-title text-start">
                         <h2 class="title">What is WeNGO does ?.</h2>
-                        <p class="description mt--20"><strong>Histudy educational platform</strong> ipsum dolor sit amet
-                            consectetur adipisicing elit. Nam inventore praesentium alias incidunt! Veritatis,
-                            necessitatibus fuga dolore tenetur, beatae suscipit fugit est ea perspiciatis quo provident
-                            nisi dolor similique architecto nihil.</p>
+                        <p class="description mt--20"><strong>WeNGO is a women empowerment NGO</strong> committed to uplifting women and supporting underprivileged communities. Through education support, food assistance, healthcare help, and social welfare initiatives, we strive to create opportunities and bring positive change. With the support of compassionate donors and volunteers, we work to build a stronger and more hopeful future for those in need.</p>
                         <div class="read-more-btn mt--40">
-                            <a class="rbt-btn btn-gradient rbt-switch-btn rbt-switch-y" href="{% url 'service' %}">
+                            <a class="rbt-btn btn-gradient rbt-switch-btn rbt-switch-y" href="{% url 'about' %}">
                                 <span data-text="About Histudy">About WeNGO</span>
                             </a>
                         </div>
@@ -99,21 +187,19 @@
 
                     <div class="rbt-flipbox-wrap rbt-service rbt-service-1 card-bg-1">
                         <div class="rbt-flipbox-front rbt-flipbox-face inner">
-                            <div class="icon">
+                             <div class="icon">
                                 <img src="{% static 'website/images/icons/card-icon-1.png' %}" alt="card-icon">
-                            </div>
+                            </div> 
                             <div class="content">
-                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
-                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                <h5 class="title"><a href="#">Photo & Video Proof</a></h5>
+                                <p>We share real photos and edited videos of every donation activity so donors can see the direct impact of their support.
                                 </p>
                                 <!-- <a class="rbt-btn-link stretched-link" href="#">Learn More<i class="feather-arrow-right"></i></a> -->
                             </div>
                         </div>
 
                         <div class="rbt-flipbox-back rbt-flipbox-face inner">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
-                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
-                                blanditiis, </p>
+                            <p class="fs-3">We share real photos and professionally edited videos of every donation activity so donors can clearly see the direct impact of their support. This ensures transparency and allows you to witness how your contribution is helping those in need, bringing hope and support to many lives.</p>
                         </div>
                     </div>
                 </div>
@@ -129,16 +215,14 @@
                                 <img src="{% static 'website/images/icons/card-icon-2.png' %}" alt="card-icon">
                             </div>
                             <div class="content">
-                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
-                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                <h5 class="title"><a href="#">🎂 Special Day Wishes</a></h5>
+                                <p>Celebrate birthdays, anniversaries, or memorial days through meaningful donations. We also provide a special wishes video from the beneficiaries.
                                 </p>
                             </div>
                         </div>
 
                         <div class="rbt-flipbox-back rbt-flipbox-face inner">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
-                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
-                                blanditiis, </p>
+                            <p class="fs-3">Celebrate birthdays, anniversaries, or memorial days through meaningful donations that create a lasting impact. We also provide a special wishes video from the beneficiaries to express their gratitude. This makes your special day more memorable while spreading happiness, kindness, and support to those in need.</p>
                         </div>
                     </div>
                 </div>
@@ -154,16 +238,14 @@
                                 <img src="{% static 'website/images/icons/card-icon-3.png' %}" alt="card-icon">
                             </div>
                             <div class="content">
-                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
-                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                <h5 class="title"><a href="#">🧾 Tax Exemption Support</a></h5>
+                                <p>Eligible donations come with proper receipts that help donors claim tax benefits as per government rules.
                                 </p>
                             </div>
                         </div>
 
                         <div class="rbt-flipbox-back rbt-flipbox-face inner">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
-                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
-                                blanditiis, </p>
+                            <p class="fs-3">Eligible donations come with proper receipts that help donors claim tax benefits as per government regulations. Our team ensures that all required documentation is provided clearly and promptly, making the process simple and convenient while encouraging donors to continue supporting meaningful causes.</p>
                         </div>
                     </div>
                 </div>
@@ -179,16 +261,14 @@
                                 <img src="{% static 'website/images/icons/card-icon-4.png' %}" alt="card-icon">
                             </div>
                             <div class="content">
-                                <h5 class="title"><a href="#">Lorem, ipsum dolor.</a></h5>
-                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima error reiciendis.
+                                <h5 class="title"><a href="#">🔍 Complete Transparency</a></h5>
+                                <p>We maintain full transparency by sharing updates and reports, ensuring every donor knows their contribution is making a real difference.
                                 </p>
                             </div>
                         </div>
 
                         <div class="rbt-flipbox-back rbt-flipbox-face inner">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid, vitae? Expedita
-                                laboriosam inventore, placeat ipsa eum eveniet animi porro fugiat. Autem dolorum
-                                blanditiis, </p>
+                            <p class="fs-3">We maintain complete transparency by sharing regular updates, photos, and reports about every donation activity. This ensures that every donor clearly understands how their contribution is being used, building trust and confidence while showing the real impact their support creates in the lives of people in need.</p>
                         </div>
                     </div>
                 </div>

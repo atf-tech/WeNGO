@@ -6,15 +6,15 @@
 
 {% block content %}
 
-    <div class="rbt-about-area about-style-1 bg-color-white rbt-section-gap">
+    <div class="rbt-about-area about-style-1 bg-color-white rbt-section-gap2">
         <div class="container">
             <div class="row g-5 align-items-center">
-                <div class="col-lg-6">
+                {% comment %} <div class="col-lg-6">
                     <div class="content">
                         <img src="{% static 'website/images/sample/663-426.jpg' %}" alt="About Images">
                     </div>
-                </div>
-                <div class="col-lg-6" data-sal="slide-up" data-sal-duration="700">
+                </div> {% endcomment %}
+                <div class="col-lg-12" data-sal="slide-up" data-sal-duration="700">
                     <div class="inner pl--50 pl_sm--5">
                         <div class="content text-start">
                             <span class="rbt-badge-6 bg-primary-opacity">About WeNGO</span>
@@ -30,7 +30,7 @@
         </div>
     </div>
 
-<div class="rbt-advance-tab-area rbt-section-gap2Bottom bg-color-white">
+<div class="rbt-advance-tab-area  bg-color-white">
     <div class="container">
         <div class="row mb--60">
             <div class="col-lg-12">
@@ -94,13 +94,13 @@
                     <div class="tab-pane fade advance-tab-content-1" id="WengoMission" role="tabpanel"
                         aria-labelledby="WengoMission-tab">
                         <div class="thumbnail">
-                            <img src="{% static 'website/images/sample/860-620.jpg' %}" alt="advance-tab-image">
+                            <img src="{% static 'website/images/sample/mission.jpeg' %}" alt="advance-tab-image">
                         </div>
                     </div>
                     <div class="tab-pane fade advance-tab-content-1 active show" id="WengoVision" role="tabpanel"
                         aria-labelledby="WengoVision-tab">
                         <div class="thumbnail">
-                            <img src="{% static 'website/images/sample/860-620.jpg' %}" alt="advance-tab-image">
+                            <img src="{% static 'website/images/sample/mission.jpeg' %}" alt="advance-tab-image">
                         </div>
 
                     </div>
@@ -154,7 +154,7 @@
     <!-- End CallTo Action Area  -->
 
     <!-- Start Service Area -->
-    <div class="rbt-service-area bg-color-white rbt-section-gap">
+    <div class="rbt-service-area bg-color-white rbt-section-gap2">
         <div class="container">
             <div class="row mb--60">
                 <div class="col-lg-12">
@@ -247,57 +247,162 @@
     <!-- End Service Area -->
 
 <div class="rbt-course-area rbt-section-gap bg-gradient-8 masonary-wrapper-activation">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row mb--55 g-5 align-items-end">
-            <div class="col-lg-6 col-md-6 col-12">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-5 col-md-5 col-11">
                 <div class="section-title text-start">
                     <span class="subtitle bg-white-opacity">Top Popular Service</span>
                     <h2 class="title color-white">Most Popular Service</h2>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6 col-12">
+            <div class="col-lg-5 col-md-5 col-11">
                 <div class="load-more-btn text-start text-md-end">
                     <a class="rbt-btn rbt-switch-btn btn-white" href="{% url 'service' %}">
                         <span data-text="View All Service">View All Service</span>
                     </a>
                 </div>
             </div>
+            <div class="col-lg-1"></div>
         </div>
 
 
 
         <div class="row g-5">
 
-            <!-- Start Single Course  -->
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="#">
-                            <img src="{% static 'website/images/sample/710-488.jpg' %}" alt="Card image">
+                        <a href="{% url 'veg_briyani' %}">
+                            <img src="{% static 'website/images/causes/veg_briyani.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Lorem ipsum dolor sit.</a>
+                        <h4 class="rbt-card-title"><a href="{% url 'veg_briyani' %}">Donate Veg Briyani</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul>
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
-                                <span class="current-price">₹ 60</span>
+                                <span class="current-price">₹ 80</span>
                             </div>
-                            <a class="rbt-btn-link" href="#">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'veg_briyani' %}">Donate<i
+                                    class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End Single Course  -->
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'school_bag' %}">
+                            <img src="{% static 'website/images/causes/schoolbag.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'school_bag' %}">Donate School bag</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 599</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'school_bag' %}">Donate<i
+                                    class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'dresses' %}">
+                            <img src="{% static 'website/images/causes/saree.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'dresses' %}">Donate Dress</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 599</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'dresses' %}">Donate<i
+                                    class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'grocery_kit' %}">
+                            <img src="{% static 'website/images/causes/grocery_kit.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'grocery_kit' %}">Donate Grocery Kit</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 700</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'grocery_kit' %}">Donate<i
+                                    class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'wheel_chair' %}">
+                            <img src="{% static 'website/images/causes/wheel_chair.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'wheel_chair' %}">Donate Wheel Chair</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 6000</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'wheel_chair' %}">Donate<i
+                                    class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="rbt-card variation-01 rbt-hover">
+                    <div class="rbt-card-img">
+                        <a href="{% url 'birds_feeding' %}">
+                            <img src="{% static 'website/images/causes/bird.jpeg' %}" alt="Card image">
+                        </a>
+                    </div>
+                    <div class="rbt-card-body">
+                        <h4 class="rbt-card-title"><a href="{% url 'birds_feeding' %}">Birds feeding</a>
+                        </h4>
+                        <div class="rbt-card-bottom">
+                            <div class="rbt-price">
+                                <span class="current-price">₹ 199</span>
+                            </div>
+                            <a class="rbt-btn-link" href="{% url 'birds_feeding' %}">Donate<i
+                                    class="feather-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 
         </div>
+        <!-- <div class="row mt--55 mt_sm--50">
+            <div class="col-lg-12">
+                <div class="load-more-btn text-center">
+                    <a class="rbt-btn rbt-switch-btn btn-white" href="#">
+                        <span data-text="View More">View More</span>
+                    </a>
+                </div>
+            </div>
+        </div> -->
     </div>
 </div>
 

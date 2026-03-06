@@ -29,3 +29,33 @@ def privacyPolicy(request):
 
 def cancellationRefunds(request):
     return render(request, 'website/info/cancellationRefunds.html')
+
+
+
+
+def payment_success(request):
+    return render(request, 'website/success.html')
+
+def payment_failed(request):
+    return render(request, 'website/failed.html')
+
+
+
+
+def wheel_chair(request):
+    return render(request, 'website/causes/wheel_chair.html')
+
+def veg_briyani(request):
+    return render(request, 'website/causes/veg_briyani.html')
+
+def school_bag(request):
+    return render(request, 'website/causes/school_bag.html')
+
+def grocery_kit(request):
+    return render(request, 'website/causes/grocery_kit.html')
+
+def dresses(request):
+    return render(request, 'website/causes/dresses.html')
+
+def birds_feeding(request):
+    return render(request, 'website/causes/birds_feeding.html')

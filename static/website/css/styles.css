@@ -14557,7 +14557,7 @@ span.transparent-button:hover i {
 .rbt-breadcrumb-default.rbt-breadcrumb-style-3 .content {
   position: relative;
   z-index: 2;
-  padding-right: 10%;
+  /* padding-right: 10%; */
 }
 .rbt-breadcrumb-default.rbt-breadcrumb-style-3.version-02 {
   padding: 40px 0 75px 0;
@@ -15632,7 +15632,8 @@ span.transparent-button:hover i {
   align-items: center;
 }
 .rbt-price .current-price {
-  font-size: 24px;
+  color: var(--color-secondary);
+  font-size: 35px;
   font-weight: 700;
 }
 .rbt-price .off-price {

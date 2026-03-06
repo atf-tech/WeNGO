@@ -1,0 +1,471 @@
+{% extends 'website/base.html' %} {% load static %}
+
+{% block title %} Payment Success - WeNGO {% endblock %}
+
+{% block content %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --color-primary: #2f57ef;
+    --color-secondary: #b966e7;
+    --primary-light: rgba(47, 87, 239, 0.08);
+    --gradient: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    --gradient-soft: linear-gradient(135deg, rgba(47,87,239,0.07), rgba(185,102,231,0.07));
+    --ink: #0d1b4b;
+    --muted: #7b8ab8;
+    --border: rgba(47, 87, 239, 0.15);
+    --bg: #f4f6ff;
+  }
+
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Wrapper ── */
+  .success-wrapper {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Blobs ── */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.16;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .blob-1 { width: 420px; height: 420px; background: var(--color-primary); top: -120px; left: -120px; animation: float-blob 8s ease-in-out infinite; }
+  .blob-2 { width: 340px; height: 340px; background: var(--color-secondary); bottom: -80px; right: -80px; animation: float-blob 10s ease-in-out infinite reverse; }
+  .blob-3 { width: 200px; height: 200px; background: var(--color-secondary); top: 45%; left: 65%; animation: float-blob 7s ease-in-out infinite 2s; }
+
+  @keyframes float-blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%       { transform: translate(16px, -16px) scale(1.04); }
+  }
+
+  /* ── Card ── */
+  .success-card {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow:
+      0 2px 4px rgba(47,87,239,0.04),
+      0 20px 56px rgba(47,87,239,0.12),
+      0 0 0 1px rgba(47,87,239,0.08);
+    width: 100%;
+    max-width: 520px;
+    padding: 48px 44px 40px;
+    position: relative;
+    z-index: 10;
+    animation: card-enter 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes card-enter {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── Card top bar ── */
+  .card-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 20px;
+    background: var(--gradient);
+    border-radius: 24px 24px 0 0;
+  }
+
+  /* ── Check icon ── */
+  .check-wrap {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 24px;
+    position: relative;
+    animation: pop-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s both;
+  }
+
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.4); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .check-bg {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 28px rgba(47,87,239,0.35);
+  }
+
+  .check-bg svg {
+    width: 36px; height: 36px;
+    stroke: #fff; stroke-width: 2.8; fill: none;
+    stroke-dasharray: 60; stroke-dashoffset: 60;
+    animation: draw-check 0.45s ease 0.85s forwards;
+  }
+
+  @keyframes draw-check { to { stroke-dashoffset: 0; } }
+
+  .check-ring {
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    border: 2px dashed rgba(185,102,231,0.35);
+    animation: spin-ring 12s linear infinite;
+  }
+
+  @keyframes spin-ring { to { transform: rotate(360deg); } }
+
+  .orbit-dot {
+    position: absolute;
+    width: 10px; height: 10px;
+    background: var(--color-secondary);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    margin: -5px 0 0 -5px;
+    animation: orbit 4s linear 1s infinite;
+    box-shadow: 0 0 8px rgba(185,102,231,0.6);
+  }
+
+  @keyframes orbit {
+    from { transform: rotate(0deg) translateX(50px); }
+    to   { transform: rotate(360deg) translateX(50px); }
+  }
+
+  /* ── Badge ── */
+  .badge-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--gradient-soft);
+    border: 1px solid var(--border);
+    color: var(--color-primary);
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 5px 13px; border-radius: 100px;
+    margin-bottom: 12px;
+    animation: fade-up 0.4s ease 0.55s both;
+  }
+
+  .badge-label::before {
+    content: ''; display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--color-primary);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ── Title ── */
+  .success-title {
+    font-size: 32px; font-weight: 800;
+    color: var(--ink); line-height: 1.2;
+    margin-bottom: 10px;
+    animation: fade-up 0.4s ease 0.6s both;
+  }
+
+  .success-title span {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .success-sub {
+    font-size: 14px; color: var(--muted);
+    line-height: 1.65; margin-bottom: 28px;
+    animation: fade-up 0.4s ease 0.65s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Details box ── */
+  .details-box {
+    background: var(--gradient-soft);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 4px 20px;
+    margin-bottom: 24px;
+    animation: fade-up 0.4s ease 0.7s both;
+  }
+
+  .details-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 12px 0;
+  }
+
+  .details-row:not(:last-child) {
+    border-bottom: 1px solid rgba(47,87,239,0.1);
+  }
+
+  .d-label { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .d-value { font-size: 13px; font-weight: 700; color: var(--ink); text-align: right; word-break: break-all; }
+
+  .d-value.amount {
+    font-size: 19px; font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Status pill ── */
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(34,197,94,0.1); color: #16a34a;
+    font-size: 11.5px; font-weight: 700;
+    padding: 3px 10px; border-radius: 100px;
+    border: 1px solid rgba(34,197,94,0.2);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #16a34a;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px;
+    animation: fade-up 0.4s ease 0.75s both;
+  }
+
+  .divider hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+  .divider-text { font-size: 10.5px; font-weight: 700; color: var(--muted); white-space: nowrap; letter-spacing: 0.1em; }
+
+  /* ── Buttons ── */
+  .btn-gradient {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px 20px;
+    background: var(--gradient); color: #fff;
+    border: none; border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14.5px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    margin-bottom: 10px;
+    animation: fade-up 0.4s ease 0.8s both;
+    box-shadow: 0 6px 20px rgba(47,87,239,0.28);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-gradient:hover, .btn-gradient:focus {
+    color: #fff; opacity: 0.88;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(47,87,239,0.38);
+    text-decoration: none;
+    outline: none;
+  }
+
+  .btn-outline {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 13px 20px;
+    background: transparent; color: var(--color-primary);
+    border: 1.5px solid var(--border); border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14.5px; font-weight: 600;
+    text-decoration: none; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    animation: fade-up 0.4s ease 0.85s both;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-outline:hover, .btn-outline:focus {
+    background: var(--primary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+    text-decoration: none;
+    outline: none;
+  }
+
+  /* ── Footer note ── */
+  .foot-note {
+    text-align: center; font-size: 12px; color: var(--muted);
+    margin-top: 18px;
+    animation: fade-up 0.4s ease 0.9s both;
+  }
+
+  .foot-note a { color: var(--color-primary); font-weight: 600; text-decoration: none; }
+  .foot-note a:hover { text-decoration: underline; }
+
+  /* ── Confetti particles ── */
+  .particle {
+    position: absolute; border-radius: 2px;
+    animation: particle-fall linear both;
+    z-index: 5; pointer-events: none;
+  }
+
+  @keyframes particle-fall {
+    0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(140px) rotate(520deg); }
+  }
+
+  /* ════════════════════════════════════════
+     RESPONSIVE BREAKPOINTS
+  ════════════════════════════════════════ */
+
+  /* Large phones / small tablets  (≤ 576px) */
+  @media (max-width: 576px) {
+    .success-wrapper {
+      padding: 24px 12px;
+      align-items: flex-start;
+      padding-top: 32px;
+    }
+
+    .success-card {
+      padding: 36px 20px 32px;
+      border-radius: 20px;
+    }
+
+    .check-wrap { width: 72px; height: 72px; }
+    .check-bg svg { width: 30px; height: 30px; }
+
+    .success-title { font-size: 24px; }
+    .success-sub   { font-size: 13px; margin-bottom: 22px; }
+
+    .details-box { padding: 2px 16px; }
+    .details-row { padding: 11px 0; }
+    .d-label     { font-size: 11.5px; }
+    .d-value     { font-size: 12.5px; }
+    .d-value.amount { font-size: 17px; }
+
+    .btn-gradient,
+    .btn-outline  { font-size: 14px; padding: 13px 16px; }
+
+    /* Reduce blob sizes so they don't overwhelm small screens */
+    .blob-1 { width: 260px; height: 260px; }
+    .blob-2 { width: 220px; height: 220px; }
+    .blob-3 { display: none; }
+  }
+
+  /* Extra-small phones  (≤ 375px) */
+  @media (max-width: 375px) {
+    .success-card { padding: 30px 16px 28px; }
+    .success-title { font-size: 22px; }
+    .badge-label   { font-size: 9.5px; padding: 4px 11px; }
+
+    .details-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .d-value { text-align: left; }
+    .d-value.amount { font-size: 16px; }
+
+    .btn-gradient,
+    .btn-outline { border-radius: 10px; }
+  }
+
+  /* Landscape phones */
+  @media (max-height: 600px) and (orientation: landscape) {
+    .success-wrapper { padding: 20px 16px; align-items: flex-start; }
+    .check-wrap { width: 60px; height: 60px; margin-bottom: 16px; }
+    .success-title { font-size: 22px; margin-bottom: 6px; }
+    .success-sub   { font-size: 12.5px; margin-bottom: 18px; }
+    .details-box   { margin-bottom: 16px; }
+    .success-card  { padding: 28px 28px 24px; }
+  }
+
+  /* Tablets  (577px – 768px) */
+  @media (min-width: 577px) and (max-width: 768px) {
+    .success-card { padding: 44px 36px 36px; }
+    .success-title { font-size: 28px; }
+  }
+</style>
+
+<div class="success-wrapper">
+
+  <!-- Background blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Confetti particles -->
+  <div class="particle" style="width:8px;height:8px;background:#2f57ef;top:20%;left:18%;animation-duration:2.5s;animation-delay:1s;"></div>
+  <div class="particle" style="width:6px;height:6px;background:#b966e7;top:17%;left:72%;animation-duration:2.8s;animation-delay:1.2s;"></div>
+  <div class="particle" style="width:10px;height:4px;background:#2f57ef;top:23%;left:54%;animation-duration:2.2s;animation-delay:1.4s;"></div>
+  <div class="particle" style="width:6px;height:6px;background:#b966e7;top:14%;left:37%;animation-duration:3s;animation-delay:1.1s;"></div>
+  <div class="particle" style="width:8px;height:4px;background:#7b9fff;top:21%;left:82%;animation-duration:2.6s;animation-delay:1.6s;"></div>
+  <div class="particle" style="width:5px;height:5px;background:#d49ff5;top:18%;left:30%;animation-duration:2.9s;animation-delay:1.3s;"></div>
+
+  <div class="success-card">
+    <div class="card-bar"></div>
+
+    <!-- Icon -->
+    <div class="text-center">
+      <div class="check-wrap">
+        <div class="check-ring"></div>
+        <div class="check-bg">
+          <svg viewBox="0 0 24 24"><polyline points="4 12 9 17 20 7"></polyline></svg>
+        </div>
+        <div class="orbit-dot"></div>
+      </div>
+
+      <div class="badge-label">Payment Confirmed</div>
+
+      <h1 class="success-title">Your donation is <span>on its way!</span></h1>
+      <p class="success-sub">Thank you for supporting WeNGO. Your contribution goes directly to those who need it most. A receipt has been sent to your email.</p>
+    </div>
+
+    <!-- Transaction details -->
+    <div class="details-box">
+      <div class="details-row">
+        <span class="d-label">Status</span>
+        <span class="d-value">
+          <span class="status-pill"><span class="status-dot"></span>Successful</span>
+        </span>
+      </div>
+      <div class="details-row">
+        <span class="d-label">Transaction ID</span>
+        <span class="d-value">#WNG-2024-8841</span>
+      </div>
+      <div class="details-row">
+        <span class="d-label">Date</span>
+        <span class="d-value">{% now "F j, Y" %}</span>
+      </div>
+      <div class="details-row">
+        <span class="d-label">Payment Method</span>
+        <span class="d-value">UPI</span>
+      </div>
+      <div class="details-row">
+        <span class="d-label">Total Donated</span>
+        <span class="d-value amount">₹ 50.00</span>
+      </div>
+    </div>
+
+    <div class="divider">
+      <hr class="m-0"><span class="divider-text">WHAT'S NEXT</span><hr class="m-0">
+    </div>
+
+    <a href="{% url 'index' %}" class="btn-gradient">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+      Return to Home
+    </a>
+    <a href="{% url 'service' %}" class="btn-outline">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Make Another Donation
+    </a>
+
+    <p class="foot-note">
+      Questions? <a href="{% url 'contact' %}">Contact our team</a>&nbsp;&nbsp;·&nbsp;&nbsp;Check spam for your receipt
+    </p>
+  </div>
+
+</div>
+
+{% endblock %}

@@ -8,7 +8,7 @@
 
 
 
-<div class="rbt-banner-area rbt-section-gapTop">
+<div class="rbt-banner-area pt-4">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -19,7 +19,8 @@
                             <div class="thumbnail">
                                 <a href="#">
                                     <img class="rbt-radius w-100"
-                                        src="{% static 'website/images/sample/womensday_we.jpeg' %}" alt="Banner Images">
+                                        src="{% static 'website/images/sample/womensday_we.jpeg' %}"
+                                        alt="Banner Images">
                                 </a>
                             </div>
                         </div>
@@ -29,7 +30,8 @@
                             <div class="thumbnail">
                                 <a href="#">
                                     <img class="rbt-radius w-100"
-                                        src="{% static 'website/images/sample/womensday_we.jpeg' %}" alt="Banner Images">
+                                        src="{% static 'website/images/sample/womensday_we.jpeg' %}"
+                                        alt="Banner Images">
                                 </a>
                             </div>
                         </div>
@@ -39,7 +41,8 @@
                             <div class="thumbnail">
                                 <a href="#">
                                     <img class="rbt-radius w-100"
-                                        src="{% static 'website/images/sample/womensday_we.jpeg' %}" alt="Banner Images">
+                                        src="{% static 'website/images/sample/womensday_we.jpeg' %}"
+                                        alt="Banner Images">
                                 </a>
                             </div>
                         </div>
@@ -79,7 +82,8 @@
                             Welcome to WENGO - <br> Women Empowerment NGO
                         </h1>
                         <p class="description">
-                            WENGO is a non-profit NGO based in Anna Nagar, Chennai, working to empower women and uplift underprivileged communities through education, healthcare, and social welfare initiatives.
+                            WENGO is a non-profit NGO based in Anna Nagar, Chennai, working to empower women and uplift
+                            underprivileged communities through education, healthcare, and social welfare initiatives.
                             {% comment %} <strong>Velit
                                 officia consequat.</strong> {% endcomment %}
                         </p>
@@ -110,21 +114,21 @@
                             <div class="swiper-slide">
                                 <div class="rbt-card variation-01 rbt-hover">
                                     <div class="rbt-card-img">
-                                        <a href="#">
-                                            <img src="{% static 'website/images/sample/veg_briyani.jpeg' %}"
+                                        <a href="{% url 'veg_briyani' %}">
+                                            <img src="{% static 'website/images/causes/veg_briyani.jpeg' %}"
                                                 alt="Card image">
                                         </a>
                                     </div>
                                     <div class="rbt-card-body">
-                                        <h4 class="rbt-card-title"><a href="#">Donate Veg Briyani</a>
+                                        <h4 class="rbt-card-title"><a href="{% url 'veg_briyani' %}">Donate Veg Briyani</a>
                                         </h4>
                                         <p class="rbt-card-text">Spread kindness with every meal.
-Provide fresh, warm food to those in need.</p>
+                                            Provide fresh, warm food to those in need.</p>
                                         <div class="rbt-card-bottom">
                                             <div class="rbt-price">
                                                 <span class="current-price">₹ 80</span>
                                             </div>
-                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'veg_briyani' %}">
                                                 <span class="icon-reverse-wrapper">
                                                     <span class="btn-text">Donate Now</span>
                                                     <span class="btn-icon"><i class="feather-heart"></i></span>
@@ -138,21 +142,20 @@ Provide fresh, warm food to those in need.</p>
                             <div class="swiper-slide">
                                 <div class="rbt-card variation-01 rbt-hover">
                                     <div class="rbt-card-img">
-                                        <a href="#">
-                                            <img src="{% static 'website/images/sample/saree.jpeg' %}"
-                                                alt="Card image">
+                                        <a href="{% url 'dresses' %}">
+                                            <img src="{% static 'website/images/causes/saree.jpeg' %}" alt="Card image">
                                         </a>
                                     </div>
                                     <div class="rbt-card-body">
-                                        <h4 class="rbt-card-title"><a href="#">Donate Dress </a>
+                                        <h4 class="rbt-card-title"><a href="{% url 'dresses' %}">Donate Dress </a>
                                         </h4>
                                         <p class="rbt-card-text">Turn your kindness into clothing support.
-Make someone smile today.</p>
+                                            Make someone smile today.</p>
                                         <div class="rbt-card-bottom">
                                             <div class="rbt-price">
                                                 <span class="current-price">₹ 599</span>
                                             </div>
-                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'dresses' %}">
                                                 <span class="icon-reverse-wrapper">
                                                     <span class="btn-text">Donate Now</span>
                                                     <span class="btn-icon"><i class="feather-heart"></i></span>
@@ -166,21 +169,21 @@ Make someone smile today.</p>
                             <div class="swiper-slide">
                                 <div class="rbt-card variation-01 rbt-hover">
                                     <div class="rbt-card-img">
-                                        <a href="#">
-                                            <img src="{% static 'website/images/sample/wheel_chair.jpeg' %}"
+                                        <a href="{% url 'wheel_chair' %}">
+                                            <img src="{% static 'website/images/causes/wheel_chair.jpeg' %}"
                                                 alt="Card image">
                                         </a>
                                     </div>
                                     <div class="rbt-card-body">
-                                        <h4 class="rbt-card-title"><a href="#">Donate Wheel Chair</a>
+                                        <h4 class="rbt-card-title"><a href="{% url 'wheel_chair' %}">Donate Wheel Chair</a>
                                         </h4>
                                         <p class="rbt-card-text">Help someone move toward a better tomorrow.
-Donate a wheelchair today.</p>
+                                            Donate a wheelchair today.</p>
                                         <div class="rbt-card-bottom">
                                             <div class="rbt-price">
                                                 <span class="current-price">₹ 6000</span>
                                             </div>
-                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="#">
+                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'wheel_chair' %}">
                                                 <span class="icon-reverse-wrapper">
                                                     <span class="btn-text">Donate Now</span>
                                                     <span class="btn-icon"><i class="feather-heart"></i></span>
@@ -227,23 +230,19 @@ Donate a wheelchair today.</p>
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="{% url 'service_detail' %}">
-                            <img src="{% static 'website/images/sample/veg_briyani.jpeg' %}" alt="Card image">
+                        <a href="{% url 'veg_briyani' %}">
+                            <img src="{% static 'website/images/causes/veg_briyani.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Donate Veg Briyani</a>
+                        <h4 class="rbt-card-title"><a href="{% url 'veg_briyani' %}">Donate Veg Briyani</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul> 
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
                                 <span class="current-price">₹ 80</span>
                             </div>
-                            <a class="rbt-btn-link" href="{% url 'service_detail' %}">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'veg_briyani' %}">Donate<i
+                                    class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
@@ -251,23 +250,19 @@ Donate a wheelchair today.</p>
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="{% url 'service_detail' %}">
-                            <img src="{% static 'website/images/sample/schoolbag.jpeg' %}" alt="Card image">
+                        <a href="{% url 'school_bag' %}">
+                            <img src="{% static 'website/images/causes/schoolbag.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Donate School bag</a>
+                        <h4 class="rbt-card-title"><a href="{% url 'school_bag' %}">Donate School bag</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul>
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
                                 <span class="current-price">₹ 599</span>
                             </div>
-                            <a class="rbt-btn-link" href="{% url 'service_detail' %}">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'school_bag' %}">Donate<i
+                                    class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
@@ -275,23 +270,19 @@ Donate a wheelchair today.</p>
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="{% url 'service_detail' %}">
-                            <img src="{% static 'website/images/sample/saree.jpeg' %}" alt="Card image">
+                        <a href="{% url 'dresses' %}">
+                            <img src="{% static 'website/images/causes/saree.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Donate Dress</a>
+                        <h4 class="rbt-card-title"><a href="{% url 'dresses' %}">Donate Dress</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul>
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
                                 <span class="current-price">₹ 599</span>
                             </div>
-                            <a class="rbt-btn-link" href="{% url 'service_detail' %}">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'dresses' %}">Donate<i
+                                    class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
@@ -299,23 +290,19 @@ Donate a wheelchair today.</p>
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="{% url 'service_detail' %}">
-                            <img src="{% static 'website/images/sample/grocery_kit.jpeg' %}" alt="Card image">
+                        <a href="{% url 'grocery_kit' %}">
+                            <img src="{% static 'website/images/causes/grocery_kit.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Donate Grocery Kit </a>
+                        <h4 class="rbt-card-title"><a href="{% url 'grocery_kit' %}">Donate Grocery Kit</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul>
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
                                 <span class="current-price">₹ 700</span>
                             </div>
-                            <a class="rbt-btn-link" href="{% url 'service_detail' %}">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'grocery_kit' %}">Donate<i
+                                    class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
@@ -323,23 +310,19 @@ Donate a wheelchair today.</p>
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="{% url 'service_detail' %}">
-                            <img src="{% static 'website/images/sample/wheel_chair.jpeg' %}" alt="Card image">
+                        <a href="{% url 'wheel_chair' %}">
+                            <img src="{% static 'website/images/causes/wheel_chair.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Donate Wheel Chair</a>
+                        <h4 class="rbt-card-title"><a href="{% url 'wheel_chair' %}">Donate Wheel Chair</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul>
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
                                 <span class="current-price">₹ 6000</span>
                             </div>
-                            <a class="rbt-btn-link" href="{% url 'service_detail' %}">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'wheel_chair' %}">Donate<i
+                                    class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
@@ -347,23 +330,19 @@ Donate a wheelchair today.</p>
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
                     <div class="rbt-card-img">
-                        <a href="{% url 'service_detail' %}">
-                            <img src="{% static 'website/images/sample/bird.jpeg' %}" alt="Card image">
+                        <a href="{% url 'birds_feeding' %}">
+                            <img src="{% static 'website/images/causes/bird.jpeg' %}" alt="Card image">
                         </a>
                     </div>
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="#">Birds feeding</a>
+                        <h4 class="rbt-card-title"><a href="{% url 'birds_feeding' %}">Birds feeding</a>
                         </h4>
-                        <ul class="rbt-meta d-flex justify-content-between d-none d-lg-block">
-                            <li><i class="feather-user"></i>40 Donor</li>
-                            <li><i class="feather-gift"></i>₹ 40,000</li>
-                        </ul>
-
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
                                 <span class="current-price">₹ 199</span>
                             </div>
-                            <a class="rbt-btn-link" href="{% url 'service_detail' %}">Donate<i class="feather-heart"></i></a>
+                            <a class="rbt-btn-link" href="{% url 'birds_feeding' %}">Donate<i
+                                    class="feather-heart"></i></a>
                         </div>
                     </div>
                 </div>
@@ -394,47 +373,47 @@ Donate a wheelchair today.</p>
                 <div class="content">
                     <div class="section-title text-start mb--50">
                         <span class="subtitle bg-primary-opacity">Why WENGO?</span>
-                        <h2 class="title w-600">Trust. Transparency. <br> 
+                        <h2 class="title w-600">Trust. Transparency. <br>
                             <span class="theme-gradient">Empowering Women.</span>
                         </h2>
                         <div class="rbt-feature-wrapper mt--30">
 
-                                <div class="rbt-feature feature-style-1 align-items-center">
-                                    <div class="icon bg-primary-opacity">
-                                        <i class="feather-heart"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h6 class="feature-title">Registered NGO</h6>
-                                    </div>
+                            <div class="rbt-feature feature-style-1 align-items-center">
+                                <div class="icon bg-primary-opacity">
+                                    <i class="feather-heart"></i>
                                 </div>
-
-                                <div class="rbt-feature feature-style-1 align-items-center">
-                                    <div class="icon bg-secondary-opacity">
-                                        <i class="feather-heart"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h6 class="feature-title">Transparent Operations</h6>
-                                    </div>
+                                <div class="feature-content">
+                                    <h6 class="feature-title">Registered NGO</h6>
                                 </div>
-
-                                <div class="rbt-feature feature-style-1 align-items-center">
-                                    <div class="icon bg-pink-opacity">
-                                        <i class="feather-heart"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h6 class="feature-title">Community-Driven Initiatives</h6>
-                                    </div>
-                                </div>
-                                <div class="rbt-feature feature-style-1 align-items-center">
-                                    <div class="icon bg-primary-opacity">
-                                        <i class="feather-heart"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h6 class="feature-title">80G Tax Exemption Available</h6>
-                                    </div>
-                                </div>
-
                             </div>
+
+                            <div class="rbt-feature feature-style-1 align-items-center">
+                                <div class="icon bg-secondary-opacity">
+                                    <i class="feather-heart"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h6 class="feature-title">Transparent Operations</h6>
+                                </div>
+                            </div>
+
+                            <div class="rbt-feature feature-style-1 align-items-center">
+                                <div class="icon bg-pink-opacity">
+                                    <i class="feather-heart"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h6 class="feature-title">Community-Driven Initiatives</h6>
+                                </div>
+                            </div>
+                            <div class="rbt-feature feature-style-1 align-items-center">
+                                <div class="icon bg-primary-opacity">
+                                    <i class="feather-heart"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h6 class="feature-title">80G Tax Exemption Available</h6>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                     {% comment %} <div class="row g-5">
                         <!-- Start Single Counter  -->
@@ -478,7 +457,7 @@ Donate a wheelchair today.</p>
                             <img src="{% static 'website/images/icons/award-gd-01.png' %}" alt="Award Icon">
                         </span>
                         <div class="title-wrap">
-                            <h4 class="number"><span class="rbt-font-primary" >Live And Let Live</span></h4>
+                            <h4 class="number"><span class="rbt-font-primary">Live And Let Live</span></h4>
                             <p class="subtitle"></p>
                         </div>
                     </div>
@@ -496,135 +475,162 @@ Donate a wheelchair today.</p>
     </div>
 </div>
 
-    <!-- Start Course Content  -->
-    <div class="rbt-course-content rbt-section-gap bg-color-extra2">
-        <div class="container">
-            <div class="row align-items-end mb--60">
-                <div class="col-lg-12 col-md-12">
-                    <div class="section-title text-start">
-                        <h2 class="title">Our Focus Areas:</h2>
-                    </div>
+<!-- Start Course Content  -->
+<div class="rbt-course-content rbt-section-gap bg-color-extra2">
+    <div class="container">
+        <div class="row align-items-end mb--60">
+            <div class="col-lg-12 col-md-12">
+                <div class="section-title text-start">
+                    <h2 class="title">Our Focus Areas:</h2>
                 </div>
             </div>
-            <div class="row gy-5 row--30">
-                <div class="col-lg-6">
-                    <div class="feature-course-thumbnail">
-                        <div class="video-popup-wrapper rbt-shadow-box">
-                            <video style="width: 100%;height: auto;display: block;" class="w-100 radius-10 overflow-hidden"
+        </div>
+        <div class="row gy-5 row--30">
+            <div class="col-lg-6">
+                <div class="feature-course-thumbnail">
+                    <div class="video-popup-wrapper rbt-shadow-box">
+                        <video style="width: 100%;height: auto;display: block;" class="w-100 radius-10 overflow-hidden"
                             autoplay muted loop playsinline>
                             <source src="{% static 'website/videos/website_small.mp4' %}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                            <!-- <img class=" radius-10" src="{% static 'website/images/course-elegant-01.jpg' %}" alt="Card image"> -->
-                        </div>
+                        <!-- <img class=" radius-10" src="{% static 'website/images/course-elegant-01.jpg' %}" alt="Card image"> -->
                     </div>
                 </div>
-                <div class="col-lg-6 rbt-scroll-max-height rbt-scroll">
-                    <div class="course-content">
-                        <div class="rbt-accordion-style rbt-accordion-02 right-no-padding accordion">
-                            <div class="accordion" id="accordionExampleb2">
-                                <div class="accordion-item card">
-                                    <h2 class="accordion-header card-header" id="headingTwo1">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo1" aria-expanded="false" aria-controls="collapseTwo1">
-                                            Women Empowerment & Skill Development
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo1" class="accordion-collapse collapse" aria-labelledby="headingTwo1" data-bs-parent="#accordionExampleb2">
-                                        <div class="accordion-body card-body">
-                                            <p>
-                                                We empower women through education, vocational training, and livelihood programs to help them become self-reliant and confident.
-                                            </p>
-                                        </div>
+            </div>
+            <div class="col-lg-6 rbt-scroll-max-height rbt-scroll">
+                <div class="course-content">
+                    <div class="rbt-accordion-style rbt-accordion-02 right-no-padding accordion">
+                        <div class="accordion" id="accordionExampleb2">
+                            <div class="accordion-item card">
+                                <h2 class="accordion-header card-header" id="headingTwo1">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo1" aria-expanded="false"
+                                        aria-controls="collapseTwo1">
+                                        Women Empowerment & Skill Development
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo1" class="accordion-collapse collapse" aria-labelledby="headingTwo1"
+                                    data-bs-parent="#accordionExampleb2">
+                                    <div class="accordion-body card-body">
+                                        <p>
+                                            We empower women through education, vocational training, and livelihood
+                                            programs to help them become self-reliant and confident.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="accordion-item card">
-                                    <h2 class="accordion-header card-header" id="headingTwo2">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo2" aria-expanded="false" aria-controls="collapseTwo2">
-                                            Education Support for Children
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo2" class="accordion-collapse collapse" aria-labelledby="headingTwo2" data-bs-parent="#accordionExampleb2">
-                                        <div class="accordion-body card-body">
-                                            <p>
-                                                We support underprivileged children with access to education, learning materials, and a better future.
-                                            </p>
-                                        </div>
+                            <div class="accordion-item card">
+                                <h2 class="accordion-header card-header" id="headingTwo2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo2" aria-expanded="false"
+                                        aria-controls="collapseTwo2">
+                                        Education Support for Children
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo2" class="accordion-collapse collapse" aria-labelledby="headingTwo2"
+                                    data-bs-parent="#accordionExampleb2">
+                                    <div class="accordion-body card-body">
+                                        <p>
+                                            We support underprivileged children with access to education, learning
+                                            materials, and a better future.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="accordion-item card">
-                                    <h2 class="accordion-header card-header" id="headingTwo3">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo3" aria-expanded="false" aria-controls="collapseTwo3">
-                                            Health & Medical Emergency Assistance
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo3" class="accordion-collapse collapse" aria-labelledby="headingTwo3" data-bs-parent="#accordionExampleb2">
-                                        <div class="accordion-body card-body">
-                                            <p>
-                                                We provide medical support, health awareness, and emergency assistance to individuals in need.
-                                            </p>
-                                        </div>
+                            <div class="accordion-item card">
+                                <h2 class="accordion-header card-header" id="headingTwo3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo3" aria-expanded="false"
+                                        aria-controls="collapseTwo3">
+                                        Health & Medical Emergency Assistance
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo3" class="accordion-collapse collapse" aria-labelledby="headingTwo3"
+                                    data-bs-parent="#accordionExampleb2">
+                                    <div class="accordion-body card-body">
+                                        <p>
+                                            We provide medical support, health awareness, and emergency assistance to
+                                            individuals in need.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="accordion-item card">
-                                    <h2 class="accordion-header card-header" id="headingTwo4">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo4" aria-expanded="false" aria-controls="collapseTwo4">
-                                            Nutrition & Food Support
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo4" class="accordion-collapse collapse" aria-labelledby="headingTwo4" data-bs-parent="#accordionExampleb2">
-                                        <div class="accordion-body card-body">
-                                            <p>
-                                                We ensure proper nutrition by providing food support to children, women, and vulnerable communities.
-                                            </p>
-                                        </div>
+                            <div class="accordion-item card">
+                                <h2 class="accordion-header card-header" id="headingTwo4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo4" aria-expanded="false"
+                                        aria-controls="collapseTwo4">
+                                        Nutrition & Food Support
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo4" class="accordion-collapse collapse" aria-labelledby="headingTwo4"
+                                    data-bs-parent="#accordionExampleb2">
+                                    <div class="accordion-body card-body">
+                                        <p>
+                                            We ensure proper nutrition by providing food support to children, women, and
+                                            vulnerable communities.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="accordion-item card">
-                                    <h2 class="accordion-header card-header" id="headingTwo5">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo5" aria-expanded="false" aria-controls="collapseTwo5">
-                                            Support for Differently Abled Persons
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo5" class="accordion-collapse collapse" aria-labelledby="headingTwo5" data-bs-parent="#accordionExampleb2">
-                                        <div class="accordion-body card-body">
-                                            <p>
-                                                We work to uplift differently abled individuals by providing care, support, and opportunities for a dignified life.
-                                            </p>
-                                        </div>
+                            <div class="accordion-item card">
+                                <h2 class="accordion-header card-header" id="headingTwo5">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo5" aria-expanded="false"
+                                        aria-controls="collapseTwo5">
+                                        Support for Differently Abled Persons
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo5" class="accordion-collapse collapse" aria-labelledby="headingTwo5"
+                                    data-bs-parent="#accordionExampleb2">
+                                    <div class="accordion-body card-body">
+                                        <p>
+                                            We work to uplift differently abled individuals by providing care, support,
+                                            and opportunities for a dignified life.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="accordion-item card">
-                                    <h2 class="accordion-header card-header" id="headingTwo6">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo6" aria-expanded="false" aria-controls="collapseTwo6">
-                                            Welfare for Homeless & Destitute
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo6" class="accordion-collapse collapse" aria-labelledby="headingTwo6" data-bs-parent="#accordionExampleb2">
-                                        <div class="accordion-body card-body">
-                                            <p>
-                                                We assist homeless and destitute individuals with basic needs, care, and rehabilitation support.
-                                            </p>
-                                        </div>
+                            <div class="accordion-item card">
+                                <h2 class="accordion-header card-header" id="headingTwo6">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo6" aria-expanded="false"
+                                        aria-controls="collapseTwo6">
+                                        Welfare for Homeless & Destitute
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo6" class="accordion-collapse collapse" aria-labelledby="headingTwo6"
+                                    data-bs-parent="#accordionExampleb2">
+                                    <div class="accordion-body card-body">
+                                        <p>
+                                            We assist homeless and destitute individuals with basic needs, care, and
+                                            rehabilitation support.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="accordion-item card">
-                                    <h2 class="accordion-header card-header" id="headingTwo7">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo7" aria-expanded="false" aria-controls="collapseTwo7">
-                                            Environmental & Animal Welfare
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo7" class="accordion-collapse collapse" aria-labelledby="headingTwo7" data-bs-parent="#accordionExampleb2">
-                                        <div class="accordion-body card-body">
-                                            <p>
-                                                We promote environmental protection and compassion towards animals through awareness and welfare initiatives.
-                                            </p>
-                                        </div>
+                            <div class="accordion-item card">
+                                <h2 class="accordion-header card-header" id="headingTwo7">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo7" aria-expanded="false"
+                                        aria-controls="collapseTwo7">
+                                        Environmental & Animal Welfare
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo7" class="accordion-collapse collapse" aria-labelledby="headingTwo7"
+                                    data-bs-parent="#accordionExampleb2">
+                                    <div class="accordion-body card-body">
+                                        <p>
+                                            We promote environmental protection and compassion towards animals through
+                                            awareness and welfare initiatives.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -634,7 +640,8 @@ Donate a wheelchair today.</p>
             </div>
         </div>
     </div>
-    <!-- End Course Content  -->
+</div>
+<!-- End Course Content  -->
 
 <div class="rbt-advance-tab-area rbt-section-gapTop bg-color-white">
     <div class="container">
@@ -652,7 +659,9 @@ Donate a wheelchair today.</p>
                             </span>
                         </span>
                     </h1>
-                    <p class="description mt--30">To build an inclusive and compassionate society by empowering women, educating children, supporting the needy, and promoting dignity, care, and equal opportunities for all.</p>
+                    <p class="description mt--30">To build an inclusive and compassionate society by empowering women,
+                        educating children, supporting the needy, and promoting dignity, care, and equal opportunities
+                        for all.</p>
                 </div>
             </div>
         </div>
@@ -662,16 +671,19 @@ Donate a wheelchair today.</p>
                     <ul class="nav nav-tabs tab-button-list" id="aboutmyTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a href="#" class="nav-link tab-button active" id="WengoMission-tab" data-bs-toggle="tab"
-                                data-bs-target="#WengoMission" role="tab" aria-controls="WengoMission" aria-selected="false">
+                                data-bs-target="#WengoMission" role="tab" aria-controls="WengoMission"
+                                aria-selected="false">
                                 <div class="tab">
                                     <h4 class="title">WeNGO Vision.</h4>
-                                    <p class="description">To create a society where women are empowered, children are educated, and every individual lives with dignity and equal opportunity.</p>
+                                    <p class="description">To create a society where women are empowered, children are
+                                        educated, and every individual lives with dignity and equal opportunity.</p>
                                 </div>
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a href="#" class="nav-link tab-button" id="WengoVision-tab" data-bs-toggle="tab"
-                                data-bs-target="#WengoVision" role="tab" aria-controls="WengoVision" aria-selected="true">
+                                data-bs-target="#WengoVision" role="tab" aria-controls="WengoVision"
+                                aria-selected="true">
                                 <div class="tab">
                                     <h4 class="title">WeNGO Mission.</h4>
                                     <ul>
@@ -688,7 +700,7 @@ Donate a wheelchair today.</p>
                                             Promote dignity, inclusion, and compassion for all
                                         </li>
                                     </ul>
-                                    
+
                                 </div>
                             </a>
                         </li>
@@ -710,7 +722,7 @@ Donate a wheelchair today.</p>
                         </div>
 
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -718,47 +730,49 @@ Donate a wheelchair today.</p>
 </div>
 
 
-    <!-- Start CallTo Action Area  -->
-    <div class="rbt-call-to-action-area rbt-section-gap2 bg-gradient-8">
-        <div class="rbt-callto-action rbt-cta-default style-6">
-            <div class="container">
-                <div class="row g-5 align-items-center content-wrapper">
-                    <div class="col-xxl-3 col-xl-3 col-lg-6">
-                        <div class="inner">
-                            <div class="content text-start">
-                                <h2 class="title color-white mb--0">Become a Volunteer</h2>
-                            </div>
+<!-- Start CallTo Action Area  -->
+<div class="rbt-call-to-action-area ptb_lp--40 bg-gradient-8">
+    <div class="rbt-callto-action rbt-cta-default style-6">
+        <div class="container">
+            <div class="row g-5 align-items-center content-wrapper">
+                <div class="col-xxl-3 col-xl-3 col-lg-6">
+                    <div class="inner">
+                        <div class="content text-start">
+                            <h2 class="title color-white mb--0">Become a Volunteer</h2>
                         </div>
                     </div>
-                    <div class="col-xxl-6 col-xl-6 col-lg-6">
-                        <div class="inner-content text-start">
-                            <p class="color-white">
-                                At <strong> Women Empowerment NGO (WENGO), </strong> we believe real change begins with people who care. As a volunteer, you can stand with women, children, and marginalized communities, helping them move towards a life of dignity, opportunity, and self-reliance.
-                            </p>
-                            <p class="color-white">
-                                Together, we can build a stronger and more compassionate society.
-                            </p>
-                        </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6">
+                    <div class="inner-content text-start">
+                        <p class="color-white">
+                            At <strong> Women Empowerment NGO (WENGO), </strong> we believe real change begins with
+                            people who care. As a volunteer, you can stand with women, children, and marginalized
+                            communities, helping them move towards a life of dignity, opportunity, and self-reliance.
+                        </p>
+                        <p class="color-white">
+                            Together, we can build a stronger and more compassionate society.
+                        </p>
                     </div>
-                    <div class="col-xxl-3 col-xl-3 col-lg-6">
-                        <div class="call-to-btn text-start text-xl-end">
-                            <a class="rbt-btn btn-white hover-icon-reverse" href="{% url 'join_us' %}">
-                                <span class="icon-reverse-wrapper">
-                            <span class="btn-text">Join WeNGO Volunteer</span>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-6">
+                    <div class="call-to-btn text-start text-xl-end">
+                        <a class="rbt-btn btn-white hover-icon-reverse" href="{% url 'join_us' %}">
+                            <span class="icon-reverse-wrapper">
+                                <span class="btn-text">Join WeNGO Volunteer</span>
                                 <span class="btn-icon"><i class="feather-arrow-right"></i></span>
                                 <span class="btn-icon"><i class="feather-arrow-right"></i></span>
-                                </span>
-                            </a>
-                        </div>
+                            </span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End CallTo Action Area  -->
+</div>
+<!-- End CallTo Action Area  -->
 
 
-{% comment %} 
+{% comment %}
 <div class="rbt-banner-area rbt-banner-22">
     <div class="wrapper">
         <div class="container">
@@ -866,91 +880,79 @@ Donate a wheelchair today.</p>
     </div>
 </div> {% endcomment %}
 
-{% comment %} 
+{% comment %}
 <div class="rbt-gallery-area">
     <div class="row g-0 parent-gallery-container">
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
         <a href="{% static 'website/images/sample/317-343.jpg' %}"
             class="child-gallery-single col-lg-2 col-md-4 col-sm-6 col-6">
             <div class="rbt-gallery">
-                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}"
-                    alt="Gallery Images">
+                <img class="w-100" src="{% static 'website/images/sample/317-343.jpg' %}" alt="Gallery Images">
             </div>
         </a>
     </div>
