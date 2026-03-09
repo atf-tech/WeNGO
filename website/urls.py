@@ -17,6 +17,7 @@ urlpatterns = [
     path('payment_failed', views.payment_failed, name='payment_failed'),
     
     path('wheel_chair', views.wheel_chair, name='wheel_chair'),
+    path('napkin', views.napkin, name='napkin'),
     path('veg_briyani', views.veg_briyani, name='veg_briyani'),
     path('school_bag', views.school_bag, name='school_bag'),
     path('grocery_kit', views.grocery_kit, name='grocery_kit'),

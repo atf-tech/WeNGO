@@ -59,3 +59,6 @@ def dresses(request):
 
 def birds_feeding(request):
     return render(request, 'website/causes/birds_feeding.html')
+
+def napkin(request):
+    return render(request, 'website/causes/napkin.html')
