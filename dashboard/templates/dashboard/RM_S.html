@@ -1,0 +1,492 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+{% block title %}
+  Dashboard || Annai Teresa Foundation
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
+        <h4 class="mb-sm-0">RM's</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row g-2">
+        <div class="col-sm-4">
+          <div id="django-messages">
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="search-box">
+            <form method="get">
+              <select id="rmFilter" name="rm_name" class="form-select" onchange="this.form.submit()">
+                <option value="all" {% if request.GET.rm_name == "all" or not request.GET.rm_name %}selected{% endif %}>-- All RM Names --</option>
+                {% for rm in rm_list %}
+                  <option value="{{ rm.rm_name }}" {% if request.GET.rm_name == rm.rm_name %}selected{% endif %}>{{ rm.rm_name }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          </div>
+  
+        </div>
+        <!-- end col -->
+        <div class="col-sm-auto ms-auto">
+          <div class="list-grid-nav hstack gap-1">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRM"><i class="ri-add-fill me-1 align-bottom"></i> Add RM</button>
+          </div>
+        </div>
+        <!-- end col -->
+      </div>
+      <!-- end row -->
+    </div>
+  </div>
+  
+  <div class="row job-list-row" id="rmContainer">
+    {% for rm in rmsv2 %}
+      <div class="col-xxl-3 col-md-4">
+        <div class="card ribbon-box right material-shadow">
+          <div class="card-header">
+            <div class="row">
+              
+              <div class="col-lg-10">
+                <h4 class="fs-18 mb-1">
+  {{ rm.rm_name }}
+
+  <!-- Account Active -->
+  {% if rm.is_active %}
+    <span class="badge border border-light rounded-circle bg-success p-1"
+          title="Account Active"></span>
+  {% else %}
+    <span class="badge border border-light rounded-circle bg-danger p-1"
+          title="Account Inactive"></span>
+  {% endif %}
+
+  <!-- WhatsApp Active -->
+  {% if rm.active_whatsapp %}
+    <span class="badge bg-success-subtle text-success ms-1">
+      WA ON
+    </span>
+  {% else %}
+    <span class="badge bg-danger-subtle text-danger ms-1">
+      WA OFF
+    </span>
+  {% endif %}
+
+  <!-- Website Chat Active -->
+  {% if rm.active_visitor_chat %}
+    <span class="badge bg-success-subtle text-success ms-1">
+      Chat ON
+    </span>
+  {% else %}
+    <span class="badge bg-danger-subtle text-danger ms-1">
+      Chat OFF
+    </span>
+  {% endif %}
+</h4>
+
+                
+              </div>
+              <div class="col-lg-2">
+                <h4 class="fs-18 mb-1 cursor-pointer text-end">
+                  <span class="edit-rm-btn"
+                        data-id="{{ rm.id }}"
+                        data-name="{{ rm.rm_name|escapejs }}"
+                        data-mobile="{{ rm.rm_mob_no|default_if_none:'' }}"
+                        data-email="{{ rm.rm_email|escapejs|default_if_none:'' }}"
+                        data-target="{{ rm.target_amount|default_if_none:0 }}"
+                        data-branch="{{ rm.rm_branch|default_if_none:'' }}"
+                        data-password="{{ rm.rm_password|default_if_none:'' }}"
+                        data-active="{{ rm.is_active|yesno:'true,false' }}"
+                        data-wa_active="{{ rm.active_whatsapp|yesno:'true,false' }}"
+                        data-chat_active="{{ rm.active_visitor_chat|yesno:'true,false' }}"
+
+                        data-gender="{{ rm.rm_gender|default_if_none:''|escapejs }}"
+                        data-tl_name="{{ rm.tl_name|default_if_none:''|striptags }}"
+                        data-qr_image="{% if rm.qr_image %}{{ rm.qr_image.url }}{% else %}{% static 'dashboard/images/new-document.png' %}{% endif %}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addRM">
+                    <i class="ri-edit-2-fill"></i>
+                  </span>
+                </h4>                 
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+           
+            
+            <div class="d-flex">
+              <div class="flex-shrink-0">
+                <div class="avatar-lg rounded">
+                  <div class="avatar-title border bg-light text-primary rounded text-uppercase fs-24">{{ rm.initials }}</div>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h3 class="fs-12 mb-1">Website, Instagram</h3>
+                <h3 class="fs-12 mb-1">{{ rm.rm_branch }}</h3>
+                <p class="text-muted mb-1">
+                  <i class="ri-phone-line text-primary me-1 align-bottom"></i>
+                  {{ rm.rm_mob_no }}
+                </p>
+                <p class="text-muted mb-1 text-truncate align-items-center" 
+                  style="max-width: 150px; vertical-align: middle;"
+                  tabindex="0" 
+                  data-bs-toggle="popover" 
+                  data-bs-placement="top"
+                  data-bs-trigger="focus" 
+                  title="{{ rm.rm_email }}">
+                  <i class="ri-mail-line text-primary me-1 align-bottom"></i>
+                  {{ rm.rm_email }}
+                </p>
+
+                <p class="text-muted mb-2">
+                  <i class="ri-map-pin-2-line text-primary me-1 align-bottom"></i>
+                  {{ rm.rm_branch }}
+                </p>
+              </div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="flex-grow-1">
+                <h3 class="fs-12 mb-0">Payment Link - <a target="_blank" >{{ rm.rm_link }}</a></h3>
+                <button type="button"
+                        class="btn btn-info btn-sm"
+                        onclick="copyToClipboard('{{ rm.rm_link }}')">
+                    Copy
+                </button>
+                <button type="button"
+                        class="btn btn-info btn-sm"
+                        onclick="copyToClipboard('{{ rm.virtual_label}}')">
+                    {{ rm.virtual_label }}
+                </button>
+                <span id="copyMessage" style="display:none; color:green; margin-left:10px;">Link copied!</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="px-2 py-2">
+              <p class="mb-1">
+                {{ rm.target_amount|floatformat:0 }}<span class="float-end badge bg-success-subtle text-info">
+                  {% if rm.collected_percent >= 0 and rm.collected_percent <= 99.99 %}
+                      on-progress
+                  {% else %}
+                      completed
+                  {% endif %}
+                </span>
+              </p>
+              <p class="mb-1">
+                {{ rm.collected_amount|floatformat:0 }} <span class="float-end">{{ rm.collected_percent|floatformat:0 }}%</span>
+              </p>
+              <div class="flex-grow-1 ">
+                <div class="progress animated-progress custom-progress progress-label">
+                  <div class="progress-bar {% if rm.collected_percent >= 76 %} bg-success {% elif rm.collected_percent <= 75 and rm.collected_percent >= 50 %} bg-warning {% else %} bg-danger {% endif %}" 
+                    role ="progressbar"
+                    style="width: {{ rm.collected_percent }}%; position: relative;"
+                    aria-valuenow="{{ rm.collected_percent }}"
+                    aria-valuemin="0" aria-valuemax="100"
+                    aria-valuemin="0" aria-valuemax="100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="modal fade" id="addRM" tabindex="-1" aria-labelledby="addRMLabel">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" >Add RM's</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'RM_S' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="rm_code" id="rm_code" />
+            <input type="hidden" name="rm_id" id="rm_id" />
+            <div class="row g-3">
+              <div class="col-xxl-6">
+                <div>
+                  <label for="rm-name" class="form-label">Full Name</label>
+                  <input style="border-left: 4px solid #ff0000" type="text" class="form-control" id="rm-name" name="rm_name" placeholder="Enter Name" />
+                </div>
+              </div>
+              <!-- end col -->
+              <div class="col-xxl-6">
+                <div>
+                  <label for="rm-no" class="form-label">Mobile No</label>
+                  <input style="border-left: 4px solid #ff0000" type="text" class="form-control" id="rm-no" name="rm_mob_no" placeholder="Enter Mob No" />
+                </div>
+              </div>
+              <div class="col-xxl-6">
+                <div>
+                  <label for="rm-mail" class="form-label">Mail ID</label>
+                  <input style="border-left: 4px solid #ff0000" type="text" class="form-control" id="rm-mail" name="rm_email" placeholder="Enter Emial ID" />
+                </div>
+              </div>
+               <div class="col-xxl-6">
+                <label for="rm-password" class="form-label">Password</label>
+                <input style="border-left: 4px solid #ff0000" type="password" class="form-control" id="rm-password" name="rm_password" placeholder="Enter password" onclick="this.type = this.type === 'password' ? 'text' : 'password'"/>
+              </div> 
+              <div class="col-xxl-6">
+                <label for="rm-password" class="form-label">Confirm Password</label>
+                <input style="border-left: 4px solid #ff0000" type="password" class="form-control" id="rm-confirm-password" name="confirm_password" placeholder="Enter password" onclick="this.type = this.type === 'password' ? 'text' : 'password'"/>
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+              </div> 
+             
+              <div class="col-xxl-6">
+                <div>
+                  <label for="rm-branch" class="form-label">Branch</label>
+                  {% comment %} <input type="text" class="form-control" id="rm-branch" placeholder="Enter branch" /> {% endcomment %}
+                  <select style="border-left: 4px solid #ff0000" class="form-control" name="rm_branch" id="rm-branch">
+                    <option value="">-- Select Branch --</option>
+                    <option value="madurai">Madurai</option>
+                    <option value="chennai">Chennai</option>
+                    <option value="bangalore">Bangalore</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                  <label class="form-label">Team lead</label>
+                  <select style="border-left: 4px solid #ff0000" name="tl_name" id="tl_name" class="form-control">
+                    <option>-- All TL Names --</option>
+
+                      {% if rm %}
+                          <!-- EDIT MODE: show only RM's TL -->
+                          <option value="{{ rm.tl_name }}" selected>
+                            {{ rm.tl_name }}
+                          </option>
+                      {% else %}
+                          <!-- ADD MODE: show all TLs -->
+                          {% for tl in tl_name %}
+                              <option value="{{ tl.name }}">{{ tl.name }}</option>
+                          {% endfor %}
+                      {% endif %}
+                                  
+                      
+
+                      
+                  </select>
+              </div>
+              
+
+              <!-- end col -->
+              <div class="col-xxl-6">
+                <label class="form-label">Gender</label>
+                <div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="rm_gender" id="rm-male" value="male" />
+                    <label class="form-check-label" for="rm-male">Male</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="rm_gender" id="rm-female" value="female" />
+                    <label class="form-check-label" for="rm-female">Female</label>
+                  </div>
+                </div>
+              </div>
+              <!-- end col -->
+              <div class="col-xxl-6">
+                <label for="rm-target" class="form-label">Target</label>
+                <input style="border-left: 4px solid #ff0000" type="text" name="target_amount" class="form-control" id="rm-target" placeholder="Enter Target" />
+              </div>
+              <div class="col-xxl-12">
+                <!-- Base Example -->
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="rm-active" name="rm_active" {% if rm.is_active %} checked {% endif %}/>
+                  <label class="form-check-label" for="rm-active">Active</label>
+                </div>
+              </div>
+                  <div class="form-check mb-2">
+                <input class="form-check-input"
+                      type="checkbox"
+                      id="rm-whatsapp-active"
+                      name="active_whatsapp">
+                <label class="form-check-label" for="rm-whatsapp-active">
+                  WhatsApp Assignment Active
+                </label>
+              </div>
+
+              <div class="form-check mb-2">
+                <input class="form-check-input"
+                      type="checkbox"
+                      id="rm-chat-active"
+                      name="active_visitor_chat">
+                <label class="form-check-label" for="rm-chat-active">
+                  Active Website Chat
+                </label>
+              </div>
+
+              
+              <div class="col-xxl-12">
+                <div class="mb-2">
+                  <img
+                    id="qr-image-preview"
+                    src="{% static 'dashboard/images/new-document.png' %}"
+                    alt="QR Image"
+                    class="img-fluid"
+                    style="max-height:150px;"
+                  />
+                </div>
+
+                <div>
+                  <label for="qr-image" class="form-label">QR Image</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="qr-image"
+                    name="qr_image"
+                    accept="image/*"
+                    onchange="previewQrImage(event)"
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <div class="hstack gap-2 justify-content-end">
+
+                  <button type="button" class="btn btn-danger btn-sm" id="rm-delete-btn" style="display: none;">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+              <!-- end col -->
+            </div>
+            <!-- end row -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% comment %} script for edit  {% endcomment %}
+<script>
+document.querySelectorAll('.edit-rm-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // ... your existing field population code ...
+
+    const rmId = btn.dataset.id;
+    const rmName = btn.dataset.name;
+
+    // Set delete button
+    const deleteBtn = document.getElementById('rm-delete-btn');
+    deleteBtn.style.display = 'inline-block';
+    deleteBtn.onclick = function () {
+      if (confirm(`Do you want to delete ${rmName}?`)) {
+        window.location.href = `/dashboard/rms?delete_rm_id=${rmId}&action=delete`;
+      }
+    };
+  });
+});
+
+</script>
+
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("#addRM form");
+  const modalTitle = document.querySelector("#addRM .modal-title");
+  const submitBtn = document.querySelector("#addRM form button[type='submit']");
+  const deleteBtn = document.querySelector("#addRM .btn-danger");
+
+  // --- Add RM button ---
+  document.querySelector(".btn-success[data-bs-target='#addRM']").addEventListener('click', () => {
+    form.reset(); 
+    document.getElementById('rm_id').value = ""; 
+    document.getElementById('rm-mail').value = "";
+    document.getElementById('rm-password').value = "";
+    document.getElementById('rm-whatsapp-active').checked = false;
+    document.getElementById('rm-chat-active').checked = false;
+
+    modalTitle.textContent = "Add RM";
+    submitBtn.textContent = "Submit";
+    submitBtn.classList.remove("btn-warning");
+    submitBtn.classList.add("btn-primary");
+
+    deleteBtn.style.display = "none"; 
+  });
+
+  document.querySelectorAll('.edit-rm-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('rm_id').value = btn.dataset.id;
+
+    document.getElementById('rm-name').value = btn.dataset.name;
+    document.getElementById('rm-no').value = btn.dataset.mobile;
+    document.getElementById('rm-mail').value = btn.dataset.email;
+    document.getElementById('rm-target').value = btn.dataset.target;
+    document.getElementById('rm-password').value = '';
+    document.getElementById('rm-confirm-password').value = '';
+    document.getElementById('rm-branch').value = btn.dataset.branch;
+    document.getElementById('tl_name').value = btn.dataset.tl_name;
+    const preview = document.getElementById('qr-image-preview');
+    if (preview) {
+      preview.src = btn.dataset.qr_image; // use btn.dataset.qr_image instead of this.dataset.image
+    }
+
+    document.getElementById('rm-active').checked = (btn.dataset.active === 'true');
+    document.getElementById('rm-whatsapp-active').checked = (btn.dataset.wa_active === 'true');
+    document.getElementById('rm-chat-active').checked = (btn.dataset.chat_active === 'true');
+
+
+
+    document.querySelectorAll('input[name="rm_gender"]').forEach(radio => {
+      radio.checked = radio.value.toLowerCase() === btn.dataset.gender.toLowerCase();
+    });
+
+    document.getElementById('addRMLabel').textContent = 'Edit RM';
+    const submitBtn = document.querySelector('#addRM form button[type="submit"]');
+    submitBtn.textContent = 'Update';
+    submitBtn.classList.remove('btn-primary');
+    submitBtn.classList.add('btn-warning');
+
+
+  });
+});
+});
+
+</script>
+
+
+
+
+<script>
+  window.onload = function() {
+    const msgDiv = document.getElementById('django-messages');
+    if (msgDiv) {
+      setTimeout(() => {
+        msgDiv.innerHTML = '';
+      }, 5000); 
+    }
+  }
+</script>
+
+
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).catch(function(err) {
+        console.error("Copy failed:", err);
+    });
+}
+</script> 
+
+
+
+{% endblock %}

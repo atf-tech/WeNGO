@@ -1,0 +1,104 @@
+/* =========================
+   HEADER - BS5 Blue & Pink
+========================= */
+
+.wa-header {
+  background: linear-gradient(135deg, #0d6efd, #d63384);
+  border-radius: 14px;
+  padding: 22px 28px;
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+
+  box-shadow: 0 4px 20px rgba(214, 51, 132, 0.25);
+}
+
+/* Title */
+.wa-header h4 {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Subtitle */
+.wa-header p {
+  color: rgba(255,255,255,.80);
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+/* Right Side */
+.wa-header .hr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Select Box */
+.hdr-sel {
+  border-radius: 10px;
+  font-size: 13px;
+  padding: 8px 14px;
+
+  border: 1px solid rgba(255,255,255,.20);
+  background: rgba(255,255,255,.15);
+  color: #fff;
+
+  cursor: pointer;
+  outline: none;
+  backdrop-filter: blur(8px);
+}
+
+.hdr-sel option {
+  background: #0d6efd;
+  color: #fff;
+}
+
+/* Refresh Button */
+.btn-ref {
+  padding: 8px 18px;
+  border-radius: 10px;
+  border: none;
+
+  background: #ffffff;
+  color: #d63384;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  transition: all .3s ease;
+}
+
+.btn-ref:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.filter-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+.filter-label { font-size:13px; font-weight:600; color:#495057; }
+.pill-group { display:flex; background:#fff; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.pf-btn {
+  padding:7px 15px; font-size:12.5px; font-weight:600; border:none;
+  background:none; cursor:pointer; color:var(--muted);
+  border-right:1px solid var(--border); transition:background .15s,color .15s;
+}
+.pf-btn:last-child { border-right:none; }
+.pf-btn.active { background:var(--primary); color:#0a76b5; }
+.pf-btn:not(.active):hover { background:#f6b2ff; color:var(--primary); }

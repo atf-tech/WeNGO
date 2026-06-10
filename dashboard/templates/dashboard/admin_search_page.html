@@ -1,0 +1,495 @@
+ {% extends 'dashboard/base.html' %} {% load static %}
+
+{% block title %}
+Dashboard || Admin Search 
+{% endblock %}
+
+{% block content %}
+ 
+ 
+ <style>
+        .custom-select-rounded {
+            margin: 6px !important;
+            border-radius: 12px !important;
+        }
+        /* Align form controls to a consistent classic look */
+        .search-control {
+            width: 280px;
+            max-width: 100%;
+            height: 44px;
+            line-height: 1.25;
+            padding: 6px 16px;
+            border-radius: 22px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #d0d5e8;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            display: block;
+            margin: 6px auto;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .search-control:focus {
+            outline: none;
+            border-color: #405189;
+            box-shadow: 0 0 0 3px rgba(64, 81, 137, 0.1);
+            transform: translateY(-1px);
+        }
+        .search-control:hover {
+            border-color: #9ca3af;
+        }
+        .search-control.form-select {
+            padding-right: 36px; /* room for caret */
+        }
+        /* Make labels sit above controls evenly; add top spacing */
+        #search-row .form-label {
+            margin-top: 5%;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #405189;
+            letter-spacing: 0.3px;
+        }
+        #search-row .col-12 {
+            margin-bottom: 8px;
+        }
+     @media (max-width: 768px) {
+    .search-control {
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 48px;
+    }
+
+    #search-row .form-label {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+    }
+
+    #search-row .col-12 {
+        margin-bottom: 4px !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .search-control {
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 44px;
+        font-size: 16px;
+        margin: 2px auto !important;
+    }
+
+    #search-row {
+        gap: 2px !important;
+    }
+
+    #search-row .col-12 {
+        margin-bottom: 4px !important;
+    }
+
+    #search-row .form-label {
+        font-size: 11px;
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+    }
+}
+        /* Make the input text centered and constrain the filter row for balanced spacing */
+        .search-control {
+            text-align: center;
+        }
+
+        #search-row {
+            max-width: 1180px;
+            width: 100%;
+            margin: 0 auto; /* center within the card */
+            padding: 0 20px; /* balanced left/right padding */
+            box-sizing: border-box;
+        }
+        /* Table-specific styling (only affects #rm_success_donation) */
+        #rm_success_donation {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0 auto;
+            display: table; /* Show table by default */
+            table-layout: fixed;
+        }
+        #rm_success_donation.show-table {
+            display: table; /* Show table when search is active */
+        }
+        /* Center the table wrapper */
+        #collection-summary {
+            display: flex;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        #collection-summary > div:has(table) {
+            width: 100%;
+        }
+        #rm_success_donation thead th {
+            background: #f7f9fc;
+            color: #23324a;
+            font-weight: 700;
+            padding: 14px 26px;
+            border-bottom: 0;
+            vertical-align: middle;
+            letter-spacing: 0.0px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        #rm_success_donation tbody tr {
+            background: transparent;
+        }
+        #rm_success_donation tbody td {
+            background: #ffffff;
+            padding: 12px 16px;
+            vertical-align: middle;
+            color: #344054;
+            border-top: 1px solid rgba(16,24,40,0.04);
+            text-align: center;
+        }
+        #rm_success_donation tbody tr:hover td {
+            background: #f1fbff;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+/* Fixed column widths for proper alignment */
+         #rm_success_donation thead th:nth-child(1) { width: 90px; }
+         #rm_success_donation thead th:nth-child(2) { width: 120px; }
+         #rm_success_donation thead th:nth-child(3) { width: 120px; }
+         #rm_success_donation thead th:nth-child(4) { width: 120px; }
+         #rm_success_donation thead th:nth-child(5) { width: 180px; }
+         #rm_success_donation thead th:nth-child(6) { width: 120px; }
+         #rm_success_donation thead th:nth-child(7) { width: 140px; }
+         #rm_success_donation thead th:nth-child(8) { width: 140px; }
+         #rm_success_donation thead th:nth-child(9) { width: 140px; }
+         #rm_success_donation thead th:nth-child(10) { width: 180px; }
+         #rm_success_donation thead th:nth-child(11) { width: 220px; }
+         #rm_success_donation thead th:nth-child(12) { width: 220px; }
+
+         /* Make first column (SR No.) centered */
+         #rm_success_donation tbody td:first-child,
+         #rm_success_donation thead th:first-child {
+             text-align: center;
+         }
+         /* Center align numeric columns (Amount) */
+         #rm_success_donation tbody td:nth-child(4),
+         #rm_success_donation thead th:nth-child(4) {
+             text-align: center;
+         }
+        /* Truncate long text cleanly */
+        #rm_success_donation .truncate-td {
+            max-width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* Pagination and info spacing tweaks */
+        .dataTables_wrapper {
+            display: block; /* Show by default */
+        }
+        .dataTables_wrapper.show-table {
+            display: block; /* Show when table is active */
+        }
+        .dataTables_wrapper .dataTables_length {
+            margin-left: 5px;
+        }
+        .dataTables_wrapper .dataTables_info {
+            padding-top: 12px;
+            color: #55607a;
+            margin-left: 2%;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 6px;
+            padding: 6px 10px;
+            margin-left: 4px;
+        }
+        .card-header{
+            background-color: #cd43cd;
+
+        }
+        .card-title{
+            color: #ffffff;
+        }
+    </style>
+    <div class="row ">
+        <div class="col-lg-12">
+            <div class="card ">
+                <div class="card-header">
+                    <h5 class="card-title mb-0 ">All Payment Donation</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Filter bar -->
+                    <div class="row mb-4" id="collection-summary">
+                    <!-- Today Collection -->
+                    <div class="col-12 ">
+                        <div class="row g-3 mb-3 justify-content-center text-center"
+                             id="search-row">
+                            <div class="col-12 col-sm-6 col-md-3 d-flex flex-column align-items-center">
+                                <label for="transaction_id"
+                                       class="form-label small mb-2 text-center w-100 fw-bold"
+                                       style="color: #405189;">
+                                    Transaction ID
+                                </label>
+                                    <input id="transaction_id"
+                                        name="transaction_id"
+                                        type="text"
+                                        class="form-control rounded-pill search-control"
+                                        placeholder="Search..."
+                                        aria-label="Transaction ID">
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 d-flex flex-column align-items-center">
+                                <label for="rmFilter_branch"
+                                       class="form-label small mb-2 text-center w-100 fw-bold"
+                                       style="color: #405189;">
+                                       Branch Name
+                                </label>
+                                <select id="rmFilter_branch"
+                                    name="branch"
+                                    class="form-select rmFilter custom-select-rounded search-control">
+                                    <option value="">-- All Branch --</option>
+                                    {% for b in branch_choices %}
+                                        <option value="{{ b.value }}" {% if b.value == selected_branch %}selected{% endif %}>{{ b.label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 d-flex flex-column align-items-center">
+                                <label for="rmFilter_name"
+                                       class="form-label small mb-2 text-center w-100 fw-bold"
+                                       style="color: #405189;">
+                                       Filter Name
+                                </label>
+                                <select id="rmFilter_name"
+                                    name="rm_code"
+                                    class="form-select rmFilter custom-select-rounded search-control">
+                                    <option value="">-- All Names --</option>
+                                    {% for rm in rm_choices %}
+                                        <option value="{{ rm.rm_code }}" {% if rm.rm_code == selected_rm_code %}selected{% endif %}>{{ rm.virtual_label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 d-flex flex-column align-items-center">
+                                <label for="search_date"
+                                       class="form-label small mb-2 text-center w-100 fw-bold"
+                                       style="color: #405189;">
+                                       Date
+                                </label>
+                                    <input id="search_date"
+                                        name="date_from"
+                                        type="date"
+                                        value="{{ date_from }}"
+                                        class="form-control rounded-pill search-control"
+                                        aria-label="Date">
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div style="overflow-x: auto; width: 100%;">
+                        <table id="rm_success_donation"
+                               class="table nowrap align-middle"
+                               style="width:100%">
+<thead>
+                             <tr>
+                                 <th data-ordering="false">SR No.</th>
+                                 <th>Submitted Date</th>
+                                 <th>Payment Status</th>
+                                 <th>Amount</th>
+                                 <th>Payment Transaction ID</th>
+                                 <th>Payment Mode</th>
+                                 <th>Donor Name</th>
+                                 <th>Donation Category</th>
+                                 <th>Donor Mobile No</th>
+                                 <th>Donor Email</th>
+                                 <th>Donor Address</th>
+                                 <th>Virtual Label</th>
+                             </tr>
+                         </thead>
+                         
+                         <tbody>
+                             {% if rm_donations %}
+                                 {% for donation in rm_donations %}
+                                      <tr>
+                                          <td>{{ forloop.counter }}</td>
+                                          <td>{{ donation.submitted_at|date:"d-m-Y h:i A" }}</td>
+                                          <td>
+                                              {% with status=donation.payment_status %}
+                                                  {% if status %}
+                                                      {% if status|lower == "success" %}
+                                                          <span class="badge rounded-pill bg-success-subtle text-success">Success</span>
+                                                      {% elif status|lower == "failed" or status|lower == "failure" %}
+                                                          <span class="badge rounded-pill bg-danger-subtle text-danger">Failed</span>
+                                                      {% elif status|lower == "usercancelled" or status|lower == "user_cancelled" %}
+                                                          <span class="badge rounded-pill bg-dark-subtle text-body">User Cancelled</span>
+                                                      {% elif status|lower == "dropped" %}
+                                                          <span class="badge rounded-pill bg-dark-subtle text-secondary">Dropped</span>
+                                                      {% else %}
+                                                          <span class="badge rounded-pill bg-warning-subtle text-warning">{{ status }}</span>
+                                                      {% endif %}
+                                                  {% else %}
+                                                      <span class="badge rounded-pill bg-warning-subtle text-warning">Pending</span>
+                                                  {% endif %}
+                                              {% endwith %}
+                                          </td>
+                                          <td>₹{{ donation.amount|floatformat:"2" }}</td>
+                                          <td>{{ donation.transaction_id }}</td>
+                                          <td>{{ donation.payment_mode }}</td>
+                                          <td>{{ donation.donor_name }}</td>
+                                          <td>{{ donation.donation_category }}</td>
+                                          <td>{{ donation.donor_mobile }}</td>
+                                          <td>{{ donation.donor_email }}</td>
+                                          <td>{{ donation.donor_address }}</td>
+                                          <td>{{ donation.virtual_label }}</td>
+                                      </tr>
+                                 {% endfor %}
+                               {% else %}
+                                   <tr>
+                                       <td colspan="12" class="text-center">No records found</td>
+                                   </tr>
+                               {% endif %}
+                         </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--end col-->
+        </div>
+    </div>
+    </div>
+</div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var txnInput = document.getElementById('transaction_id');
+        var branchSelect = document.getElementById('rmFilter_branch');
+        var nameSelect = document.getElementById('rmFilter_name');
+        var dateInput = document.getElementById('search_date');
+
+        // Set initial values from server context
+        if (txnInput) txnInput.value = '{{ transaction_id }}' || '';
+
+        function buildAndNavigate() {
+            var params = new URLSearchParams();
+            if (txnInput && txnInput.value.trim() !== '') params.set('transaction_id', txnInput.value.trim());
+            if (branchSelect && branchSelect.value) params.set('branch', branchSelect.value);
+            if (nameSelect && nameSelect.value) params.set('rm_code', nameSelect.value);
+            if (dateInput && dateInput.value) params.set('date_from', dateInput.value);
+            var qs = params.toString();
+            var base = window.location.pathname;
+            var url = qs ? base + '?' + qs : base;
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateTable(data.rm_donations);
+                updateRmChoices(data.rm_choices, data.selected_rm_code);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        var debounceTimer = null;
+        if (txnInput) {
+            txnInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(buildAndNavigate, 600);
+            });
+        }
+
+function updateTable(donations) {
+             var tbody = document.querySelector('#rm_success_donation tbody');
+             if (!tbody) return;
+             var html = '';
+             if (!donations || donations.length === 0) {
+                 html = '<tr><td colspan="12" class="text-center">No records found</td></tr>';
+                 tbody.innerHTML = html;
+                 reinitPopovers();
+                 return;
+             }
+             donations.forEach(function(donation, index) {
+                 var amount = Number(donation.amount);
+                 if (!isFinite(amount)) amount = 0;
+                 html += '<tr>' +
+                     '<td>' + (index + 1) + '</td>' +
+                     '<td>' + formatDate(donation.submitted_at) + '</td>' +
+                     '<td>' + getStatusBadge(donation.payment_status) + '</td>' +
+                     '<td>₹' + amount.toFixed(2) + '</td>' +
+                     '<td>' + (donation.transaction_id || '') + '</td>' +
+                     '<td>' + (donation.payment_mode || '') + '</td>' +
+                     '<td>' + (donation.donor_name || '') + '</td>' +
+                     '<td>' + (donation.donation_category || '') + '</td>' +
+                     '<td>' + (donation.donor_mobile || '') + '</td>' +
+                     '<td>' + (donation.donor_email || '') + '</td>' +
+                     '<td>' + (donation.donor_address || '') + '</td>' +
+                     '<td>' + (donation.virtual_label || '') + '</td>' +
+                 '</tr>';
+             });
+             tbody.innerHTML = html;
+             reinitPopovers();
+         }
+
+function reinitPopovers() {}
+
+        function getStatusBadge(status) {
+            if (!status) return '<span class="badge rounded-pill bg-warning-subtle text-warning">Pending</span>';
+            var lower = status.toLowerCase();
+            if (lower === 'success') return '<span class="badge rounded-pill bg-success-subtle text-success">Success</span>';
+            if (lower === 'failed' || lower === 'failure') return '<span class="badge rounded-pill bg-danger-subtle text-danger">Failed</span>';
+            if (lower === 'usercancelled' || lower === 'user_cancelled') return '<span class="badge rounded-pill bg-dark-subtle text-body">User Cancelled</span>';
+            if (lower === 'dropped') return '<span class="badge rounded-pill bg-dark-subtle text-secondary">Dropped</span>';
+            return '<span class="badge rounded-pill bg-warning-subtle text-warning">' + status + '</span>';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            var date = new Date(dateStr);
+            var day = String(date.getDate()).padStart(2, '0');
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var year = date.getFullYear();
+            var hours = date.getHours();
+            var minutes = String(date.getMinutes()).padStart(2, '0');
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return day + '-' + month + '-' + year + ' ' + hours + ':' + minutes + ' ' + ampm;
+        }
+
+        function updateRmChoices(choices, selectedRmCode) {
+            var select = document.getElementById('rmFilter_name');
+            if (!select) return;
+            // preserve current selection in case backend didn't return one
+            var previous = select.value;
+            // build new options into a fragment to avoid intermediate DOM flicker
+            var frag = document.createDocumentFragment();
+            var defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- All Names --';
+            frag.appendChild(defaultOption);
+            choices.forEach(function(choice) {
+                var option = document.createElement('option');
+                option.value = choice.rm_code;
+                option.textContent = choice.virtual_label;
+                frag.appendChild(option);
+            });
+            // replace options in one operation
+            select.innerHTML = '';
+            select.appendChild(frag);
+            // decide which value to apply: prefer server-provided non-empty value, otherwise restore previous selection
+            var toSelect = (typeof selectedRmCode !== 'undefined' && selectedRmCode !== null && String(selectedRmCode) !== '') ? String(selectedRmCode) : previous;
+            // if the desired value exists in options, apply it; otherwise fall back to empty (All Names)
+            if (toSelect && select.querySelector('option[value="' + toSelect + '"]')) {
+                select.value = toSelect;
+            } else {
+                select.value = '';
+            }
+        }
+
+        if (branchSelect) branchSelect.addEventListener('change', buildAndNavigate);
+        if (nameSelect) nameSelect.addEventListener('change', buildAndNavigate);
+        if (dateInput) dateInput.addEventListener('change', buildAndNavigate);
+    });
+    </script>
+{% endblock %}
