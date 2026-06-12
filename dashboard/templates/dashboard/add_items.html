@@ -1,0 +1,356 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+{% block title %}Dashboard || Indian Public Foundation{% endblock %}
+
+
+{% block content %}
+  <!-- start page title -->
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
+        <h4 class="mb-sm-0">Add Items</h4>
+      </div>
+    </div>
+  </div>
+  <!-- end page title -->
+  <div id="django-messages">
+    {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+  </div>
+
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Services</h5>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addService" onclick="resetServiceForm()">
+            <i class="ri-add-fill"></i> Add Service
+        </button>
+    </div>
+
+    <div class="card-body">
+        <table class="table nowrap align-middle" id="add-service-table">
+            <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Name</th>
+                <th style="display:none;">Desc</th>
+                <th>Image</th>
+                <th>Amount</th>
+                <th>Target</th>
+                <th>Min Qty</th>
+                <th>Order</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for s in services %}
+                <tr>
+                    <td>{{ s.tag|title }}</td>
+                    <td>{{ s.service_name }}</td>
+
+                    <td style="display:none;">{{ s.description|safe }}</td>
+
+                    <td>
+                        {% if s.image %}
+                            <img src="{{ s.image.url }}" width="80" height="60">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+
+                    <td>{{ s.amount }}</td>
+                    <td>{{ s.target_amount }}</td>
+                    <td>{{ s.min_quantity }}</td>
+                    <td>{{ s.display_order }}</td>
+
+                    <td>
+                        <button class="btn btn-primary edit-service-btn"
+                                data-id="{{ s.id }}"
+                                data-tag="{{ s.tag }}"
+                                data-name="{{ s.service_name }}"
+                                data-amount="{{ s.amount }}"
+                                data-target="{{ s.target_amount }}"
+                                data-min="{{ s.min_quantity }}"
+                                data-order="{{ s.display_order }}"
+                                data-image="{% if s.image %}{{ s.image.url }}{% endif %}"
+                                data-desc-id="service-desc-{{ s.id }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addService">
+                            <i class="ri-edit-box-line"></i>
+                        </button>
+
+                        <form action="{% url 'add_service' %}" method="POST" class="d-inline"
+                              onsubmit="return confirm('Delete {{ s.service_name }} ?')">
+                            {% csrf_token %}
+                            <input type="hidden" name="service_id" value="{{ s.id }}">
+                            <input type="hidden" name="action" value="delete">
+                            <button class="btn btn-danger">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <div id="service-desc-{{ s.id }}" style="display:none;">
+                    {{ s.description|safe }}
+                </div>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+ 
+
+
+
+  <!-- Service model popup -->
+<div class="modal fade" id="addService" tabindex="-1" aria-labelledby="addServiceLabel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addServiceLabel">Add Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'add_items' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="service_id" id="service_id" />
+
+                    <div class="row g-3">
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="service-tag" class="form-label">Tag</label>
+                                <select class="form-control" id="service-tag" name="tag">
+                                    <option value="service">Service</option>
+                                    <option value="medical">Medical</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="service-name" class="form-label">Service Name</label>
+                                <input type="text" class="form-control" id="service-name" name="service_name" placeholder="Enter Name" />
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="service-amount" class="form-label">Amount</label>
+                                <input type="number" class="form-control" id="service-amount" name="amount" placeholder="Enter Amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="service-target-amount" class="form-label">Target Amount</label>
+                                <input type="number" class="form-control" id="service-target-amount" name="target_amount" placeholder="Enter Target Amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="service-min-quantity" class="form-label">Min Quantity</label>
+                                <input type="number" class="form-control" id="service-min-quantity" name="min_quantity" placeholder="Enter Min Quantity" />
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="service-display-order" class="form-label">Display Order</label>
+                                <input type="number" class="form-control" id="service-display-order" name="display_order" placeholder="Enter Display Order" />
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-12">
+                            <div class="mb-2">
+                                <img id="service-image-preview" src="{% static 'dashboard/images/new-document.png' %}" alt="Service Image" class="img-fluid" style="max-height:150px;" />
+                            </div>
+                            <div>
+                                <label for="service-image" class="form-label">Service Image</label>
+                                <input type="file" class="form-control" id="service-image" name="image" />
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-12">
+                            <div class="mb-3">
+                                <label for="service-desc" class="form-label">Description</label>
+                                <div id="service-quill-editor" style="height:150px;"></div>
+                                <input type="hidden" id="service-desc" name="description" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+  <!-- Service model popup -->
+
+
+
+<!-- Quill Editor CDN -->
+<link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.js"></script>
+
+<!-- Service model js -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    window.quillService = new Quill("#service-quill-editor", {
+        theme: "snow",
+        placeholder: "Write service description..."
+    });
+
+    const form = document.querySelector("#addService form");
+
+    form.addEventListener("submit", () => {
+        document.getElementById("service-desc").value =
+            window.quillService.root.innerHTML;
+    });
+
+    const serviceImageInput = document.getElementById("service-image");
+    if (serviceImageInput) {
+        serviceImageInput.addEventListener("change", function (e) {
+            const preview = document.getElementById("service-image-preview");
+            const file = e.target.files && e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => preview.setAttribute("src", event.target.result);
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    document.querySelectorAll(".edit-service-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.getElementById("service_id").value = btn.dataset.id;
+            document.getElementById("service-name").value = btn.dataset.name;
+            document.getElementById("service-amount").value = btn.dataset.amount;
+            document.getElementById("service-target-amount").value = btn.dataset.target;
+            document.getElementById("service-min-quantity").value = btn.dataset.min;
+            document.getElementById("service-display-order").value = btn.dataset.order;
+            document.getElementById("service-tag").value = btn.dataset.tag;
+
+            const descDiv = document.getElementById(btn.dataset.descId);
+            if (descDiv && descDiv.innerHTML.trim() !== '') {
+                window.quillService.setContents([]);
+                window.quillService.clipboard.dangerouslyPasteHTML(descDiv.innerHTML.trim());
+            } else {
+                window.quillService.setContents([]);
+            }
+
+            document.getElementById("service-image-preview").src =
+                btn.dataset.image || "{% static 'dashboard/images/new-document.png' %}";
+
+            document.getElementById("service-image").value = "";
+
+            const b = document.querySelector("#addService button[type=submit]");
+            b.textContent = "Update Service";
+            b.classList.remove("btn-primary");
+            b.classList.add("btn-warning");
+        });
+    });
+
+    document.getElementById("addService")
+        .addEventListener("hidden.bs.modal", () => {
+            form.reset();
+            document.getElementById("service_id").value = "";
+            window.quillService.setContents([]);
+            document.getElementById("service-image-preview").src =
+                "{% static 'dashboard/images/new-document.png' %}";
+            document.getElementById("service-image").value = "";
+
+            const b = document.querySelector("#addService button[type=submit]");
+            b.textContent = "Submit";
+            b.classList.remove("btn-warning");
+            b.classList.add("btn-primary");
+        });
+});
+
+function resetServiceForm() {
+    document.getElementById("service_id").value = "";
+    document.getElementById("service-name").value = "";
+    document.getElementById("service-amount").value = "";
+    document.getElementById("service-target-amount").value = "";
+    document.getElementById("service-min-quantity").value = "";
+    document.getElementById("service-display-order").value = "";
+    document.getElementById("service-tag").value = "service";
+    document.getElementById("service-image-preview").src = "{% static 'dashboard/images/new-document.png' %}";
+    document.getElementById("service-image").value = "";
+    if (window.quillService) window.quillService.setContents([]);
+
+    const b = document.querySelector("#addService button[type=submit]");
+    if (b) {
+        b.textContent = "Submit";
+        b.classList.remove("btn-warning");
+        b.classList.add("btn-primary");
+    }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<!-- for edit&add stop overriting id -->
+<script>
+function resetForm(type) {
+    if (type === 'student') {
+        document.getElementById("student_id").value = "";
+        document.getElementById("student-name").value = "";
+        document.getElementById("student-servicename").value = "";
+        document.getElementById("student-enddate").value = "";
+        document.getElementById("student-target").value = "";
+        document.getElementById("student-image-preview").src = "{% static 'dashboard/images/new-document.png' %}";
+        document.getElementById("student-desc").value = "";
+        if (window.quillStudent) {
+            window.quillStudent.root.innerHTML = "";
+        }
+    } else if (type === 'service') {
+        document.getElementById("service_id").value = "";
+        document.getElementById("service-name").value = "";
+        document.getElementById("service-amount").value = "";
+        document.getElementById("service-image-preview").src = "{% static 'dashboard/images/new-document.png' %}";
+        document.getElementById("service-desc").value = "";
+        document.getElementById("service-days-left").value = "";
+        document.getElementById("service-min-count").value = "";
+        if (window.quillService) {
+            window.quillService.root.innerHTML = "";
+        }
+    }
+}
+</script>
+
+
+
+<script>
+  // Hide after 5 seconds
+  setTimeout(function() {
+    document.querySelectorAll('#django-messages .alert').forEach(function(el) {
+      el.style.transition = "opacity 0.5s ease";  // fade effect
+      el.style.opacity = "0";  
+      setTimeout(() => el.remove(), 500); // remove from DOM after fade
+    });
+  }, 5000); // 5000 ms = 5 sec
+</script>
+
+{% endblock %}

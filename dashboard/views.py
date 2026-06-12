@@ -23,3 +23,6 @@ def qr_donation(request):
 
 def admin_search_page(request):
     return render(request, 'dashboard/admin_search_page.html')
+
+def add_items(request):
+    return render(request, 'dashboard/add_items.html')

@@ -95,8 +95,16 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if admin_search_page.url_name == 'admin_search_page' %}active{% endif %}"
                         href="{% url 'admin_search_page' %}">
-                        <i class=" ri-coins-fill"></i>
+                        <i class="ri-coins-fill"></i>
                         <span>All Payment Donation</span>
+                    </a>
+                </li>
+
+                 <li class="nav-item">
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'add_items' %}active{% endif %}"
+                        href="{% url 'add_items' %}">
+                        <i class=" ri-team-fill"></i>
+                        <span>Add Items</span>
                     </a>
                 </li>
           </ul>
