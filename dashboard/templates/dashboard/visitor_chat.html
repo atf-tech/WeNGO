@@ -6,8 +6,6 @@ Dashboard || visitor_chat wengo
 
 {% block content %}
 
-
-
 <!-- HEADER -->
 <div class="wa-header">
   <div>
@@ -27,8 +25,6 @@ Dashboard || visitor_chat wengo
   </div>
 </div>
 
-
-
 <!-- FILTER BAR -->
 <div class="filter-bar">
   <span class="filter-label">Period:</span>
@@ -45,772 +41,490 @@ Dashboard || visitor_chat wengo
     <input type="date" id="customTo" style="border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:12.5px;outline:none;color:#495057;">
     <button onclick="applyCustomPeriod()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;">Apply</button>
   </div>
-
   <span class="filter-label" style="margin-left:10px;">Chart:</span>
   <div class="pill-group" id="chartGroup">
     <button class="pf-btn active" data-c="daily">Daily</button>
     <button class="pf-btn" data-c="weekly">Weekly</button>
     <button class="pf-btn" data-c="monthly">Monthly</button>
   </div>
-
   <span id="lastUpdated" style="font-size:12px;color:var(--muted);margin-left:auto;"></span>
 </div>
 
-<!--charts-->
-
+<!-- TOP STAT CARDS ROW 1 (Pink) -->
 <div class="row">
-
-                <div class="col-xl-3 col-md-6">
-                <div class="card card-animate " style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-white-50 mb-0">
-                          Avg. Visit Duration
-                        </p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white">
-                          <span class="counter-value" data-target="3">0</span>m
-                          <span class="counter-value" data-target="40">0</span
-                          >sec
-                        </h2>
-                        <p class="mb-0 text-white-50">
-                          <span
-                            class="badge bg-white bg-opacity-25 text-white mb-0"
-                            ><i class="ri-arrow-down-line align-middle"></i>
-                            0.24 %
-                          </span>
-                          vs. previous month
-                        </p>
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="clock" class="text-white"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-
-               <div class="col-xl-3 col-md-6">
-                <div class="card card-animate " style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-white-50 mb-0">
-                          Avg. Visit Duration
-                        </p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white">
-                          <span class="counter-value" data-target="3">0</span>m
-                          <span class="counter-value" data-target="40">0</span
-                          >sec
-                        </h2>
-                        <p class="mb-0 text-white-50">
-                          <span
-                            class="badge bg-white bg-opacity-25 text-white mb-0"
-                            ><i class="ri-arrow-down-line align-middle"></i>
-                            0.24 %
-                          </span>
-                          vs. previous month
-                        </p>
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="clock" class="text-white"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-
-               <div class="col-xl-3 col-md-6">
-                <div class="card card-animate " style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-white-50 mb-0">
-                          Avg. Visit Duration
-                        </p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white">
-                          <span class="counter-value" data-target="3">0</span>m
-                          <span class="counter-value" data-target="40">0</span
-                          >sec
-                        </h2>
-                        <p class="mb-0 text-white-50">
-                          <span
-                            class="badge bg-white bg-opacity-25 text-white mb-0"
-                            ><i class="ri-arrow-down-line align-middle"></i>
-                            0.24 %
-                          </span>
-                          vs. previous month
-                        </p>
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="clock" class="text-white"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-
-               <div class="col-xl-3 col-md-6">
-                <div class="card card-animate " style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-white-50 mb-0">
-                          Avg. Visit Duration
-                        </p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white">
-                          <span class="counter-value" data-target="3">0</span>m
-                          <span class="counter-value" data-target="40">0</span
-                          >sec
-                        </h2>
-                        <p class="mb-0 text-white-50">
-                          <span
-                            class="badge bg-white bg-opacity-25 text-white mb-0"
-                            ><i class="ri-arrow-down-line align-middle"></i>
-                            0.24 %
-                          </span>
-                          vs. previous month
-                        </p>
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="clock" class="text-white"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-  <div class="row">
-              <div class="col-xl-12">
-                <div class="card crm-widget">
-                  <div class="card-body p-0">
-                    <div class="row row-cols-md-3 row-cols-1">
-                      <div class="col col-lg border-end">
-                        <div class="py-4 px-3">
-                          <h5 class="text-muted text-uppercase fs-13">
-                            Campaign Sent
-                            <i
-                              class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"
-                            ></i>
-                          </h5>
-                          <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                              <i
-                                class="ri-space-ship-line display-6 text-muted"
-                              ></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                              <h2 class="mb-0">
-                                <span class="counter-value" data-target="197"
-                                  >0</span
-                                >
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- end col -->
-                      <div class="col col-lg border-end">
-                        <div class="mt-3 mt-md-0 py-4 px-3">
-                          <h5 class="text-muted text-uppercase fs-13">
-                            Annual Profit
-                            <i
-                              class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"
-                            ></i>
-                          </h5>
-                          <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                              <i
-                                class="ri-exchange-dollar-line display-6 text-muted"
-                              ></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                              <h2 class="mb-0">
-                                $<span class="counter-value" data-target="489.4"
-                                  >0</span
-                                >k
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- end col -->
-                      <div class="col col-lg border-end">
-                        <div class="mt-3 mt-md-0 py-4 px-3">
-                          <h5 class="text-muted text-uppercase fs-13">
-                            Lead Coversation
-                            <i
-                              class="ri-arrow-down-circle-line text-danger fs-18 float-end align-middle"
-                            ></i>
-                          </h5>
-                          <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                              <i class="ri-pulse-line display-6 text-muted"></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                              <h2 class="mb-0">
-                                <span class="counter-value" data-target="32.89"
-                                  >0</span
-                                >%
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- end col -->
-                      <div class="col col-lg border-end">
-                        <div class="mt-3 mt-lg-0 py-4 px-3">
-                          <h5 class="text-muted text-uppercase fs-13">
-                            Daily Average Income
-                            <i
-                              class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"
-                            ></i>
-                          </h5>
-                          <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                              <i
-                                class="ri-trophy-line display-6 text-muted"
-                              ></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                              <h2 class="mb-0">
-                                $<span
-                                  class="counter-value"
-                                  data-target="1596.5"
-                                  >0</span
-                                >
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- end col -->
-                      <div class="col col-lg">
-                        <div class="mt-3 mt-lg-0 py-4 px-3">
-                          <h5 class="text-muted text-uppercase fs-13">
-                            Annual Deals
-                            <i
-                              class="ri-arrow-down-circle-line text-danger fs-18 float-end align-middle"
-                            ></i>
-                          </h5>
-                          <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                              <i
-                                class="ri-service-line display-6 text-muted"
-                              ></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                              <h2 class="mb-0">
-                                <span class="counter-value" data-target="2659"
-                                  >0</span
-                                >
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- end col -->
-
-                       <div class="col col-lg">
-                        <div class="mt-3 mt-lg-0 py-4 px-3">
-                          <h5 class="text-muted text-uppercase fs-13">
-                            Annual Deals
-                            <i
-                              class="ri-arrow-down-circle-line text-danger fs-18 float-end align-middle"
-                            ></i>
-                          </h5>
-                          <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                              <i
-                                class="ri-service-line display-6 text-muted"
-                              ></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                              <h2 class="mb-0">
-                                <span class="counter-value" data-target="2659"
-                                  >0</span
-                                >
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end row -->
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card -->
-              </div>
-              <!-- end col -->
-            </div>
-            <!-- end row -->
-
-   
-     
-        <div class="row">
-
-          <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-animate bg-info">
-                  <div class="card-body">
-                    <div class="d-flex align-items-center">
-                      <div class="flex-grow-1">
-                        <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
-                        </p>
-                      </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-end justify-content-between mt-4"
-                    >
-                      <div>
-                        <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="36894"
-                            >0</span
-                          >
-                        </h4>
-                        <a
-                          href=""
-                          class="text-decoration-underline text-white-50"
-                          >View all orders</a
-                        >
-                      </div>
-                      <div class="avatar-sm flex-shrink-0">
-                        <span
-                          class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow"
-                        >
-                          <i class="bx bx-shopping-bag text-white"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card -->
-              </div>
-              <!-- end col -->
-
-
-               <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-animate bg-info">
-                  <div class="card-body">
-                    <div class="d-flex align-items-center">
-                      <div class="flex-grow-1">
-                        <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
-                        </p>
-                      </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-end justify-content-between mt-4"
-                    >
-                      <div>
-                        <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="36894"
-                            >0</span
-                          >
-                        </h4>
-                        <a
-                          href=""
-                          class="text-decoration-underline text-white-50"
-                          >View all orders</a
-                        >
-                      </div>
-                      <div class="avatar-sm flex-shrink-0">
-                        <span
-                          class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow"
-                        >
-                          <i class="bx bx-shopping-bag text-white"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card -->
-              </div>
-              <!-- end col -->
-
-               <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-animate bg-info">
-                  <div class="card-body">
-                    <div class="d-flex align-items-center">
-                      <div class="flex-grow-1">
-                        <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
-                        </p>
-                      </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-end justify-content-between mt-4"
-                    >
-                      <div>
-                        <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="36894"
-                            >0</span
-                          >
-                        </h4>
-                        <a
-                          href=""
-                          class="text-decoration-underline text-white-50"
-                          >View all orders</a
-                        >
-                      </div>
-                      <div class="avatar-sm flex-shrink-0">
-                        <span
-                          class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow"
-                        >
-                          <i class="bx bx-shopping-bag text-white"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card -->
-              </div>
-              <!-- end col -->
-
-
-               <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-animate bg-info">
-                  <div class="card-body">
-                    <div class="d-flex align-items-center">
-                      <div class="flex-grow-1">
-                        <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
-                        </p>
-                      </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-end justify-content-between mt-4"
-                    >
-                      <div>
-                        <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="36894"
-                            >0</span
-                          >
-                        </h4>
-                        <a
-                          href=""
-                          class="text-decoration-underline text-white-50"
-                          >View all orders</a
-                        >
-                      </div>
-                      <div class="avatar-sm flex-shrink-0">
-                        <span
-                          class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow"
-                        >
-                          <i class="bx bx-shopping-bag text-white"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card -->
-              </div>
-              <!-- end col -->
-               
-            </div>
-
- <div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Birthday</h5>
-      </div>
-
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate" style="background-color: #ff69b47e;">
       <div class="card-body">
-        <table
-          id="website_donation_table"
-          class="table table-bordered dt-responsive nowrap table-striped align-middle"
-          style="width: 100%"
-        >
-          <thead>
-            <tr>
-              <th data-ordering="false">SR No.</th>
-              <th data-ordering="false">ID</th>
-              <th data-ordering="false">Purchase ID</th>
-              <th data-ordering="false">Title</th>
-              <th data-ordering="false">User</th>
-              <th>Assigned To</th>
-              <th>Created By</th>
-              <th>Create Date</th>
-              <th>Status</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>01</td>
-              <td>VLZ-452</td>
-              <td>VLZ1400087402</td>
-              <td>Post launch reminder/ post list</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>03 Oct, 2021</td>
-              <td>
-                <span class="badge bg-info-subtle text-info">
-                  Re-open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>02</td>
-              <td>VLZ-453</td>
-              <td>VLZ1400087425</td>
-              <td>Additional Calendar</td>
-              <td>Diana Kohler</td>
-              <td>Admin</td>
-              <td>Mary Rucker</td>
-              <td>05 Oct, 2021</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>03</td>
-              <td>VLZ-454</td>
-              <td>VLZ1400087438</td>
-              <td>Make a creating an account profile</td>
-              <td>Tonya Noble</td>
-              <td>Admin</td>
-              <td>Tonya Noble</td>
-              <td>27 April, 2022</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>04</td>
-              <td>VLZ-455</td>
-              <td>VLZ1400087748</td>
-              <td>Apologize for shopping Error!</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>14 June, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>05</td>
-              <td>VLZ-456</td>
-              <td>VLZ1400087547</td>
-              <td>Support for theme</td>
-              <td>Donald Palmer</td>
-              <td>Admin</td>
-              <td>Donald Palmer</td>
-              <td>25 June, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>06</td>
-              <td>VLZ-457</td>
-              <td>VLZ1400087245</td>
-              <td>Benner design for FB & Twitter</td>
-              <td>Mary Rucker</td>
-              <td>Jennifer Carter</td>
-              <td>Mary Rucker</td>
-              <td>14 Aug, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>07</td>
-              <td>VLZ-458</td>
-              <td>VLZ1400087785</td>
-              <td>Change email option process</td>
-              <td>James Morris</td>
-              <td>Admin</td>
-              <td>James Morris</td>
-              <td>12 March, 2022</td>
-              <td>
-                <span class="badge bg-primary-subtle text-primary">
-                  Open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>08</td>
-              <td>VLZ-460</td>
-              <td>VLZ1400087745</td>
-              <td>Support for theme</td>
-              <td>Nathan Cole</td>
-              <td>Nancy Martino</td>
-              <td>Nathan Cole</td>
-              <td>28 Feb, 2022</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>09</td>
-              <td>VLZ-461</td>
-              <td>VLZ1400087179</td>
-              <td>Form submit issue</td>
-              <td>Grace Coles</td>
-              <td>Admin</td>
-              <td>Grace Coles</td>
-              <td>07 Jan, 2022</td>
-              <td>
-                <span class="badge bg-success-subtle text-success">
-                  New
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>10</td>
-              <td>VLZ-462</td>
-              <td>VLZ140008856</td>
-              <td>Edit customer testimonial</td>
-              <td>Freda</td>
-              <td>Alexis Clarke</td>
-              <td>Freda</td>
-              <td>16 Aug, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="d-flex justify-content-between">
+          <div>
+            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="3">0</span>m
+              <span class="counter-value" data-target="40">0</span>sec
+            </h2>
+            <p class="mb-0 text-white-50">
+              <span class="badge bg-white bg-opacity-25 text-white mb-0">
+                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
+              </span> vs. previous month
+            </p>
+          </div>
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i data-feather="clock" class="text-white"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate" style="background-color: #ff69b47e;">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="3">0</span>m
+              <span class="counter-value" data-target="40">0</span>sec
+            </h2>
+            <p class="mb-0 text-white-50">
+              <span class="badge bg-white bg-opacity-25 text-white mb-0">
+                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
+              </span> vs. previous month
+            </p>
+          </div>
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i data-feather="clock" class="text-white"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate" style="background-color: #ff69b47e;">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="3">0</span>m
+              <span class="counter-value" data-target="40">0</span>sec
+            </h2>
+            <p class="mb-0 text-white-50">
+              <span class="badge bg-white bg-opacity-25 text-white mb-0">
+                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
+              </span> vs. previous month
+            </p>
+          </div>
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i data-feather="clock" class="text-white"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate" style="background-color: #ff69b47e;">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="3">0</span>m
+              <span class="counter-value" data-target="40">0</span>sec
+            </h2>
+            <p class="mb-0 text-white-50">
+              <span class="badge bg-white bg-opacity-25 text-white mb-0">
+                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
+              </span> vs. previous month
+            </p>
+          </div>
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i data-feather="clock" class="text-white"></i>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-            
-                 
+
+<!-- CRM WIDGET ROW -->
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card crm-widget">
+      <div class="card-body p-0">
+        <div class="row row-cols-md-3 row-cols-1">
+          <div class="col col-lg border-end">
+            <div class="py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Campaign Sent <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-space-ship-line display-6 text-muted"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="197">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-md-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Annual Profit <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-exchange-dollar-line display-6 text-muted"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0">$<span class="counter-value" data-target="489.4">0</span>k</h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-md-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Lead Conversion <i class="ri-arrow-down-circle-line text-danger fs-18 float-end align-middle"></i></h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-pulse-line display-6 text-muted"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="32.89">0</span>%</h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-lg-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Daily Average Income <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-trophy-line display-6 text-muted"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0">$<span class="counter-value" data-target="1596.5">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-lg-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Annual Deals <i class="ri-arrow-down-circle-line text-danger fs-18 float-end align-middle"></i></h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-service-line display-6 text-muted"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg">
+            <div class="mt-3 mt-lg-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Annual Deals <i class="ri-arrow-down-circle-line text-danger fs-18 float-end align-middle"></i></h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-service-line display-6 text-muted"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INFO CARDS ROW (Blue) -->
+<div class="row">
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate bg-info">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
+        </div>
+        <div class="d-flex align-items-end justify-content-between mt-4">
+          <div>
+            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
+            <a href="" class="text-decoration-underline text-white-50">View all orders</a>
+          </div>
+          <div class="avatar-sm flex-shrink-0">
+            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
+              <i class="bx bx-shopping-bag text-white"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate bg-info">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
+        </div>
+        <div class="d-flex align-items-end justify-content-between mt-4">
+          <div>
+            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
+            <a href="" class="text-decoration-underline text-white-50">View all orders</a>
+          </div>
+          <div class="avatar-sm flex-shrink-0">
+            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
+              <i class="bx bx-shopping-bag text-white"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate bg-info">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
+        </div>
+        <div class="d-flex align-items-end justify-content-between mt-4">
+          <div>
+            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
+            <a href="" class="text-decoration-underline text-white-50">View all orders</a>
+          </div>
+          <div class="avatar-sm flex-shrink-0">
+            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
+              <i class="bx bx-shopping-bag text-white"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate bg-info">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
+        </div>
+        <div class="d-flex align-items-end justify-content-between mt-4">
+          <div>
+            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
+            <a href="" class="text-decoration-underline text-white-50">View all orders</a>
+          </div>
+          <div class="avatar-sm flex-shrink-0">
+            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
+              <i class="bx bx-shopping-bag text-white"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ SECTION TABS — 3 tabs -->
+<div class="section-tabs">
+  <button class="sec-tab active" data-sec="birthday">Birthday</button>
+  <button class="sec-tab "data-sec="visitors">Visitor Details</button>
+  <button class="sec-tab" data-sec="overview">Overview & Charts</button>
+</div>
+
+<!-- ✅ BIRTHDAY SECTION -->
+<div id="section-birthday" class="tab-section">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Birthday</h5>
+        </div>
+        <div class="card-body">
+          <table id="birthday_table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+            <thead>
+              <tr>
+                <th>SR No.</th>
+                <th>ID</th>
+                <th>Purchase ID</th>
+                <th>Title</th>
+                <th>User</th>
+                <th>Assigned To</th>
+                <th>Created By</th>
+                <th>Create Date</th>
+                <th>Status</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>01</td><td>VLZ-452</td><td>VLZ1400087402</td>
+                <td>Post launch reminder/ post list</td><td>Joseph Parker</td>
+                <td>Alexis Clarke</td><td>Joseph Parker</td><td>03 Oct, 2021</td>
+                <td><span class="badge bg-info-subtle text-info">Re-open</span></td>
+                <td><span class="badge bg-danger">High</span></td>
+              </tr>
+              <tr>
+                <td>02</td><td>VLZ-453</td><td>VLZ1400087425</td>
+                <td>Additional Calendar</td><td>Diana Kohler</td>
+                <td>Admin</td><td>Mary Rucker</td><td>05 Oct, 2021</td>
+                <td><span class="badge bg-secondary-subtle text-secondary">On-Hold</span></td>
+                <td><span class="badge bg-info">Medium</span></td>
+              </tr>
+              <tr>
+                <td>03</td><td>VLZ-454</td><td>VLZ1400087438</td>
+                <td>Make a creating an account profile</td><td>Tonya Noble</td>
+                <td>Admin</td><td>Tonya Noble</td><td>27 April, 2022</td>
+                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
+                <td><span class="badge bg-success">Low</span></td>
+              </tr>
+              <tr>
+                <td>04</td><td>VLZ-455</td><td>VLZ1400087748</td>
+                <td>Apologize for shopping Error!</td><td>Joseph Parker</td>
+                <td>Alexis Clarke</td><td>Joseph Parker</td><td>14 June, 2021</td>
+                <td><span class="badge bg-warning-subtle text-warning">Inprogress</span></td>
+                <td><span class="badge bg-info">Medium</span></td>
+              </tr>
+              <tr>
+                <td>05</td><td>VLZ-456</td><td>VLZ1400087547</td>
+                <td>Support for theme</td><td>Donald Palmer</td>
+                <td>Admin</td><td>Donald Palmer</td><td>25 June, 2021</td>
+                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
+                <td><span class="badge bg-success">Low</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ VISITOR DETAILS SECTION -->
+<div id="section-visitors" class="tab-section" style="display:none;">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Visitor Details</h5>
+        </div>
+        <div class="card-body">
+          <table id="visitor_table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+            <thead>
+              <tr>
+                <th>SR No.</th>
+                <th>ID</th>
+                <th>Purchase ID</th>
+                <th>Title</th>
+                <th>User</th>
+                <th>Assigned To</th>
+                <th>Created By</th>
+                <th>Create Date</th>
+                <th>Status</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>01</td><td>VLZ-452</td><td>VLZ1400087402</td>
+                <td>Post launch reminder/ post list</td><td>Joseph Parker</td>
+                <td>Alexis Clarke</td><td>Joseph Parker</td><td>03 Oct, 2021</td>
+                <td><span class="badge bg-info-subtle text-info">Re-open</span></td>
+                <td><span class="badge bg-danger">High</span></td>
+              </tr>
+              <tr>
+                <td>02</td><td>VLZ-453</td><td>VLZ1400087425</td>
+                <td>Additional Calendar</td><td>Diana Kohler</td>
+                <td>Admin</td><td>Mary Rucker</td><td>05 Oct, 2021</td>
+                <td><span class="badge bg-secondary-subtle text-secondary">On-Hold</span></td>
+                <td><span class="badge bg-info">Medium</span></td>
+              </tr>
+              <tr>
+                <td>03</td><td>VLZ-454</td><td>VLZ1400087438</td>
+                <td>Make a creating an account profile</td><td>Tonya Noble</td>
+                <td>Admin</td><td>Tonya Noble</td><td>27 April, 2022</td>
+                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
+                <td><span class="badge bg-success">Low</span></td>
+              </tr>
+              <tr>
+                <td>04</td><td>VLZ-455</td><td>VLZ1400087748</td>
+                <td>Apologize for shopping Error!</td><td>Joseph Parker</td>
+                <td>Alexis Clarke</td><td>Joseph Parker</td><td>14 June, 2021</td>
+                <td><span class="badge bg-warning-subtle text-warning">Inprogress</span></td>
+                <td><span class="badge bg-info">Medium</span></td>
+              </tr>
+              <tr>
+                <td>05</td><td>VLZ-456</td><td>VLZ1400087547</td>
+                <td>Support for theme</td><td>Donald Palmer</td>
+                <td>Admin</td><td>Donald Palmer</td><td>25 June, 2021</td>
+                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
+                <td><span class="badge bg-success">Low</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ OVERVIEW SECTION -->
+
+<div id="section-overview" class="tab-section" style="display:none;">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Overview & Charts</h5>
+        </div>
+     
+               <div class="row">
+          
+                   <div class="col-xl-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title mb-0">Line, Column & Area Charts</h4>
+                  </div>
+                  <!-- end card header -->
+                  <div class="card-body">
+                    <div
+                      id="lineareacharts"
+                      data-colors='["--vz-primary", "--vz-success", "--vz-danger"]'
+                      class="apex-charts"
+                      dir="ltr"
+                    ></div>
+                  </div>
+                  <!-- end card-body -->
+                </div>
+                <!-- end card -->
+              </div>
+              <!-- end col -->
 
 
-            
-           
+               </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
+<!-- ✅ SINGLE CLEAN TAB SCRIPT -->
+<script>
+  document.querySelectorAll('.sec-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
 
+      // 1. Remove active from all buttons
+      document.querySelectorAll('.sec-tab').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      // 2. Set clicked button as active
+      this.classList.add('active');
 
-            
+      // 3. Hide all sections
+      document.querySelectorAll('.tab-section').forEach(function(sec) {
+        sec.style.display = 'none';
+      });
 
-              {%endblock%}
+      // 4. Show the matching section
+      var section = this.dataset.sec;
+      var target = document.getElementById('section-' + section);
+      if (target) {
+        target.style.display = 'block';
+      }
+    });
+  });
+</script>
+
+{% endblock %}
