@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website',
     'dashboard',
-    'receipt'
+    'receipt',
+    'RMPortal',
 ]
 
 MIDDLEWARE = [

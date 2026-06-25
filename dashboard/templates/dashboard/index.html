@@ -37,7 +37,15 @@ Dashboard || index wengo
     <button class="pf-btn" data-p="week">This Week</button>
     <button class="pf-btn" data-p="month">This Month</button>
     <button class="pf-btn" data-p="custom">Custom</button>
+   
   </div>
+  <div>
+     <label for="from">From</label>
+    <input type="text" id="from" name="from">
+    <label for="to">to</label>
+    <input class="oto" type="text" id="to" name="to">
+    <button type="submit">Apply</button>
+    </div>
   <div id="customDateWrap" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
     <input type="date" id="customFrom" style="border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:12.5px;outline:none;color:#495057;">
     <span style="font-size:12px;color:var(--muted);">to</span>
@@ -670,7 +678,39 @@ Dashboard || index wengo
               <!--end col-->
             </div>
 
-
+  <script>
+  $( function() {
+    var dateFormat = "mm/dd/yy",
+      from = $( "#from" )
+        .datepicker({
+          defaultDate: "+1w",
+          changeMonth: true,
+          numberOfMonths: 1
+        })
+        .on( "change", function() {
+          to.datepicker( "option", "minDate", getDate( this ) );
+        }),
+      to = $( "#to" ).datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 1
+      })
+      .on( "change", function() {
+        from.datepicker( "option", "maxDate", getDate( this ) );
+      });
+ 
+    function getDate( element ) {
+      var date;
+      try {
+        date = $.datepicker.parseDate( dateFormat, element.value );
+      } catch( error ) {
+        date = null;
+      }
+ 
+      return date;
+    }
+  } );
+  </script>
 
 
     {% endblock %}

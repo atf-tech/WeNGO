@@ -1,0 +1,76 @@
+{% load static %}
+
+
+
+    <div class="app-menu navbar-menu">
+      <!-- LOGO -->
+      <div class="navbar-brand-box">
+        <!-- Dark Logo-->
+        <a href="{% url 'inbox' %}" class="logo logo-dark">
+         
+          <span class="logo-lg">
+            <img src="{% static 'RMPortal/images/logo-WENGO.webp' %}" alt="logo" height="45px" />
+          </span>
+        </a>
+        <!-- Light Logo-->
+        <a href="{% url 'inbox' %}" class="logo logo-light">
+         
+          <span class="logo-lg">
+            <img src="{% static 'RMPortal/images/logo-WENGO.webp' %}" alt="logo" height="45px" />
+          </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+          id="vertical-hover">
+          <i class="ri-record-circle-line"></i>
+        </button>
+      </div>
+      <div id="scrollbar">
+        <div class="container-fluid">
+          <div id="two-column-menu"></div>
+          <ul class="navbar-nav" id="navbar-nav">
+            <li class="menu-title"><span data-key="t-menu" style="color: #fff; font-weight: 600;">Menu</span></li>
+
+           
+
+            <li class="nav-item">
+              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'inbox' %}active{% endif %}" 
+                  href="{% url 'inbox' %}">
+                <i class=" ri-home-heart-line"></i>
+                <span>Home</span>
+              </a>
+            </li>
+           <!--
+             <li class="nav-item">
+              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'whatsapp_chat' %}active{% endif %}" 
+                  href="{% url 'whatsapp_chat' %}">
+                <i class=" ri-home-heart-line"></i>
+                <span>WEB Whatsapp</span>
+              </a>
+            </li>
+             -->
+             <li class="nav-item">
+              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'all_transaction' %}active{% endif %}" 
+                  href="{% url 'all_transaction' %}">
+                <i class="  ri-folder-chart-line"></i>
+                <span>all Transaction</span>
+              </a>
+            </li>
+             
+
+            <li class="nav-item">
+              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'add_gpay_payments' %}active{% endif %}" 
+                  href="{% url 'add_gpay_payments' %}">
+                <i class=" ri-file-paper-2-fill"></i>
+                <span>Whatsapp API Reports</span>
+              </a>
+            </li>
+
+        </div>
+        <!-- Sidebar -->
+      </div>
+
+      <div class="sidebar-background"></div>
+    </div>
+    <!-- Left Sidebar End -->
+    <!-- Vertical Overlay-->
+    <div class="vertical-overlay"></div>

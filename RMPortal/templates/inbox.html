@@ -1,0 +1,853 @@
+{% extends 'base.html' %} {% load static %}
+{% block title %}
+RMPortal || index wengo
+{% endblock %}
+
+{% block content %}
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
+  <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+
+<style>
+    :root {
+      --primary: #2c4a8f;
+      --primary-light: #3a5fad;
+      --bg: #f0f4fa;
+      --card-bg: #ffffff;
+      --text: #1a2340;
+      --muted: #6b7a99;
+      --border: #d0d9ee;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+    }
+    .top-bar {
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(44,74,143,0.18);
+    }
+    .top-bar .logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; }
+    .top-bar .subtitle { font-size: 0.82rem; opacity: 0.75; margin-top: 1px; }
+
+    .page-wrapper { padding: 24px 20px; max-width: 1400px; margin: 0 auto; }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(44,74,143,0.09);
+      background: var(--card-bg);
+      overflow: hidden;
+    }
+    .card-header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .card-header h5 { font-size: 0.97rem; font-weight: 700; color: var(--primary); margin: 0; }
+    .header-icon {
+      background: var(--primary); color: #fff;
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+    }
+    .card-body { padding: 18px 22px; }
+
+    /* Search bar custom */
+    .search-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .search-bar-wrap .search-input {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 14px 7px 36px;
+      font-size: 0.85rem;
+      outline: none;
+      width: 260px;
+      background: #f7f9fe url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7a99' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 11px center;
+      transition: border-color 0.2s;
+    }
+    .search-bar-wrap .search-input:focus { border-color: var(--primary); background-color: #fff; }
+    .search-bar-wrap .btn-search {
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 8px; padding: 7px 18px; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; transition: background 0.18s;
+    }
+    .search-bar-wrap .btn-search:hover { background: var(--primary-light); }
+    .search-bar-wrap .btn-clear {
+      background: #e8edf8; color: var(--muted); border: none;
+      border-radius: 8px; padding: 7px 14px; font-size: 0.85rem;
+      cursor: pointer; transition: background 0.18s;
+    }
+    .search-bar-wrap .btn-clear:hover { background: #d0d9ee; }
+
+    /* Table */
+    .table thead th {
+      background: #eef2fb; color: var(--primary);
+      font-weight: 700; font-size: 0.82rem;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap; padding: 11px 14px;
+    }
+    .table td {
+      vertical-align: middle; padding: 10px 14px;
+      color: var(--text); font-size: 0.84rem; border-color: #e8edf8;
+    }
+    .table-striped > tbody > tr:nth-of-type(odd) > * { background-color: #f7f9fe; }
+    .table-hover > tbody > tr:hover > * { background-color: #e8f0fb !important; }
+
+    /* Buttons */
+    .btn-update {
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 7px; padding: 6px 11px; font-size: 0.82rem;
+      cursor: pointer; transition: background 0.18s;
+    }
+    .btn-update:hover { background: var(--primary-light); }
+    .btn-receipt {
+      background: #fff; color: var(--primary);
+      border: 1.5px solid var(--primary); border-radius: 7px;
+      padding: 5px 12px; font-size: 0.8rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px;
+      transition: all 0.18s; white-space: nowrap;
+    }
+    .btn-receipt:hover { background: var(--primary); color: #fff; }
+
+    /* DataTables pagination override */
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_length { font-size: 0.82rem; color: var(--muted); }
+    .dataTables_wrapper .dataTables_filter { display: none; } /* hide default search — we use custom */
+    .dataTables_wrapper .dataTables_length select {
+      border: 1.5px solid var(--border); border-radius: 7px; padding: 4px 8px; font-size: 0.83rem;
+    }
+    .paginate_button { border-radius: 6px !important; font-size: 0.82rem !important; }
+    .paginate_button.current, .paginate_button.current:hover {
+      background: var(--primary) !important; border-color: var(--primary) !important; color: #fff !important;
+    }
+
+    /* Modal */
+    .modal-header { background: var(--primary); color: #fff; }
+    .modal-header .btn-close { filter: invert(1); }
+    .modal-title { font-weight: 700; font-size: 1rem; }
+
+    @media (max-width: 768px) {
+      .page-wrapper { padding: 14px 8px; }
+      .card-body { padding: 12px 8px; }
+      .search-bar-wrap .search-input { width: 180px; }
+    }
+  </style>
+
+ <div class="row">
+              <div class="col-lg-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="fs-15 fw-semibold">Brand Logo Design - MD</h5>
+                    <p class="text-muted">Graphics Work</p>
+                    <div class="d-flex flex-wrap justify-content-evenly">
+                      <p class="text-muted mb-0">
+                        <i
+                          class="mdi mdi-numeric-1-circle text-success fs-18 align-middle me-2"
+                        ></i
+                        >Completed
+                      </p>
+                      <p class="text-muted mb-0">
+                        <i
+                          class="mdi mdi-numeric-3-circle text-info fs-18 align-middle me-2"
+                        ></i
+                        >In Progress
+                      </p>
+                      <p class="text-muted mb-0">
+                        <i
+                          class="mdi mdi-numeric-2-circle text-primary fs-18 align-middle me-2"
+                        ></i
+                        >To Do
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="progress animated-progress rounded-bottom rounded-0"
+                    style="height: 6px"
+                  >
+                    <div
+                      class="progress-bar bg-success rounded-0"
+                      role="progressbar"
+                      style="width: 30%"
+                      aria-valuenow="30"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                    <div
+                      class="progress-bar bg-info rounded-0"
+                      role="progressbar"
+                      style="width: 50%"
+                      aria-valuenow="50"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                    <div
+                      class="progress-bar rounded-0"
+                      role="progressbar"
+                      style="width: 20%"
+                      aria-valuenow="20"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <!-- end col -->
+               <div class="col-xl-3 col-md-6" style="width:22%">
+                <!-- card -->
+                <div class="card card-animate">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <p class="text-uppercase fw-medium text-muted mb-0">
+                          Customers
+                        </p>
+                      </div>
+                      <div class="flex-shrink-0">
+                       
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-end justify-content-between mt-4"
+                    >
+                      <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                          <span class="counter-value" data-target="183.35"
+                            >0</span
+                          >M
+                        </h4>
+                       
+                      </div>
+                      <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+              </div>
+              <!-- end col -->
+               <div class="col-xl-3 col-md-6" style="width:22%">
+                <!-- card -->
+                <div class="card card-animate">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <p class="text-uppercase fw-medium text-muted mb-0">
+                          Customers
+                        </p>
+                      </div>
+                      <div class="flex-shrink-0">
+                        <h5 class="text-success fs-14 mb-0">
+                            
+                         
+                        </h5>
+                        
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-end justify-content-between mt-4"
+                    >
+                      <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                          
+                        </h4>
+                        
+                      </div>
+                      
+                        <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+             
+              <!-- end col -->
+               
+              <!-- end col -->
+               <div class="col-xl-3 col-md-6" style="width:22%">
+                <!-- card -->
+                <div class="card card-animate">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <p class="text-uppercase fw-medium text-muted mb-0">
+                          Customers
+                        </p>
+                      </div>
+                      <div class="flex-shrink-0">
+                        <h5 class="text-success fs-14 mb-0">
+                         
+                        </h5>
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-end justify-content-between mt-4"
+                    >
+                      <div>
+                        
+                        </div>                      
+                         <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
+                      </div>
+                       
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+              </div>
+              <!-- end col -->
+            </div>
+        </div>
+
+              <div class="row">
+              <div class="col-xl-4" style="width:34%">
+                <div class="card" >
+                  <div class="card-header"style="background-color: #df8ff7b1;">
+                    <h4 class="card-title mb-0">Info</h4>
+                  </div>
+                  <!-- end card header -->
+
+                  <div class="card-body">
+                   <lable class="form-label">Full Name :</lable>
+                    <div id="users">
+                      <div class="row mb-2">
+                        <div class="col">
+                          <div>
+                          
+                          </div>
+                        </div>
+                        
+                      </div>
+
+                      <div data-simplebar style="height: 242px" class="mx-n3">
+                        <ul class="list list-group list-group-flush mb-0">
+                          <li class="list-group-item" data-id="1">
+                            <div class="d-flex">
+                              <div class="flex-grow-1">
+                                <h5 class="fs-13 mb-1">
+                                 <lable class="form-label"> Mobile :</lable>
+                                </h5>
+                               
+                              </div>
+                              <div class="flex-shrink-0">
+                                <div>
+                                
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <!-- end list item -->
+                          <li class="list-group-item" data-id="2">
+                            <div class="d-flex">
+                              <div class="flex-grow-1">
+                                <h5 class="fs-13 mb-1">
+                                  <lable class="form-label"> E-mail :</lable>
+                                </h5>
+                                
+                              </div>
+                              <div class="flex-shrink-0">
+                                <div>
+                               
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <!-- end list item -->
+                          <li class="list-group-item" data-id="3">
+                            <div class="d-flex">
+                              <div class="flex-grow-1">
+                                <h5 class="fs-13 mb-1">
+                                <lable class="form-label"> P-Link :</lable>
+                                </h5>
+                                
+                              </div>
+                              <div class="flex-shrink-0">
+                                <div>
+                                 
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <!-- end list item -->
+                          <li class="list-group-item" data-id="4">
+                            <div class="d-flex">
+                              <div class="flex-grow-1">
+                                <h5 class="fs-13 mb-1">
+                                 <lable class="form-label"> Virtual Label :</lable>
+                                </h5>
+                               
+                              </div>
+                              <div class="flex-shrink-0">
+                                <div>
+                                  <li class="list-group-item" data-id="3">
+                            <div class="d-flex">
+                              <div class="flex-grow-1">
+                                <h5 class="fs-13 mb-1">
+                                <lable class="form-label"> P-Link :</lable>
+                                </h5>
+                                
+                              </div>
+                              <div class="flex-shrink-0">
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <!-- end list item -->
+                        </ul>
+                        <!-- end ul list -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+              <!-- end card -->
+                  
+              <div class="col-xl-3 col-md-6" style="width:22%">
+                <!-- card -->
+                <div class="card card-animate">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <p class="text-uppercase fw-medium text-muted mb-0">
+                          Customers
+                        </p>
+                      </div>
+                      <div class="flex-shrink-0">
+                       
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-end justify-content-between mt-4"
+                    >
+                      <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                          <span class="counter-value" data-target="183.35"
+                            >0</span
+                          >M
+                        </h4>
+                       
+                      </div>
+                      <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+              </div>
+              <!-- end col -->
+               <div class="col-xl-3 col-md-6" style="width:22%">
+                <!-- card -->
+                <div class="card card-animate">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <p class="text-uppercase fw-medium text-muted mb-0">
+                          Customers
+                        </p>
+                      </div>
+                      <div class="flex-shrink-0">
+                        <h5 class="text-success fs-14 mb-0">
+                            
+                         
+                        </h5>
+                        
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-end justify-content-between mt-4"
+                    >
+                      <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                          
+                        </h4>
+                        
+                      </div>
+                      
+                        <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+             
+              <!-- end col -->
+               
+              <!-- end col -->
+               <div class="col-xl-3 col-md-6" style="width:22%">
+                <!-- card -->
+                <div class="card card-animate">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <p class="text-uppercase fw-medium text-muted mb-0">
+                          Customers
+                        </p>
+                      </div>
+                      <div class="flex-shrink-0">
+                        <h5 class="text-success fs-14 mb-0">
+                         
+                        </h5>
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-end justify-content-between mt-4"
+                    >
+                      <div>
+                        
+                        </div>                      
+                         <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
+                      </div>
+                       
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+              </div>
+               
+              </div>
+             <!-- end row -->
+
+             <div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header align-items-center d-flex">
+        <h4 class="card-title mb-0 me-2">Donation Table</h4>
+      </div>
+
+      <div class="card-header">
+        <h5 class="card-title mb-0">Web Link & QR transactions only</h5>
+      </div>
+
+      <div class="card-body">
+        <form id="dateForm" class="d-flex gap-2 mb-3">
+          <input
+            type="text"
+            id="allcat-date"
+            name="allcat-date"
+            class="form-control"
+            placeholder="Select Date"
+          />
+          <button type="submit" name="submit" class="btn btn-primary">
+            Submit
+          </button>
+          <button type="button" id="clear" name="clear" class="btn btn-light">
+            Clear
+          </button>
+        </form>
+
+        <div>
+        
+        </div>
+
+        
+<div class="page-wrapper">
+  <div class="card">
+    <div class="card-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="header-icon"><i class="fa fa-receipt"></i></div>
+        <h5>Donor Receipt Table</h5>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- Custom Search Bar -->
+      <div class="search-bar-wrap">
+        <input type="text" id="customSearch" class="search-input" placeholder="Search donor, receipt, email...">
+        <button class="btn-search" onclick="doSearch()"><i class="fa fa-search me-1"></i>Search</button>
+        <button class="btn-clear" onclick="clearSearch()"><i class="fa fa-times me-1"></i>Clear</button>
+      </div>
+
+      <div class="table-responsive">
+        <table id="donor_receipt_table" class="table table-bordered table-striped table-hover align-middle dt-responsive nowrap" style="width:100%">
+          <thead>
+            <tr>
+              <th>SR No.</th>
+              <th>Donor Name</th>
+              <th>Mobile</th>
+              <th>Email</th>
+              <th>Donor Address</th>
+              <th>Receipt No</th>
+              <th>Virtual Label</th>
+              <th>PAN / Aadhaar</th>
+              <th>Update</th>
+              <th>Download Receipt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td><td>-</td><td>-</td><td>-</td><td>-</td>
+              <td>IPF-008432</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-008432')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>2</td><td>-</td><td>-</td><td>-</td><td>-</td>
+              <td>IPF-257908</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-257908')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>3</td><td>Naveen</td><td>96265 31041</td><td>naveen@gmail.com</td><td>Chennai</td>
+              <td>IPF-671517</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-671517')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>4</td><td>Naveen</td><td>96265 31041</td><td>naveen@gmail.com</td><td>Chennai</td>
+              <td>IPF-773063</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-773063')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>5</td><td>-</td><td>-</td><td>-</td><td>-</td>
+              <td>IPF-228292</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-228292')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>6</td><td>Sumamma</td><td>88800 09669</td><td>sumamma@gmail.com</td><td>Bangalure</td>
+              <td>IPF-937039</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-937039')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>7</td><td>Ravi</td><td>98765 43210</td><td>ravi@gmail.com</td><td>Madurai</td>
+              <td>IPF-112233</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-112233')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>8</td><td>Priya</td><td>91234 56789</td><td>priya@gmail.com</td><td>Coimbatore</td>
+              <td>IPF-445566</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-445566')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>9</td><td>-</td><td>-</td><td>-</td><td>-</td>
+              <td>IPF-778899</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-778899')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>10</td><td>Kumar</td><td>99887 76655</td><td>kumar@gmail.com</td><td>Trichy</td>
+              <td>IPF-334455</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-334455')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>11</td><td>Meena</td><td>94455 66778</td><td>meena@gmail.com</td><td>Salem</td>
+              <td>IPF-667788</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-667788')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+            <tr>
+              <td>12</td><td>-</td><td>-</td><td>-</td><td>-</td>
+              <td>IPF-990011</td><td>Jothi - ibqj</td><td>-</td>
+              <td><button class="btn-update" onclick="openUpdateModal(this,'IPF-990011')"><i class="fa fa-pen"></i></button></td>
+              <td><button class="btn-receipt"><i class="fa fa-file-pdf"></i> Normal Receipt</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Update Donor Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa fa-user-edit me-2"></i>Update Donor Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-3" style="font-size:0.82rem;">Receipt No: <strong id="modal_receipt_no"></strong></p>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:0.83rem;">Donor Name</label>
+          <input type="text" class="form-control" id="upd_name" placeholder="Enter donor name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:0.83rem;">Mobile</label>
+          <input type="text" class="form-control" id="upd_mobile" placeholder="Enter mobile number">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:0.83rem;">Email</label>
+          <input type="email" class="form-control" id="upd_email" placeholder="Enter email">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:0.83rem;">Donor Address</label>
+          <input type="text" class="form-control" id="upd_address" placeholder="Enter address">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:0.83rem;">PAN / Aadhaar</label>
+          <input type="text" class="form-control" id="upd_pan" placeholder="Enter PAN or Aadhaar">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="saveUpdate()"><i class="fa fa-save me-1"></i>Save & Download Receipt</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!--Gradient charts Line-->
+
+           <div class="col-x10-7">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title mb-0">Gradient Charts</h4>
+            
+          </div>
+          <!-- end card header -->
+
+          <div class="card-body">
+            <div
+              id="gradient-1"
+              data-colors='["--vz-success"]'
+              class="apex-charts"
+              dir="ltr"
+            ></div>
+          </div>
+          <!-- end card-body -->
+        </div>
+        <!-- end card -->
+      </div>
+      <!-- end col -->
+    </div>
+    <!-- end row -->
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+<script>
+  var table;
+
+  $(document).ready(function () {
+    table = $('#donor_receipt_table').DataTable({
+      responsive: true,
+      pageLength: 10,          // max 10 rows per page
+      lengthChange: false,      // hide "show entries" dropdown — fixed at 10
+      searching: true,
+      columnDefs: [{ orderable: false, targets: [8, 9] }]
+    });
+
+    // Enter key triggers search
+    document.getElementById('customSearch').addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') doSearch();
+    });
+  });
+
+  function doSearch() {
+    var val = document.getElementById('customSearch').value;
+    table.search(val).draw();
+  }
+
+  function clearSearch() {
+    document.getElementById('customSearch').value = '';
+    table.search('').draw();
+  }
+
+  // Update modal
+  var _updateBtn = null;
+  function openUpdateModal(btn, receiptNo) {
+    _updateBtn = btn;
+    document.getElementById('modal_receipt_no').textContent = receiptNo;
+    var row = btn.closest('tr');
+    var cells = row.querySelectorAll('td');
+    document.getElementById('upd_name').value    = cells[1].textContent.trim() === '-' ? '' : cells[1].textContent.trim();
+    document.getElementById('upd_mobile').value  = cells[2].textContent.trim() === '-' ? '' : cells[2].textContent.trim();
+    document.getElementById('upd_email').value   = cells[3].textContent.trim() === '-' ? '' : cells[3].textContent.trim();
+    document.getElementById('upd_address').value = cells[4].textContent.trim() === '-' ? '' : cells[4].textContent.trim();
+    document.getElementById('upd_pan').value     = cells[7].textContent.trim() === '-' ? '' : cells[7].textContent.trim();
+    new bootstrap.Modal(document.getElementById('updateModal')).show();
+  }
+
+  function saveUpdate() {
+    if (!_updateBtn) return;
+    var row = _updateBtn.closest('tr');
+    var cells = row.querySelectorAll('td');
+    cells[1].textContent = document.getElementById('upd_name').value    || '-';
+    cells[2].textContent = document.getElementById('upd_mobile').value  || '-';
+    cells[3].textContent = document.getElementById('upd_email').value   || '-';
+    cells[4].textContent = document.getElementById('upd_address').value || '-';
+    cells[7].textContent = document.getElementById('upd_pan').value     || '-';
+    bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide();
+    alert('Donor details updated! You can now download the receipt.');
+  }
+</script>
+{% endblock %}
