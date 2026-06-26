@@ -5,282 +5,2108 @@ RMPortal || index wengo
 
 {% block content %}
 
+<link href="{% static 'whatsapp/style.css' %}" rel="stylesheet" type="text/css" />
+<style>
+/* ── Tab bar ── */
+.inbox-tabs {
+    display: flex;
+    background: #f0f2f5;
+    border-bottom: 1px solid #ddd;
+}
+.inbox-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #888;
+    border-bottom: 3px solid transparent;
+    transition: .15s;
+    user-select: none;
+    position: relative;
+}
+.inbox-tab.active {
+    color: #075e54;
+    border-bottom-color: #075e54;
+    background: #fff;
+}
+.tab-badge {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: #e53935;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 10px;
+    padding: 1px 5px;
+    font-weight: 700;
+    display: none;
+}
+.tab-badge.show { display: inline-block; }
 
- <div class="app-container">
-        <!-- SIDEBAR -->
-        <div class="chat-sidebar" id="chatSidebar">
-            <div class="sidebar-top">
-                <div class="top-tabs">
-                    <span class="tab active" data-tab="chats"><i class="fas fa-comment"></i><strong>WhatsApp</strong></span>
-                    <span class="tab" data-tab="visitors"><i class="fas fa-globe"></i><strong>Visitors</strong></span>
-                
-                </div>
+/* ── RM status bar (WhatsApp + Visitor tabs) ── */
+.rm-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 12px;
+    font-weight: 600;
+}
+.rm-status-bar.is-online  { background: #e8f5e9; }
+.rm-status-bar.is-offline { background: #fce4ec; }
 
-                <div class="offline-banner" id="offlineBanner">
-                    <div class="offline-notice">
-                        <i class="fas fa-bolt"></i>
-                        <strong><p>While you were offline, <span style="color: #10b981;">49</span> visitors came to the site.</p></strong>
-                    </div>
-                    <i class="fas fa-times" id="closeBanner"></i>
-                </div>
+.status-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.status-dot.online  { background: #25d366; box-shadow: 0 0 0 2px #a5d6a7; }
+.status-dot.offline { background: #e53935; box-shadow: 0 0 0 2px #ef9a9a; }
 
-                <div class="today-stats" id="todayStats">
-                    <div class="stats-header">
-                        <div class="stats-title" style="color: #151515;">Today's Stats</div>
-                        <i class="fas fa-chevron-down stats-arrow" id="statsArrow"></i>
-                    </div>
-                    <div class="stats-dropdown" id="statsDropdown">
-                        <div class="stat-card active">
-                            <span class="stat-value">10</span>
-                            <span class="stat-name">Active</span>
-                        </div>
-                        <div class="stat-card reassigned">
-                            <span class="stat-value">5</span>
-                            <span class="stat-name">Reassigned</span>
-                        </div>
-                        <div class="stat-card missed">
-                            <span class="stat-value">0</span>
-                            <span class="stat-name">Missed</span>
-                        </div>
-                        <div class="stat-card quick-left">
-                            <span class="stat-value">2</span>
-                            <span class="stat-name">Quick Left</span>
-                        </div>
-                    </div>
-                </div>
+.status-label.online  { color: #2e7d32; }
+.status-label.offline { color: #c62828; }
+
+.toggle-status-btn {
+    margin-left: auto;
+    padding: 4px 14px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+.toggle-status-btn.online  { background: #e53935; color: #fff; }
+.toggle-status-btn.offline { background: #25d366; color: #fff; }
+
+/* ── Blue tick (read receipt) ── */
+.msg-tick.read { color: #4fc3f7; }
+
+/* ── Chat type badge in header ── */
+.chat-type-badge {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: none;
+}
+
+/* ── Visitor list extras ── */
+.visitor-origin {
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+}
+.visitor-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+/* ── Visitor online toast notification ── */
+.visitor-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: #1a2e3b;
+    color: #fff;
+    border-left: 4px solid #25d366;
+    border-radius: 8px;
+    padding: 12px 18px;
+    min-width: 280px;
+    max-width: 380px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    cursor: pointer;
+    animation: toastSlideIn .35s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: opacity .3s;
+}
+.visitor-toast:hover { background: #243d4d; }
+.visitor-toast .toast-dot { width: 10px; height: 10px; border-radius: 50%; background: #25d366; flex-shrink: 0; animation: toastPulse 1s infinite; }
+.visitor-toast .toast-body { flex: 1; }
+.visitor-toast .toast-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+.visitor-toast .toast-sub { font-size: 11px; color: #90caf9; }
+.visitor-toast .toast-close { color: #666; font-size: 16px; cursor: pointer; padding: 0 4px; }
+.visitor-toast .toast-close:hover { color: #fff; }
+@keyframes toastSlideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastPulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+/* ── Highlight flash on visitor card ── */
+@keyframes visitorHighlight {
+    0%   { background: rgba(37,211,102,.3); }
+    50%  { background: rgba(37,211,102,.1); }
+    100% { background: transparent; }
+}
+.chat-item.visitor-highlight {
+    animation: visitorHighlight 2s ease-out 3;
+}
+
+/* ── Tab content panels must flex so list scrolls, not the page ── */
+#waTabContent,
+#visitorTabContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+</style>
+
+<div class="whatsapp-wrapper mx-n3 mt-n3">
+
+    <!-- ══════════════════════════════════════
+         LEFT PANEL — Tabbed Inbox
+    ══════════════════════════════════════ -->
+    <div class="chat-list" id="mainChatList">
+
+        <!-- Tab buttons -->
+        <div class="inbox-tabs">
+            <div class="inbox-tab active" id="waTabBtn" onclick="switchTab('whatsapp')">
+                📱 WhatsApp
             </div>
-
-            <div class="offline-status-card">
-                <div class="offline-status-wrap">
-                    <span class="status-dot offline" id="statusDot"></span>
-                    <span id="statusText">Offline</span>
-                </div>
-                <button class="online-btn" id="onlineBtn">Go Online</button>
-            </div>
-
-            <div class="chat-list" id="chatList">
-                <div class="chat-item active" data-chat="1">
-                    <div class="chat-info">
-                        <div class="chat-name">9876543210</div>
-                        <div class="chat-preview">ok sir ll call you.</div>
-                    </div>
-                    <div class="chat-right">
-                        <div class="chat-time">02:39 PM</div>
-                        <span class="chat-status-badge badge-active  ">Active</span>
-                    </div>
-                </div>
-                <div class="chat-item" data-chat="2">
-                    <div class="chat-info">
-                        <div class="chat-name">9876543211</div>
-                    </div>
-                    <div class="chat-right">
-                        <div class="chat-time">02:26 PM</div>
-                        <span class="chat-status-badge badge-offline">Offline</span>
-                    </div>
-                </div>
-                <div class="chat-item" data-chat="3">
-                    <div class="chat-info">
-                        <div class="chat-name">9876543212</div>
-                    </div>
-                    <div class="chat-right">
-                        <div class="chat-time">01:00 PM</div>
-                        <span class="chat-status-badge badge-active">Online</span>
-                    </div>
-                </div>
-                <div class="chat-item" data-chat="4">
-                    <div class="chat-info">
-                        <div class="chat-name">9876543213</div>
-                        <div class="chat-preview">Active</div>
-                    </div>
-                    <div class="chat-right">
-                        <div class="chat-time">12:54 PM</div>
-                        <span class="chat-status-badge badge-active">Active</span>
-                    </div>
-                </div>
-                <div class="chat-item" data-chat="5">
-                    <div class="chat-info">
-                        <div class="chat-name">9876543214</div>
-                        <div class="chat-preview">New visitor joined</div>
-                    </div>
-                    <div class="chat-right">
-                        <div class="chat-time">11:45 AM</div>
-                        <span class="chat-status-badge badge-active">Visitor</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="visitors-panel" id="visitorsPanel">
-                <div class="visitors-list" id="visitorsList">
-                    <div class="visitor-item" data-visitor="1">
-                        <div class="chat-info">
-                            <div class="chat-name">223.237.188.8</div>
-                            <div class="chat-preview">India, Tamil Nadu</div>
-                            <div class="chat-preview" style="color: #8b5cf6;">Quickly Left</div>
-                        </div>
-                        <div class="chat-right">
-                            <div class="chat-time">02:39 PM</div>
-                            <span class="chat-status-badge badge-active">Active</span>
-                        </div>
-                    </div>
-                    <div class="visitor-item" data-visitor="2">
-                        <div class="chat-info">
-                            <div class="chat-name">42.109.144.227</div>
-                            <div class="chat-preview">USA, New York</div>
-                            <div class="chat-preview" style="color: #10b981;">Active</div>
-                        </div>
-                        <div class="chat-right">
-                            <div class="chat-time">02:26 PM</div>
-                            <span class="chat-status-badge badge-offline">Offline</span>
-                        </div>
-                    </div>
-                    <div class="visitor-item" data-visitor="3">
-                        <div class="chat-info">
-                            <div class="chat-name">223.181.240.64</div>
-                            <div class="chat-preview">UK, London</div>
-                            <div class="chat-preview" style="color: #f59e0b;">Reassigned</div>
-                        </div>
-                        <div class="chat-right">
-                            <div class="chat-time">01:00 PM</div>
-                            <span class="chat-status-badge badge-active">Active</span>
-                        </div>
-                    </div>
-                    <div class="visitor-item" data-visitor="4">
-                        <div class="chat-info">
-                            <div class="chat-name">122.178.83.180</div>
-                            <div class="chat-preview">Canada, Toronto</div>
-                            <div class="chat-preview" style="color: #8b5cf6;">Quickly Left</div>
-                        </div>
-                        <div class="chat-right">
-                            <div class="chat-time">12:54 PM</div>
-                            <span class="chat-status-badge badge-offline">Offline</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="inbox-tab" id="visitorTabBtn" onclick="switchTab('visitor')">
+                🌐 Visitors
+                <span class="tab-badge" id="visitorTabBadge"></span>
             </div>
         </div>
 
-        <!-- MAIN CHAT -->
-        <div class="chat-main" id="chatMain">
-            <div class="chat-header">
-                <div class="header-left">
-                    <button class="back-btn mobile-only" id="backBtn"><i class="fas fa-arrow-left"></i></button>
-                    <div class="header-info header-info-large">
-                        <h3 id="chatName">WhatsApp</h3>
-                        <span id="chatStatus" style="color: #999;">Select a chat</span>
+        <!-- ─── WhatsApp tab ─── -->
+        <div id="waTabContent">
+            <div class="rm-status-bar {% if rm.active_whatsapp %}is-online{% else %}is-offline{% endif %}"
+                 id="waStatusBar">
+                <div class="status-dot {% if rm.active_whatsapp %}online{% else %}offline{% endif %}"
+                     id="waStatusDot"></div>
+                <span class="status-label {% if rm.active_whatsapp %}online{% else %}offline{% endif %}"
+                      id="waStatusText">
+                    {% if rm.active_whatsapp %}Online{% else %}Offline{% endif %}
+                </span>
+                <button class="toggle-status-btn {% if rm.active_whatsapp %}online{% else %}offline{% endif %}"
+                        id="waToggleBtn" onclick="toggleWAStatus()">
+                    {% if rm.active_whatsapp %}Go Offline{% else %}Go Online{% endif %}
+                </button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="waSearch" placeholder="Search conversations">
+            </div>
+            <div class="chat-list-body" id="waChatListBody">
+                {% for convo in conversations %}
+                <div class="chat-item wa-item"
+                     role="button" tabindex="0"
+                     data-conversation-id="{{ convo.id }}"
+                     data-name="{{ convo.donor.phone_number }}"
+                     data-type="whatsapp">
+                    <div class="chat-info">
+                        <div class="chat-name">{{ convo.donor.phone_number }}</div>
+                        <div class="chat-last-msg">
+                            {% if convo.last_message_direction == "out" %}
+                            <span class="chat-tick {{ convo.last_message_status }}">
+                                {% if convo.last_message_status == "sent" %}✔{% else %}✔✔{% endif %}
+                            </span>
+                            {% endif %}
+                            {% if convo.last_message_type == "text" %}
+                            <span class="{% if convo.unread_count %}unread-last-text{% else %}last-text{% endif %}">
+                                {{ convo.last_message_preview }}
+                            </span>
+                            {% elif convo.last_message_type == "image" %}
+                            <span class="last-text"><i class="ri-image-2-fill"></i> Image</span>
+                            {% elif convo.last_message_type == "video" %}
+                            <span class="last-text"><i class="ri-video-fill"></i> Video</span>
+                            {% elif convo.last_message_type == "audio" %}
+                            <span class="last-text"><i class="ri-mic-fill"></i> Audio</span>
+                            {% elif convo.last_message_type == "document" %}
+                            <span class="last-text"><i class="ri-file-text-fill"></i> Document</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time"
+                             data-time="{% if convo.last_message_at %}{{ convo.last_message_at|date:'c' }}{% endif %}">
+                        </div>
+                        {% if convo.unread_count > 0 %}
+                        <div class="chat-unread">{{ convo.unread_count }}</div>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="header-actions">
-                    <button class="action-btn website-btn" id="websiteBtn"><i class="fas fa-globe"></i> Website</button>
-                    <button class="action-btn end-btn" id="endChatBtn"><i class="fas fa-power-off"></i> End Chat</button>
+                {% empty %}
+                <div class="no-result">No conversations</div>
+                {% endfor %}
+                <div class="no-result" id="waNoResult" style="display:none;">No result found</div>
+            </div>
+        </div>
+
+        <!-- ─── Visitors tab ─── -->
+        <div id="visitorTabContent" style="display:none;">
+
+            {% if missed_no_reply %}
+            <div id="missedBanner" style="background:#fff3cd;border-left:4px solid #f59e0b;padding:10px 14px;font-size:13px;color:#856404;display:flex;align-items:center;justify-content:space-between;">
+                <span>⚠️ <strong>{{ missed_no_reply }}</strong> visitor{{ missed_no_reply|pluralize }} left today without your reply!</span>
+                <button onclick="document.getElementById('missedBanner').style.display='none'" style="background:none;border:none;font-size:16px;cursor:pointer;color:#856404;">✕</button>
+            </div>
+            {% endif %}
+
+            {% if missed_while_offline %}
+            <div id="offlineBanner" style="background:#e3f2fd;border-left:4px solid #1e88e5;padding:10px 14px;font-size:13px;color:#1565c0;display:flex;align-items:center;justify-content:space-between;">
+                <span>💤 While you were offline, <strong>{{ missed_while_offline }}</strong> visitor{{ missed_while_offline|pluralize }} came to the site.</span>
+                <button onclick="document.getElementById('offlineBanner').style.display='none'" style="background:none;border:none;font-size:16px;cursor:pointer;color:#1565c0;">✕</button>
+            </div>
+            {% endif %}
+
+            <button id="toggleStatsBtn" onclick="document.getElementById('rmStatsPanel').style.display=document.getElementById('rmStatsPanel').style.display==='none'?'flex':'none'; this.querySelector('.arrow').textContent=document.getElementById('rmStatsPanel').style.display==='none'?'▼':'▲';"
+                    style="width:100%;padding:8px 14px;margin:6px 0 4px;background:#fff;border:1px solid #e9ebec;border-radius:8px;font-size:12px;font-weight:700;color:#495057;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                Today's Stats <span class="arrow">▼</span>
+            </button>
+            <div id="rmStatsPanel" style="display:none;gap:6px;margin:0 0 6px;">
+                <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
+                    <div style="font-size:16px;font-weight:800;color:#0ab39c;">{{ active_count }}</div>
+                    <div style="font-size:9px;font-weight:600;color:#878a99;">Active</div>
+                </div>
+                <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
+                    <div style="font-size:16px;font-weight:800;color:#aaa;">{{ reassigned_count }}</div>
+                    <div style="font-size:9px;font-weight:600;color:#878a99;">Reassigned</div>
+                </div>
+                <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
+                    <div style="font-size:16px;font-weight:800;color:#f06548;">{{ missed_count }}</div>
+                    <div style="font-size:9px;font-weight:600;color:#878a99;">Missed</div>
+                </div>
+                <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
+                    <div style="font-size:16px;font-weight:800;color:#888;">{{ quickly_left_count }}</div>
+                    <div style="font-size:9px;font-weight:600;color:#878a99;">Quick Left</div>
                 </div>
             </div>
 
-            <div class="chat-messages" id="chatMessages">
-                <div class="date-divider"><span>Today</span></div>
-                <div class="empty-chat">
-                    <div class="empty-icon"><i class="fas fa-comments"></i></div>
-                    <p>Select a chat to start messaging</p>
-                </div>
+            <div class="rm-status-bar {% if rm.active_visitor_chat %}is-online{% else %}is-offline{% endif %}"
+                 id="rmStatusBar">
+                <div class="status-dot {% if rm.active_visitor_chat %}online{% else %}offline{% endif %}"
+                     id="rmStatusDot"></div>
+                <span class="status-label {% if rm.active_visitor_chat %}online{% else %}offline{% endif %}"
+                      id="rmStatusText">
+                    {% if rm.active_visitor_chat %}Online{% else %}Offline{% endif %}
+                </span>
+                <button class="toggle-status-btn {% if rm.active_visitor_chat %}online{% else %}offline{% endif %}"
+                        id="toggleStatusBtn" onclick="toggleRMStatus()">
+                    {% if rm.active_visitor_chat %}Go Offline{% else %}Go Online{% endif %}
+                </button>
             </div>
-
-            <!-- Reply Preview Bar -->
-            <div class="reply-bar" id="replyBar" style="display:none;border-radius: 25vh; background-color: #f3f4f6; padding: 8px 16px; display: flex; align-items: center; margin-bottom: 10px;">
-                <div class="reply-bar-line"></div>
-                <div class="reply-bar-content">
-                    <span class="reply-bar-label">Replying to message</span>
-                    <p class="reply-bar-text" id="replyBarText"></p>
-                </div>
-                <button class="reply-bar-close" id="replyBarClose"><i class="fas fa-times"></i></button>
+           
+            <div class="search-box">
+                <input type="text" id="visitorSearch" placeholder="Search visitors…"
+                       oninput="filterVisitors(this.value)">
             </div>
-
-            <!-- Voice Recording UI -->
-            <div class="voice-record-bar" id="voiceRecordBar" style="display:none;">
-                <button class="voice-cancel-btn" id="voiceCancelBtn"><i class="fas fa-trash"></i></button>
-                <div class="voice-record-info">
-                    <span class="voice-rec-dot"></span>
-                    <span class="voice-rec-time" id="voiceRecTime">0:00</span>
-                    
+            <div class="chat-list-body" id="visitorListBody">
+                {% for convo in visitor_conversations %}
+                <div class="chat-item visitor-item"
+                     role="button" tabindex="0"
+                     data-conversation-id="{{ convo.id }}"
+                     data-session-key="{{ convo.visitor.session_key }}"
+                     data-name="{{ convo.visitor.ip_address }}"
+                     data-type="visitor">
+                    <div class="chat-info">
+                        <div class="chat-name">
+                            {{ convo.visitor.ip_address }}
+                            {% if convo.visitor.is_returning %}
+                            <span class="visitor-returning-badge" style="background:#ff9800;color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px;">↩ Back</span>
+                            {% endif %}
+                        </div>
+                        <div class="chat-last-msg">
+                            <span class="visitor-origin">
+                                {% if convo.visitor.device_type == "mobile" %}📱
+                                {% elif convo.visitor.device_type == "tablet" %}💻
+                                {% else %}🖥{% endif %}
+                                {{ convo.visitor.city|default:convo.visitor.country|default:convo.visitor.ip_address }}
+                                &nbsp;·&nbsp;
+                                {% if convo.status == "waiting" %}<span class="visitor-status-label" style="color:#f59e0b;">Waiting</span>
+                                {% elif convo.status == "active" %}<span class="visitor-status-label" style="color:#25d366;">Active</span>
+                                {% elif convo.status == "reassigned" %}<span class="visitor-status-label" style="color:#aaa;">Reassigned</span>
+                                {% elif convo.status == "missed" and convo.missed_reason == "night_chat" %}<span class="visitor-status-label" style="color:#636ebb;">Night Chat</span>
+                                {% elif convo.status == "missed" and convo.missed_reason == "slow_response" %}<span class="visitor-status-label" style="color:#f59e0b;">Slow Response</span>
+                                {% elif convo.status == "missed" and convo.visitor.total_time_seconds <= 5 %}<span class="visitor-status-label" style="color:#888;">Quickly Left</span>
+                                {% elif convo.status == "missed" %}<span class="visitor-status-label" style="color:#ef4444;">Missed</span>{% endif %}
+                            </span>
+                            {% if convo.last_message_preview %}
+                            <span class="{% if convo.unread_count_rm %}unread-last-text{% else %}last-text{% endif %}">
+                                {{ convo.last_message_preview|truncatechars:40 }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time"
+                             data-time="{% if convo.last_message_at %}{{ convo.last_message_at|date:'c' }}{% elif convo.created_at %}{{ convo.created_at|date:'c' }}{% endif %}">
+                        </div>
+                        {% if convo.unread_count_rm > 0 %}
+                        <div class="chat-unread">{{ convo.unread_count_rm }}</div>
+                        {% endif %}
+                        <div style="margin-top:3px;">
+                            {% if convo.visitor.is_online %}
+                            <span class="visitor-online-dot" style="color:#25d366;font-size:10px;">● online</span>
+                            {% else %}
+                            <span class="visitor-online-dot" style="color:#aaa;font-size:10px;">● offline</span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <button class="voice-send-btn" id="voiceSendBtn"><i class="fas fa-paper-plane"></i></button>
+                {% empty %}
+                <div class="no-result">No active visitor chats</div>
+                {% endfor %}
+                <div class="no-result" id="visitorNoResult" style="display:none;">No result found</div>
             </div>
+        </div>
 
-            <div class="chat-input" id="chatInput">
-                <input type="file" id="fileInput" accept="*">
+    </div><!-- end .chat-list -->
 
-                <div class="file-menu">
-  <button class="input-action-btn" id="fileMenuToggle" title="Upload File">
-    <!-- Paperclip / Attachment Icon -->
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="#0c0c0c" d="M6.879 9.934a.8.8 0 0 1-.575-.238a3.82 3.82 0 0 1 0-5.392l3-3C10.024.584 10.982.187 12 .187s1.976.397 2.696 1.117a3.82 3.82 0 0 1 0 5.392l-1.371 1.371a.813.813 0 0 1-1.149-1.149l1.371-1.371A2.19 2.19 0 0 0 12 1.812c-.584 0-1.134.228-1.547.641l-3 3a2.19 2.19 0 0 0 0 3.094a.813.813 0 0 1-.575 1.387z" stroke-width="0.2" stroke="#03494a"/><path fill="#0c0c0c" d="M4 15.813a3.8 3.8 0 0 1-2.696-1.117a3.82 3.82 0 0 1 0-5.392l1.371-1.371a.813.813 0 0 1 1.149 1.149l-1.371 1.371A2.19 2.19 0 0 0 4 14.188c.585 0 1.134-.228 1.547-.641l3-3a2.19 2.19 0 0 0 0-3.094a.813.813 0 0 1 1.149-1.149a3.82 3.82 0 0 1 0 5.392l-3 3A3.8 3.8 0 0 1 4 15.813" stroke-width="0.2" stroke="#03494a"/></svg>  </button>
 
-  <div class="file-menu-dropdown" id="fileMenuDropdown">
+    <!-- ══════════════════════════════════════
+         CENTER — Chat Window (dual mode)
+    ══════════════════════════════════════ -->
+    <div class="chat-window" id="mainChatWindow">
 
-    <!-- Photo Button -->
-    <button class="file-menu-item" id="uploadImageBtn">
-      <!-- Image Upload Icon -->
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="3" width="22" height="18" rx="3" fill="#0d1b4b"/>
-        <circle cx="7" cy="9" r="2.2" fill="#3b5bdb"/>
-        <path d="M1 17l5-5 4 4 4-4 9 7" fill="#3b5bdb"/>
-        <line x1="20" y1="1" x2="20" y2="7" stroke="#3b5bdb" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M17.5 3.5L20 1L22.5 3.5" stroke="#3b5bdb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Photo
-    </button>
-
-    <!-- File Button -->
-    <button class="file-menu-item" id="uploadDocumentBtn">
-      <!-- Cloud Upload Icon -->
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C9 2 6.5 4.2 6.5 7c0 .2 0 .4.02.6C4.6 8.4 3 10.1 3 12.2 3 14.9 5.2 17 7.9 17H9v-1.5H7.9C6 15.5 4.5 14.1 4.5 12.2c0-1.6 1.2-3 2.8-3.2l.8-.1-.1-.8C8 7.9 8 7.5 8 7c0-2.2 1.8-4 4-4s4 1.8 4 4v.5h.5c1.4 0 2.5 1.1 2.5 2.5S17.9 12.5 16.5 12.5H15V14h1.5c2.2 0 4-1.8 4-4 0-1.9-1.3-3.5-3.1-3.9C16.8 3.8 14.6 2 12 2z" fill="#3b82f6"/>
-        <rect x="8" y="11" width="8" height="10" rx="1.5" fill="#dbeafe"/>
-        <path d="M14.5 11v2.5H17" stroke="#5eead4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 14v4M10 16l2-2 2 2" stroke="#1d4ed8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      File
-    </button>
-
-  </div>
-</div>
-
-                <button class="input-action-btn" id="emojiBtn" type="button" title="Emoji"><i class="fas fa-smile"></i></button>
-                <div class="emoji-picker" id="emojiPicker"></div>
-
-                <div class="input-wrapper">
-                    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
-                </div>
-
-                <!-- Mic button (shows when input empty) -->
-                <button class="input-action-btn mic-btn" id="recordBtn" title="Record Voice"><i class="fas fa-microphone"></i></button>
-                <!-- Send button (shows when input has text) -->
-                <button class="send-btn" id="sendBtn" type="button" title="Send message" style="display:none;">
-                    <i class="fas fa-paper-plane"></i>
+        <div class="chat-header">
+            <span class="icon-btn mobile-back" onclick="mobileBack()">←</span>
+            <div class="chat-name fs-24" id="chatName">Select a chat</div>
+            <input type="hidden" id="activeConversationId">
+            <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+                <span class="chat-type-badge" id="chatTypeBadge"></span>
+                <button class="btn btn-sm btn-outline-danger" id="closeConvoBtn"
+                        style="display:none;font-size:11px;padding:3px 10px;"
+                        onclick="closeVisitorConversation()">
+                    End Chat
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- Image Viewer Modal -->
-    <div class="image-viewer-modal" id="imageViewerModal">
-        <button class="image-viewer-close" id="imageViewerClose">&times;</button>
-        <div class="image-viewer-content">
-            <img class="image-viewer-img" id="imageViewerImg" alt="Full view">
-            <div class="image-viewer-controls">
-                <span id="imageCountText">1 / 1</span>
-                <button class="image-viewer-btn" id="imageDownloadBtn"><i class="fas fa-download"></i> Download</button>
+        <div class="chat-body" id="chatBody"></div>
+
+        <!-- Footer — media buttons hidden in visitor mode via JS -->
+        <div class="chat-footer">
+            <div class="icon-btn" id="attachBtn">＋</div>
+            <!-- Visitor file upload (hidden by default, shown in visitor mode) -->
+            <div class="icon-btn" id="visitorFileBtn" style="display:none;" title="Send file/image" onclick="document.getElementById('visitorFileInput').click()">＋</div>
+            <input type="file" id="visitorFileInput" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" hidden>
+
+            <textarea id="messageInput" class="chat-input"
+                      placeholder="Type a message" rows="1"></textarea>
+
+            <div class="recording-indicator" id="recordingIndicator">🔴 Recording...</div>
+            <div class="icon-btn mic-btn" id="micBtn">🎤</div>
+            <div class="send-btn" id="sendBtn">➤</div>
+
+            <div class="attach-popup" id="attachPopup">
+                <div class="attach-item" data-type="image">🖼 Image</div>
+                <div class="attach-item" data-type="audio">🎵 Audio</div>
+                <div class="attach-item" data-type="video">🎥 Video</div>
+                <div class="attach-item" data-type="doc">📄 Document</div>
+            </div>
+
+            <input type="file" id="fileImage" accept="image/*" hidden>
+            <input type="file" id="fileAudio" accept="audio/*" hidden>
+            <input type="file" id="fileVideo" accept="video/*" hidden>
+            <input type="file" id="fileDoc"
+                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" hidden>
+
+            <div id="previewModal" class="preview-modal">
+                <div class="preview-box">
+                    <div id="previewContent"></div>
+                    <div class="preview-actions">
+                        <button class="preview-cancel">Cancel</button>
+                        <button class="preview-send">Send</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Confirm Modal -->
-    <div class="modal" id="confirmModal">
-        <div class="modal-content">
-            <div class="modal-header" id="confirmTitle">Confirm</div>
-            <div class="modal-body" id="confirmBody"></div>
-            <div class="modal-footer">
-                <button class="modal-btn secondary" id="confirmCancel">Cancel</button>
-                <button class="modal-btn primary" id="confirmOk">OK</button>
+    </div><!-- end .chat-window -->
+
+
+    <audio id="notificationSound"
+           src="{% static 'sounds/notify.mp3' %}" preload="auto"></audio>
+
+</div><!-- end .whatsapp-wrapper -->
+
+
+<script>
+/* ============================================================
+   GLOBAL STATE
+============================================================ */
+const RM_CODE = "{{ rm.rm_code }}";
+const RM_ID   = {{ rm.id }};
+
+let chatMode              = null;   // "whatsapp" | "visitor"
+let inboxSocket           = null;   // ws/inbox/
+let chatSocket            = null;   // ws/chat/{id}/
+let visitorInboxSocket    = null;   // ws/visitor-inbox/
+let visitorChatSocket     = null;   // ws/visitor-chat/{id}/
+let activeConversationId  = null;   // active WA convo
+let activeVisitorConvoId  = null;   // active visitor convo
+let activeVisitorSessionKey = null;
+let lastRenderedDate      = null;
+let audioUnlocked         = false;
+let notificationGranted   = false;
+let rmOnline              = {{ rm.active_visitor_chat|yesno:"true,false" }};
+let selectedFile = null, selectedType = null;
+let visitorTabUnread = 0;
+
+
+/* ============================================================
+   TABS
+============================================================ */
+function switchTab(tab) {
+    sessionStorage.setItem("rmActiveTab", tab);
+    const waBtn   = document.getElementById("waTabBtn");
+    const visBtn  = document.getElementById("visitorTabBtn");
+    const waCont  = document.getElementById("waTabContent");
+    const visCont = document.getElementById("visitorTabContent");
+
+    if (tab === "whatsapp") {
+        waBtn.classList.add("active");
+        visBtn.classList.remove("active");
+        waCont.style.display  = "";
+        visCont.style.display = "none";
+        // Clear visitor chat state when leaving visitor tab
+        activeVisitorConvoId = null;
+        activeVisitorSessionKey = null;
+        if (visitorChatSocket) { visitorChatSocket.close(); visitorChatSocket = null; }
+    } else {
+        visBtn.classList.add("active");
+        waBtn.classList.remove("active");
+        visCont.style.display = "";
+        waCont.style.display  = "none";
+        // Clear WA chat state when leaving WA tab
+        activeConversationId = null;
+        if (chatSocket) { chatSocket.close(); chatSocket = null; }
+        // Clear visitor badge when tab opened
+        visitorTabUnread = 0;
+        const badge = document.getElementById("visitorTabBadge");
+        badge.textContent = "";
+        badge.classList.remove("show");
+        updateTabTitle();
+    }
+
+    // FIX #4: Reset chat window UI when switching tabs so stale content doesn't show
+    document.getElementById("chatName").textContent = "Select a chat";
+    document.getElementById("chatBody").innerHTML   = "";
+    document.getElementById("chatTypeBadge").style.display = "none";
+    document.getElementById("closeConvoBtn").style.display = "none";
+    lastRenderedDate = null;
+    // Remove any stale visitor page bar
+    var staleBar = document.getElementById("visitorCurrentPage");
+    if (staleBar) staleBar.remove();
+}
+
+function bumpVisitorTabBadge() {
+    // Only bump if visitor tab is NOT active
+    if (document.getElementById("visitorTabBtn").classList.contains("active")) return;
+    visitorTabUnread++;
+    const badge = document.getElementById("visitorTabBadge");
+    badge.textContent = visitorTabUnread;
+    badge.classList.add("show");
+    updateTabTitle();
+}
+
+let _baseTitle = document.title;
+let _totalUnread = 0;
+
+function updateTabTitle() {
+    _totalUnread = visitorTabUnread;
+    document.title = _totalUnread > 0 ? `(${_totalUnread}) ${_baseTitle}` : _baseTitle;
+}
+
+
+/* ============================================================
+   CHAT MODE — switch right panel appearance
+============================================================ */
+function setChatMode(mode) {
+    chatMode = mode;
+    const badge      = document.getElementById("chatTypeBadge");
+    const closeBtn   = document.getElementById("closeConvoBtn");
+    const attachBtn  = document.getElementById("attachBtn");
+    const micBtn     = document.getElementById("micBtn");
+    const recInd     = document.getElementById("recordingIndicator");
+
+    if (mode === "visitor") {
+        badge.style.display      = "inline-block";
+        badge.textContent        = "🌐 Website";
+        badge.style.background   = "#e3f2fd";
+        badge.style.color        = "#1565c0";
+        closeBtn.style.display   = "inline-block";
+        // hide WA-only controls, show visitor file btn
+        attachBtn.style.display  = "none";
+        micBtn.style.display     = "none";
+        recInd.style.display     = "none";
+        document.getElementById("visitorFileBtn").style.display = "flex";
+    } else {
+        badge.style.display      = "inline-block";
+        badge.textContent        = "📱 WhatsApp";
+        badge.style.background   = "#e8f5e9";
+        badge.style.color        = "#1b5e20";
+        closeBtn.style.display   = "none";
+        // show WA-only controls, hide visitor file btn
+        attachBtn.style.display  = "";
+        micBtn.style.display     = "";
+        document.getElementById("visitorFileBtn").style.display = "none";
+    }
+}
+
+
+/* ============================================================
+   UTILS
+============================================================ */
+function getCSRFToken() {
+    let v = null;
+    document.cookie.split(";").forEach(c => {
+        c = c.trim();
+        if (c.startsWith("csrftoken=")) v = decodeURIComponent(c.slice(10));
+    });
+    return v;
+}
+
+function escapeHtml(t) {
+    const d = document.createElement("div");
+    d.innerText = t;
+    return d.innerHTML;
+}
+
+function formatTimeSmart(iso) {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d)) return iso; // FIX #1b: if already a display string (e.g. "10:30 AM"), return as-is
+    const now = new Date();
+    const y = new Date(); y.setDate(now.getDate() - 1);
+    if (d.toDateString() === now.toDateString())
+        return d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", hour12:true });
+    if (d.toDateString() === y.toDateString()) return "Yesterday";
+    return d.toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
+}
+
+function scrollToBottom() {
+    const el = document.getElementById("chatBody");
+    if (!el) return;
+    // Immediate scroll
+    el.scrollTop = el.scrollHeight;
+    // Wait for images to load, then scroll again
+    var imgs = el.querySelectorAll("img");
+    var pending = 0;
+    imgs.forEach(function (img) {
+        if (!img.complete) {
+            pending++;
+            img.onload = img.onerror = function () {
+                pending--;
+                if (pending <= 0) el.scrollTop = el.scrollHeight;
+            };
+        }
+    });
+    // Fallback scroll after short delay (in case no images or events missed)
+    setTimeout(function () { el.scrollTop = el.scrollHeight; }, 500);
+}
+
+
+/* ============================================================
+   WHATSAPP INBOX SOCKET  (ws/inbox/)
+============================================================ */
+function connectInboxSocket() {
+    const proto = location.protocol === "https:" ? "wss://" : "ws://";
+    inboxSocket = new WebSocket(proto + location.host + "/ws/inbox/");
+
+    inboxSocket.onclose = function () {
+        setTimeout(connectInboxSocket, 3000);
+    };
+
+    inboxSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        if (data.type !== "inbox_update") return;
+
+        const listBody = document.getElementById("waChatListBody");
+        let item = listBody.querySelector(
+            `.chat-item[data-conversation-id="${data.conversation_id}"]`
+        );
+
+        if (item && data.phone) {
+            item.setAttribute("data-name", data.phone);
+            const nameEl = item.querySelector(".chat-name");
+            if (nameEl) nameEl.textContent = data.phone;
+        }
+
+        if (!item) {
+            item = document.createElement("div");
+            item.className = "chat-item wa-item";
+            item.setAttribute("data-conversation-id", data.conversation_id);
+            item.setAttribute("data-name", data.phone || "");
+            item.setAttribute("data-type", "whatsapp");
+            item.innerHTML = `
+                <div class="chat-info">
+                    <div class="chat-name">${escapeHtml(data.phone || "")}</div>
+                    <div class="chat-last-msg"></div>
+                </div>
+                <div class="chat-meta">
+                    <div class="chat-time">${formatTimeSmart(data.time)}</div>
+                </div>`;
+            item.addEventListener("click", function () { openChatItem(this); });
+            listBody.prepend(item);
+        }
+
+        // Update preview
+        const previewEl = item.querySelector(".chat-last-msg");
+        if (previewEl) {
+            let tickHTML = "";
+            if (data.direction === "out") {
+                const sym = data.status === "sent" ? "✔" : "✔✔";
+                tickHTML = `<span class="chat-tick ${data.status}">${sym}</span>`;
+            }
+            let cHTML = "";
+            if (data.message_type === "text") {
+                cHTML = `<span class="${data.unread ? 'unread-last-text' : 'last-text'}">${escapeHtml(data.preview || "")}</span>`;
+            } else if (data.message_type === "image")    cHTML = `<span class="last-text"><i class="ri-image-2-fill"></i> Image</span>`;
+            else if (data.message_type === "video")      cHTML = `<span class="last-text"><i class="ri-video-fill"></i> Video</span>`;
+            else if (data.message_type === "audio")      cHTML = `<span class="last-text"><i class="ri-headphone-fill"></i> Audio</span>`;
+            else if (data.message_type === "document")   cHTML = `<span class="last-text"><i class="ri-file-text-fill"></i> Document</span>`;
+            previewEl.innerHTML = tickHTML + cHTML;
+        }
+
+        // Update time
+        if (data.time) {
+            const timeEl = item.querySelector(".chat-time");
+            if (timeEl) timeEl.textContent = formatTimeSmart(data.time);
+        }
+
+        // Unread badge
+        let badge = item.querySelector(".chat-unread");
+        var waViewing = activeConversationId == data.conversation_id
+                        && chatMode === "whatsapp"
+                        && document.visibilityState === "visible";
+        if (waViewing && window.innerWidth <= 768) {
+            var chatWin = document.getElementById("mainChatWindow");
+            if (chatWin && chatWin.style.display === "none") waViewing = false;
+        }
+        if (waViewing) {
+            if (badge) badge.remove();
+        } else {
+            if (data.unread > 0) {
+                if (!badge) {
+                    badge = document.createElement("div");
+                    badge.className = "chat-unread";
+                    item.querySelector(".chat-meta").appendChild(badge);
+                }
+                badge.textContent = data.unread;
+            } else if (badge) {
+                badge.remove();
+            }
+        }
+
+        listBody.prepend(item);
+
+        // Sound + notification
+        if (data.direction === "in") {
+            const isSame = activeConversationId == data.conversation_id && chatMode === "whatsapp";
+            if (!(isSame && document.visibilityState === "visible")) {
+                playNotificationSound();
+                showBrowserNotification(data.preview || "New WhatsApp message");
+            }
+        }
+    };
+}
+connectInboxSocket();
+
+
+/* ============================================================
+   VISITOR INBOX SOCKET  (ws/visitor-inbox/)
+============================================================ */
+var _inboxPingInterval = null;
+/* ── DISCONNECT ALERT SYSTEM (heartbeat-based) ── */
+var _disconnectBanner = null;
+var _disconnectAlertTimer = null;
+var _disconnectAlertCount = 0;
+var _lastPongTime = Date.now();
+var _connectionAlive = true;
+const PING_INTERVAL = 15;       // send ping every 15 seconds
+const DEAD_THRESHOLD = 45;      // if no pong for 45s → connection is dead (3 missed pings)
+const ALERT_INTERVAL = 30;      // alert every 30 seconds
+const MAX_ALERTS = 6;           // 6 alerts = 3 minutes before auto-offline
+
+function startDisconnectAlerts() {
+    console.warn("[HeartBeat] startDisconnectAlerts() called");
+    if (_disconnectAlertTimer) return;
+    _disconnectAlertCount = 0;
+    showDisconnectBanner();
+    // Play first alert immediately
+    playNotificationSound();
+    showBrowserNotification("⚠️ Connection Lost!", "You'll go offline in 3m. Open the app to stay online.");
+
+    _disconnectAlertTimer = setInterval(function () {
+        // Check if connection recovered
+        if (_connectionAlive) {
+            clearDisconnectAlerts();
+            return;
+        }
+
+        _disconnectAlertCount++;
+        var remaining = (MAX_ALERTS - _disconnectAlertCount) * ALERT_INTERVAL;
+
+        if (_disconnectAlertCount >= MAX_ALERTS) {
+            clearDisconnectAlerts();
+            forceGoOffline();
+            return;
+        }
+
+        playNotificationSound();
+
+        var mins = Math.floor(remaining / 60);
+        var secs = remaining % 60;
+        var timeLeft = mins > 0 ? mins + "m " + secs + "s" : secs + "s";
+        showBrowserNotification("⚠️ Connection Lost!", "Going offline in " + timeLeft + ". Come back now!");
+        updateDisconnectBanner(timeLeft);
+    }, ALERT_INTERVAL * 1000);
+}
+
+function clearDisconnectAlerts() {
+    if (_disconnectAlertTimer) { clearInterval(_disconnectAlertTimer); _disconnectAlertTimer = null; }
+    _disconnectAlertCount = 0;
+    hideDisconnectBanner();
+}
+
+function showDisconnectBanner() {
+    if (_disconnectBanner) return;
+    _disconnectBanner = document.createElement("div");
+    _disconnectBanner.id = "disconnectBanner";
+    _disconnectBanner.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;background:#f06548;color:#fff;padding:10px 18px;font-size:13px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 10px rgba(0,0,0,.3);";
+    _disconnectBanner.innerHTML = '⚠️ Connection lost — reconnecting... <span id="disconnectCountdown" style="font-weight:400;">Going offline in 3m 0s</span>';
+    document.body.prepend(_disconnectBanner);
+}
+
+function updateDisconnectBanner(timeLeft) {
+    var el = document.getElementById("disconnectCountdown");
+    if (el) el.textContent = "Going offline in " + timeLeft;
+}
+
+function hideDisconnectBanner() {
+    if (_disconnectBanner) { _disconnectBanner.remove(); _disconnectBanner = null; }
+}
+
+function forceGoOffline() {
+    console.warn("[HeartBeat] forceGoOffline() — auto-logging out RM after 3 minutes of no connection");
+    fetch(`/rm/${RM_CODE}/visitor/force-offline/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() }
+    }).then(function () {
+        location.href = "/rm/login/";
+    }).catch(function () {
+        location.href = "/rm/login/";
+    });
+}
+
+function connectVisitorInboxSocket() {
+    const proto = location.protocol === "https:" ? "wss://" : "ws://";
+    console.log("[HeartBeat] Connecting to visitor inbox socket...");
+    visitorInboxSocket = new WebSocket(proto + location.host + "/ws/visitor-inbox/");
+
+    visitorInboxSocket.onopen = function () {
+        console.log("[HeartBeat] WebSocket OPEN — connection established");
+        _lastPongTime = Date.now();
+        _connectionAlive = true;
+        clearDisconnectAlerts();
+
+        // Send ping every 15 seconds
+        if (_inboxPingInterval) clearInterval(_inboxPingInterval);
+        _inboxPingInterval = setInterval(function () {
+            try {
+                if (visitorInboxSocket && visitorInboxSocket.readyState === WebSocket.OPEN) {
+                    visitorInboxSocket.send(JSON.stringify({ type: "ping" }));
+                    console.log("[HeartBeat] PING sent");
+                }
+            } catch(e) {
+                console.warn("[HeartBeat] Ping send failed:", e.message);
+            }
+        }, PING_INTERVAL * 1000);
+    };
+
+    visitorInboxSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        if (data.type === "pong") {
+            _lastPongTime = Date.now();
+            console.log("[HeartBeat] PONG received");
+            return;
+        }
+        // Any message from server = connection is alive
+        _lastPongTime = Date.now();
+
+        if (data.type === "visitor_new_session")         handleNewVisitorSession(data);
+        else if (data.type === "visitor_inbox_update")   handleVisitorInboxUpdate(data);
+        else if (data.type === "visitor_status_change")  handleVisitorStatusChange(data);
+        else if (data.type === "visitor_page_change")    handleVisitorPageChange(data);
+        else if (data.type === "visitor_removed")        handleVisitorRemoved(data);
+    };
+
+    visitorInboxSocket.onerror = function (err) {
+        console.error("[HeartBeat] WebSocket ERROR", err);
+    };
+
+    visitorInboxSocket.onclose = function (ev) {
+        console.warn("[HeartBeat] WebSocket CLOSED — code:", ev.code, "reason:", ev.reason);
+        if (_inboxPingInterval) { clearInterval(_inboxPingInterval); _inboxPingInterval = null; }
+        // FIX #7: Only reconnect if rmOnline is still true at the moment the setTimeout fires
+        if (rmOnline) {
+            setTimeout(function () {
+                if (rmOnline) connectVisitorInboxSocket();
+            }, 5000);
+        }
+    };
+}
+connectVisitorInboxSocket();
+
+// Heartbeat check runs independently — not tied to any WebSocket lifecycle
+// FIX #3: Skip heartbeat checks entirely when RM is offline to avoid false disconnect alerts
+var _heartbeatCheckInterval = setInterval(function () {
+    if (!rmOnline) {
+        // If we somehow still have alerts running while offline, clear them
+        if (_disconnectAlertTimer) clearDisconnectAlerts();
+        return;
+    }
+    var elapsed = (Date.now() - _lastPongTime) / 1000;
+    console.log("[HeartBeat] Check — last pong " + Math.round(elapsed) + "s ago, alive=" + _connectionAlive);
+
+    if (elapsed < DEAD_THRESHOLD) {
+        // Connection is alive — clear alerts if any
+        if (!_connectionAlive) {
+            console.log("[HeartBeat] Connection RECOVERED — clearing alerts");
+            _connectionAlive = true;
+            clearDisconnectAlerts();
+        }
+        return;
+    }
+
+    // Connection is dead — start alerts if not already running
+    if (_connectionAlive) {
+        console.warn("[HeartBeat] Connection DEAD — no pong for " + Math.round(elapsed) + "s — starting alerts!");
+        _connectionAlive = false;
+        startDisconnectAlerts();
+    }
+}, 10000);
+
+// When tab becomes visible again, do an immediate heartbeat check
+document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && rmOnline) {
+        var elapsed = (Date.now() - _lastPongTime) / 1000;
+        console.log("[HeartBeat] Tab visible — last pong " + Math.round(elapsed) + "s ago");
+        if (elapsed >= DEAD_THRESHOLD && _connectionAlive) {
+            console.warn("[HeartBeat] Tab visible + connection DEAD — starting alerts!");
+            _connectionAlive = false;
+            startDisconnectAlerts();
+        } else if (elapsed < DEAD_THRESHOLD && !_connectionAlive) {
+            console.log("[HeartBeat] Tab visible + connection RECOVERED");
+            _connectionAlive = true;
+            clearDisconnectAlerts();
+        }
+    }
+});
+
+// Restore last active tab after page reload
+var savedTab = sessionStorage.getItem("rmActiveTab");
+if (savedTab) switchTab(savedTab);
+
+function handleNewVisitorSession(data) {
+    playNotificationSound();
+    var isBack = data.is_returning;
+    var notifTitle = isBack ? "↩ Visitor is back!" : "New visitor! 🌐";
+    var notifBody = isBack
+        ? `${data.ip || "Visitor"} returned from ${data.city || "unknown"}`
+        : `From ${data.city || data.ip || "unknown"}`;
+    showBrowserNotification(notifTitle, notifBody);
+    bumpVisitorTabBadge();
+
+    const listBody = document.getElementById("visitorListBody");
+    if (!listBody.querySelector(`.chat-item[data-conversation-id="${data.conversation_id}"]`)) {
+        const newItem = buildVisitorItem(data);
+        listBody.prepend(newItem);
+
+        // Highlight + toast
+        newItem.classList.add("visitor-highlight");
+        var visitorName = data.ip || "Visitor";
+        var toastSub = isBack ? "↩ Returned to site" : (data.city || data.country || "");
+        showVisitorToast(visitorName, toastSub, data.conversation_id, newItem, isBack ? "returning" : "new");
+    }
+}
+
+function handleVisitorInboxUpdate(data) {
+    const listBody = document.getElementById("visitorListBody");
+    const item = listBody.querySelector(`.chat-item[data-conversation-id="${data.conversation_id}"]`);
+    if (!item) return;
+
+    // Update status label (Waiting → Active) in realtime
+    if (data.status) {
+        const originEl = item.querySelector(".visitor-origin");
+        if (originEl) {
+            const statusSpan = originEl.querySelector(".visitor-status-label");
+            if (statusSpan) {
+                if (data.status === "active") {
+                    statusSpan.style.color   = "#25d366";
+                    statusSpan.textContent   = "Active";
+                } else if (data.status === "waiting") {
+                    statusSpan.style.color   = "#f59e0b";
+                    statusSpan.textContent   = "Waiting";
+                } else if (data.status === "missed" && data.missed_reason === "night_chat") {
+                    statusSpan.style.color   = "#636ebb";
+                    statusSpan.textContent   = "Night Chat";
+                } else if (data.status === "missed" && data.missed_reason === "quickly_left") {
+                    statusSpan.style.color   = "#888";
+                    statusSpan.textContent   = "Quickly Left";
+                } else if (data.status === "missed" && data.missed_reason === "slow_response") {
+                    statusSpan.style.color   = "#f59e0b";
+                    statusSpan.textContent   = "Slow Response";
+                } else if (data.status === "missed") {
+                    statusSpan.style.color   = "#ef4444";
+                    statusSpan.textContent   = "Missed";
+                }
+            }
+        }
+    }
+
+    // Real-time read-only: if RM is currently viewing this chat and it became missed → disable input
+    if (data.status === "missed" && activeVisitorConvoId == data.conversation_id && chatMode === "visitor") {
+        activeVisitorConvoId = null;
+        activeVisitorSessionKey = null;
+        var reason = data.missed_reason || "";
+        var roMsg = "", roColor = "#ef4444", roBg = "#fef2f2", roLabel = "Missed";
+        if (reason === "quickly_left") {
+            roMsg = "Visitor left quickly (≤5s). Chat is read-only.";
+            roColor = "#888"; roBg = "#f5f5f5"; roLabel = "Quickly Left";
+        } else if (reason === "night_chat") {
+            roMsg = "Night hours chat. Chat is read-only.";
+            roColor = "#636ebb"; roBg = "#f0f0ff"; roLabel = "Night Chat";
+        } else if (reason === "slow_response") {
+            roMsg = "⚠️ You took 30+ seconds to reply. Visitor was assigned to another active RM.";
+            roColor = "#f59e0b"; roBg = "#fef9ee"; roLabel = "Slow Response";
+        } else {
+            roMsg = "Visitor left before reply. Chat is read-only.";
+        }
+        document.getElementById("chatBody").innerHTML +=
+            '<div style="text-align:center;color:' + roColor + ';font-size:13px;padding:12px;background:' + roBg + ';border-radius:8px;margin:10px 16px;">' + roMsg + '</div>';
+        document.getElementById("messageInput").disabled = true;
+        document.getElementById("messageInput").placeholder = roLabel + " — read only";
+        document.getElementById("sendBtn").style.opacity = "0.3";
+        document.getElementById("sendBtn").style.pointerEvents = "none";
+        document.getElementById("visitorFileBtn").style.display = "none";
+        document.getElementById("closeConvoBtn").style.display = "none";
+        scrollToBottom();
+    }
+
+    var previewEl = item.querySelector(".last-text, .unread-last-text");
+    if (previewEl && data.preview) {
+        previewEl.textContent = data.preview;
+        previewEl.className = data.unread > 0 ? "unread-last-text" : "last-text";
+    }
+
+    const timeEl = item.querySelector(".chat-time");
+    if (timeEl && data.time) timeEl.textContent = formatTimeSmart(data.time);
+
+    // Unread badge — only suppress if RM is actually viewing this chat right now
+    let badge = item.querySelector(".chat-unread");
+    var isViewing = activeVisitorConvoId == data.conversation_id
+                    && chatMode === "visitor"
+                    && document.visibilityState === "visible";
+    // On mobile, check if the chat window is actually shown
+    if (isViewing && window.innerWidth <= 768) {
+        var chatWin = document.getElementById("mainChatWindow");
+        if (chatWin && chatWin.style.display === "none") isViewing = false;
+    }
+    if (isViewing) {
+        if (badge) badge.remove();
+        // Also reset server-side unread since RM is viewing this chat
+        fetch("/rm/visitor-conversation/" + data.conversation_id + "/messages/").catch(function(){});
+    } else if (data.unread > 0) {
+        if (!badge) {
+            badge = document.createElement("div");
+            badge.className = "chat-unread";
+            item.querySelector(".chat-meta").appendChild(badge);
+        }
+        badge.textContent = data.unread;
+    } else if (badge) {
+        badge.remove();
+    }
+
+    listBody.prepend(item);
+
+    if (data.notify && data.direction === "visitor") {
+        if (!isViewing) {
+            playNotificationSound();
+            showBrowserNotification("Visitor message 🌐", data.preview || "New message");
+            bumpVisitorTabBadge();
+
+            // Show toast so RM knows which visitor sent a message
+            const visitorName = item.querySelector(".chat-name")?.textContent?.trim() || "Visitor";
+            showVisitorToast(visitorName, data.preview || "New message", data.conversation_id, item, "message");
+        }
+    }
+}
+
+function handleVisitorStatusChange(data) {
+    const listBody = document.getElementById("visitorListBody");
+    const item = listBody.querySelector(`.chat-item[data-conversation-id="${data.conversation_id}"]`);
+    if (!item) return;
+
+    const dot = item.querySelector(".visitor-online-dot");
+    if (dot) {
+        dot.style.color  = data.is_online ? "#25d366" : "#aaa";
+        dot.textContent  = data.is_online ? "● online" : "● offline";
+    }
+
+    // Notify RM when visitor comes back online (page load / refresh)
+    if (data.is_online) {
+        const isSame = activeVisitorConvoId == data.conversation_id && chatMode === "visitor";
+        if (!(isSame && document.visibilityState === "visible")) {
+            playNotificationSound();
+            showBrowserNotification("↩ Visitor is back!", item.querySelector(".chat-name")?.textContent?.trim() || "Visitor");
+            bumpVisitorTabBadge();
+
+            // ── Add "↩ Back" badge to the card ──
+            var nameEl = item.querySelector(".chat-name");
+            if (nameEl && !nameEl.querySelector(".visitor-returning-badge")) {
+                nameEl.insertAdjacentHTML("beforeend",
+                    ' <span class="visitor-returning-badge" style="background:#ff9800;color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px;">↩ Back</span>'
+                );
+            }
+
+            // ── Highlight the visitor card in sidebar ──
+            item.classList.remove("visitor-highlight");
+            void item.offsetWidth;  // force reflow to restart animation
+            item.classList.add("visitor-highlight");
+            // Move this visitor to top of list
+            listBody.prepend(item);
+
+            // ── Show clickable toast ──
+            const visitorName = item.querySelector(".chat-name")?.textContent?.trim() || "Visitor";
+            showVisitorToast(visitorName, "", data.conversation_id, item, "returning");
+        }
+    }
+}
+
+function handleVisitorRemoved(data) {
+    // Conversation was reassigned — keep card but mark as "Reassigned"
+    const listBody = document.getElementById("visitorListBody");
+    const item = listBody.querySelector(`.chat-item[data-conversation-id="${data.conversation_id}"]`);
+    if (item) {
+        var statusSpan = item.querySelector(".visitor-status-label");
+        if (statusSpan) {
+            statusSpan.style.color = "#aaa";
+            statusSpan.textContent = "Reassigned";
+        }
+        // Remove unread badge
+        var badge = item.querySelector(".chat-unread");
+        if (badge) badge.remove();
+    }
+
+    // If this was the active open chat, close the socket
+    if (activeVisitorConvoId == data.conversation_id) {
+        activeVisitorConvoId = null;
+        activeVisitorSessionKey = null;
+        if (visitorChatSocket) { visitorChatSocket.close(); visitorChatSocket = null; }
+        document.getElementById("chatBody").innerHTML =
+            '<div style="text-align:center;color:#aaa;margin-top:40px;">This visitor was reassigned to another RM.</div>';
+    }
+}
+
+function showVisitorToast(name, subtitle, convoId, chatItem, toastType) {
+    // Remove any existing toast
+    document.querySelectorAll(".visitor-toast").forEach(t => t.remove());
+
+    // toastType: "online", "message", "new", "returning"
+    const type = toastType || "online";
+    let title, sub, dotColor;
+    if (type === "message") {
+        title = `💬 ${escapeHtml(name)}`;
+        sub   = escapeHtml(subtitle) + " — Click to reply";
+        dotColor = "#1e88e5";
+    } else if (type === "returning") {
+        title = `↩ ${escapeHtml(name)} is back!`;
+        sub   = "Back again — Click to open chat";
+        dotColor = "#ff9800";
+    } else if (type === "new") {
+        title = `🆕 New visitor: ${escapeHtml(name)}`;
+        sub   = escapeHtml(subtitle) + " — Click to open chat";
+        dotColor = "#f59e0b";
+    } else {
+        title = `🌐 ${escapeHtml(name)} is online!`;
+        sub   = escapeHtml(subtitle) + " — Click to open chat";
+        dotColor = "#25d366";
+    }
+
+    const toast = document.createElement("div");
+    toast.className = "visitor-toast";
+    toast.innerHTML = `
+        <div class="toast-dot" style="background:${dotColor}"></div>
+        <div class="toast-body">
+            <div class="toast-title">${title}</div>
+            <div class="toast-sub">${sub}</div>
+        </div>
+        <span class="toast-close">&times;</span>
+    `;
+
+    // Click toast → open that visitor's chat
+    toast.addEventListener("click", function(e) {
+        if (e.target.classList.contains("toast-close")) {
+            toast.remove();
+            return;
+        }
+        // Switch to Visitors tab if not already
+        switchTab("visitor");
+        // Open the chat
+        openChatItem(chatItem);
+        toast.remove();
+    });
+
+    document.body.appendChild(toast);
+
+    // Auto-dismiss after 8 seconds
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.style.opacity = "0";
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 8000);
+}
+
+function handleVisitorPageChange(data) {
+    // Update current page bar only if this convo is actively open in chat
+    if (activeVisitorConvoId == data.conversation_id && chatMode === "visitor") {
+        let bar = document.getElementById("visitorCurrentPage");
+        if (bar) {
+            // FIX #2a: Update existing bar in-place (it's already inserted before chatBody)
+            bar.innerHTML = `📍 Currently on: <strong>${escapeHtml(data.current_page)}</strong>`;
+        } else {
+            bar = document.createElement("div");
+            bar.id = "visitorCurrentPage";
+            bar.style.cssText = "padding:6px 12px;background:#1a2633;border-bottom:1px solid #2a3a4a;font-size:11px;color:#90caf9;";
+            bar.innerHTML = `📍 Currently on: <strong>${escapeHtml(data.current_page)}</strong>`;
+            const chatBody = document.getElementById("chatBody");
+            chatBody.parentNode.insertBefore(bar, chatBody);
+        }
+    }
+}
+
+function buildVisitorItem(data) {
+    const item = document.createElement("div");
+    item.className = "chat-item visitor-item";
+    item.setAttribute("data-conversation-id", data.conversation_id);
+    item.setAttribute("data-session-key", data.session_key || "");
+    item.setAttribute("data-name", data.ip || "Visitor");
+    item.setAttribute("data-type", "visitor");
+    var returningBadge = data.is_returning
+        ? ' <span class="visitor-returning-badge" style="background:#ff9800;color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px;">↩ Back</span>'
+        : '';
+    item.innerHTML = `
+        <div class="chat-info">
+            <div class="chat-name">${escapeHtml(data.ip || "Visitor")}${returningBadge}</div>
+            <div class="chat-last-msg">
+                <span class="visitor-origin">
+                    ${data.device_type === "mobile" ? "📱" : "🖥"}
+                    ${escapeHtml(data.city || data.country || data.ip || "")}
+                    &nbsp;·&nbsp;<span class="visitor-status-label" style="color:#f59e0b;">Waiting</span>
+                </span>
+                <span class="last-text" style="display:block;font-size:12px;color:#8696a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
             </div>
         </div>
-    </div>
-    
+        <div class="chat-meta">
+            <div class="chat-time">${formatTimeSmart(new Date().toISOString())}</div>
+            <div class="chat-unread">1</div>
+            <span class="visitor-online-dot" style="color:#25d366;font-size:10px;">● online</span>
+        </div>`;
+    item.addEventListener("click", function () { openChatItem(this); });
+    return item;
+}
+
+
+/* ============================================================
+   OPEN CHAT ITEM  (handles both types)
+============================================================ */
+function openChatItem(el) {
+    const type    = el.getAttribute("data-type") || "whatsapp";
+    const convoId = el.getAttribute("data-conversation-id");
+    const name    = el.getAttribute("data-name") ||
+                    el.querySelector(".chat-name")?.textContent?.trim() || "Chat";
+
+    // Mobile: show chat window, hide list
+    if (window.innerWidth <= 768) {
+        document.getElementById("mainChatWindow").style.display = "flex";
+        document.getElementById("mainChatList").style.display  = "none";
+    }
+
+    document.querySelectorAll(".chat-item").forEach(i => i.classList.remove("active"));
+    el.classList.add("active");
+
+    const badge = el.querySelector(".chat-unread");
+    if (badge) badge.remove();
+    // Clear returning badge when chat is opened
+    const retBadge = el.querySelector(".visitor-returning-badge");
+    if (retBadge) retBadge.remove();
+
+    document.getElementById("chatName").textContent = name;
+    document.getElementById("chatBody").innerHTML   = "";
+    lastRenderedDate = null;
+
+    // FIX #2b: Always remove the stale visitor page bar when opening any chat
+    var oldPageBar = document.getElementById("visitorCurrentPage");
+    if (oldPageBar) oldPageBar.remove();
+
+    // FIX #5: Re-enable input only for WA mode unconditionally (WA has no offline concept here),
+    // for visitor mode re-enable only when rmOnline is true — handled per-branch below.
+    if (type === "whatsapp") {
+        document.getElementById("messageInput").disabled = false;
+        document.getElementById("messageInput").placeholder = "Type a message";
+        document.getElementById("sendBtn").style.opacity = "1";
+        document.getElementById("sendBtn").style.pointerEvents = "auto";
+    } else {
+        // Visitor: only re-enable if RM is online (will be overridden by isReadOnly check below)
+        if (rmOnline) {
+            document.getElementById("messageInput").disabled = false;
+            document.getElementById("messageInput").placeholder = "Type a message";
+            document.getElementById("sendBtn").style.opacity = "1";
+            document.getElementById("sendBtn").style.pointerEvents = "auto";
+        }
+    }
+
+    setChatMode(type);
+
+    if (type === "whatsapp") {
+        if (activeConversationId) {
+            fetch(`/rm/conversation/${activeConversationId}/inactive/`);
+        }
+        activeConversationId  = convoId;
+        activeVisitorConvoId  = null;
+
+        fetch(`/rm/conversation/${convoId}/messages/`)
+            .then(function (r) {
+                if (!r.ok) {
+                    document.getElementById("chatBody").innerHTML =
+                        '<div style="text-align:center;color:#aaa;margin-top:40px;">This conversation is no longer available.</div>';
+                    return;
+                }
+                r.text().then(function (html) {
+                    const cb = document.getElementById("chatBody");
+                    cb.innerHTML = html;
+                    lastRenderedDate = null;
+                    cb.querySelectorAll(".msg-row").forEach(row => {
+                        const d = row.getAttribute("data-date");
+                        if (d && d !== lastRenderedDate) {
+                            insertDateSeparator(d);
+                            lastRenderedDate = d;
+                        }
+                    });
+                    scrollToBottom();
+                });
+            });
+
+        connectWASocket(convoId);
+
+    } else {
+        // visitor
+        activeConversationId = null;
+
+        // Check if this conversation is read-only (reassigned, missed, quickly left, night chat)
+        var statusLabel = el.querySelector(".visitor-status-label");
+        var statusText = statusLabel ? statusLabel.textContent.trim() : "";
+        var isReadOnly = ["Reassigned", "Missed", "Quickly Left", "Night Chat", "Slow Response"].indexOf(statusText) !== -1;
+
+        var readOnlyMsg = "";
+        var readOnlyColor = "#aaa";
+        var readOnlyBg = "#f5f5f5";
+        if (statusText === "Reassigned") {
+            readOnlyMsg = "This visitor was reassigned to another RM. Chat is read-only.";
+            readOnlyColor = "#f59e0b"; readOnlyBg = "#fef9ee";
+        } else if (statusText === "Quickly Left") {
+            readOnlyMsg = "Visitor left quickly (≤5s). Chat is read-only.";
+            readOnlyColor = "#888"; readOnlyBg = "#f5f5f5";
+        } else if (statusText === "Night Chat") {
+            readOnlyMsg = "Night hours chat. Chat is read-only.";
+            readOnlyColor = "#636ebb"; readOnlyBg = "#f0f0ff";
+        } else if (statusText === "Slow Response") {
+            readOnlyMsg = "⚠️ You took 30+ seconds to reply. Visitor was assigned to another active RM.";
+            readOnlyColor = "#f59e0b"; readOnlyBg = "#fef9ee";
+        } else if (statusText === "Missed") {
+            readOnlyMsg = "Visitor left before reply. Chat is read-only.";
+            readOnlyColor = "#ef4444"; readOnlyBg = "#fef2f2";
+        }
+
+        if (isReadOnly) {
+            activeVisitorConvoId = null;
+            activeVisitorSessionKey = null;
+        } else {
+            activeVisitorConvoId    = convoId;
+            activeVisitorSessionKey = el.getAttribute("data-session-key");
+        }
+
+        fetch(`/rm/visitor-conversation/${convoId}/messages/`)
+            .then(function (r) {
+                if (!r.ok) {
+                    document.getElementById("chatBody").innerHTML =
+                        '<div style="text-align:center;color:#aaa;margin-top:40px;">This conversation is no longer available.</div>';
+                    return;
+                }
+                r.text().then(function (html) {
+                    document.getElementById("chatBody").innerHTML = html;
+                    if (isReadOnly) {
+                        document.getElementById("chatBody").innerHTML +=
+                            '<div style="text-align:center;color:' + readOnlyColor + ';font-size:13px;padding:12px;background:' + readOnlyBg + ';border-radius:8px;margin:10px 16px;">' + readOnlyMsg + '</div>';
+                        document.getElementById("messageInput").disabled = true;
+                        document.getElementById("messageInput").placeholder = statusText + " — read only";
+                        document.getElementById("sendBtn").style.opacity = "0.3";
+                        document.getElementById("sendBtn").style.pointerEvents = "none";
+                        document.getElementById("visitorFileBtn").style.display = "none";
+                        document.getElementById("closeConvoBtn").style.display = "none";
+                    }
+                    scrollToBottom();
+                });
+            });
+
+        if (!isReadOnly) {
+            connectVisitorChatSocket(convoId);
+        }
+    }
+}
+
+
+/* ============================================================
+   WHATSAPP CHAT SOCKET  (ws/chat/{id}/)
+============================================================ */
+function connectWASocket(convoId) {
+    if (chatSocket) chatSocket.close();
+    const proto = location.protocol === "https:" ? "wss://" : "ws://";
+    chatSocket = new WebSocket(proto + location.host + "/ws/chat/" + convoId + "/");
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+
+        if (data.type === "chat_message") {
+            appendWAMessage(data.message);
+            if (data.message.direction === "in") {
+                const isSame = activeConversationId == data.message.conversation_id &&
+                               chatMode === "whatsapp";
+                if (!(isSame && document.visibilityState === "visible")) {
+                    playNotificationSound();
+                    showBrowserNotification(data.message.body || "New WhatsApp message");
+                }
+            }
+        }
+
+        if (data.type === "message_status") {
+            const tick = document.querySelector(
+                `.msg-row[data-msg-id="${data.message_id}"] .msg-tick`
+            );
+            if (tick) {
+                tick.className  = "msg-tick " + data.status;
+                tick.textContent = data.status === "sent" ? "✔" : "✔✔";
+            }
+        }
+    };
+
+    chatSocket.onclose = function () {
+        if (activeConversationId == convoId && chatMode === "whatsapp") {
+            setTimeout(function () { connectWASocket(convoId); }, 3000);
+        }
+    };
+}
+
+
+/* ============================================================
+   VISITOR CHAT SOCKET  (ws/visitor-chat/{id}/)
+============================================================ */
+function connectVisitorChatSocket(convoId) {
+    if (visitorChatSocket) visitorChatSocket.close();
+    const proto = location.protocol === "https:" ? "wss://" : "ws://";
+    visitorChatSocket = new WebSocket(
+        proto + location.host + "/ws/visitor-chat/" + convoId + "/"
+    );
+
+    visitorChatSocket.onclose = function () {
+        // Reconnect only if this convo is still the active one
+        if (activeVisitorConvoId == convoId) {
+            setTimeout(function () { connectVisitorChatSocket(convoId); }, 3000);
+        }
+    };
+
+    visitorChatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        if (data.type === "visitor_chat_message") {
+            appendVisitorMessage(data.message);
+        }
+        if (data.type === "visitor_read") {
+            (data.message_ids || []).forEach(id => {
+                const tick = document.querySelector(
+                    `.msg-row[data-msg-id="${id}"] .msg-tick`
+                );
+                if (tick) {
+                    tick.className   = "msg-tick read";
+                    tick.textContent = "✔✔";
+                }
+            });
+        }
+    };
+}
+
+
+/* ============================================================
+   SEND — routes to correct backend based on chatMode
+============================================================ */
+var sendBtn = document.getElementById("sendBtn");
+if (sendBtn) {
+    sendBtn.addEventListener("click", function () {
+        if (chatMode === "visitor") sendVisitorMessage();
+        else sendWAMessage();
+    });
+}
+
+var messageInput = document.getElementById("messageInput");
+if (messageInput) {
+    messageInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            var sb = document.getElementById("sendBtn");
+            if (sb) sb.click();
+        }
+        this.style.height = "auto";
+        this.style.height = this.scrollHeight + "px";
+    });
+}
+
+function sendWAMessage() {
+    const text = document.getElementById("messageInput").value.trim();
+    if (!text || !activeConversationId) return;
+    document.getElementById("messageInput").value = "";
+    fetch(`/rm/conversation/${activeConversationId}/send/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCSRFToken(),
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `text=${encodeURIComponent(text)}`
+    });
+}
+
+function sendVisitorMessage() {
+    if (!rmOnline) return;
+    const text = document.getElementById("messageInput").value.trim();
+    // FIX #6 (was already safe via !activeVisitorConvoId but make guard explicit)
+    if (!text || !activeVisitorConvoId) return;
+    document.getElementById("messageInput").value = "";
+    if (visitorChatSocket && visitorChatSocket.readyState === WebSocket.OPEN) {
+        visitorChatSocket.send(JSON.stringify({ type: "message", body: text }));
+    } else {
+        const fd = new FormData();
+        fd.append("body", text);
+        fetch(`/rm/visitor-conversation/${activeVisitorConvoId}/send/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": getCSRFToken() },
+            body: fd
+        });
+    }
+}
+
+
+/* ============================================================
+   END VISITOR CHAT
+============================================================ */
+function closeVisitorConversation() {
+    if (!activeVisitorConvoId) return;
+    if (!confirm("End this visitor chat?")) return;
+    fetch(`/rm/visitor-conversation/${activeVisitorConvoId}/close/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() }
+    }).then(r => r.json()).then(() => {
+        const item = document.querySelector(
+            `.chat-item[data-conversation-id="${activeVisitorConvoId}"]`
+        );
+        if (item) item.remove();
+        document.getElementById("chatBody").innerHTML =
+            `<div style="text-align:center;color:#aaa;margin-top:40px;">Conversation closed.</div>`;
+        document.getElementById("closeConvoBtn").style.display = "none";
+        activeVisitorConvoId = null;
+    });
+}
+
+
+/* ============================================================
+   RM ONLINE / OFFLINE TOGGLE — WhatsApp
+============================================================ */
+function toggleWAStatus() {
+    fetch(`/rm/${RM_CODE}/whatsapp/status/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() }
+    }).then(r => r.json()).then(data => {
+        const bar  = document.getElementById("waStatusBar");
+        const dot  = document.getElementById("waStatusDot");
+        const text = document.getElementById("waStatusText");
+        const btn  = document.getElementById("waToggleBtn");
+        if (data.active_whatsapp) {
+            bar.className    = "rm-status-bar is-online";
+            dot.className    = "status-dot online";
+            text.className   = "status-label online";
+            text.textContent = "Online";
+            btn.textContent  = "Go Offline";
+            btn.className    = "toggle-status-btn online";
+        } else {
+            bar.className    = "rm-status-bar is-offline";
+            dot.className    = "status-dot offline";
+            text.className   = "status-label offline";
+            text.textContent = "Offline";
+            btn.textContent  = "Go Online";
+            btn.className    = "toggle-status-btn offline";
+        }
+    });
+}
+
+/* ============================================================
+   RM ONLINE / OFFLINE TOGGLE — Visitor
+============================================================ */
+function toggleRMStatus() {
+    fetch(`/rm/${RM_CODE}/visitor/status/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() }
+    }).then(r => {
+        if (r.status === 403) {
+            return r.json().then(d => { alert(d.error); return null; });
+        }
+        return r.json();
+    }).then(data => {
+        if (!data) return;
+        rmOnline = data.active_visitor_chat;
+        const bar  = document.getElementById("rmStatusBar");
+        const dot  = document.getElementById("rmStatusDot");
+        const text = document.getElementById("rmStatusText");
+        const btn  = document.getElementById("toggleStatusBtn");
+        if (rmOnline) {
+            bar.className    = "rm-status-bar is-online";
+            dot.className    = "status-dot online";
+            text.className   = "status-label online";
+            text.textContent = "Online";
+            btn.textContent  = "Go Offline";
+            btn.className    = "toggle-status-btn online";
+
+            // Reload page to get correct visitor statuses from server
+            location.reload();
+            return;
+
+        } else {
+            bar.className    = "rm-status-bar is-offline";
+            dot.className    = "status-dot offline";
+            text.className   = "status-label offline";
+            text.textContent = "Offline";
+            btn.textContent  = "Go Online";
+            btn.className    = "toggle-status-btn offline";
+
+            // FIX #3b: Clear disconnect alerts immediately when RM manually goes offline
+            clearDisconnectAlerts();
+            _connectionAlive = true; // reset so heartbeat doesn't re-trigger on stale pong age
+
+            // RM went offline — close active chat socket but keep cards visible
+            if (visitorChatSocket) { visitorChatSocket.close(); visitorChatSocket = null; }
+            activeVisitorConvoId = null;
+            activeVisitorSessionKey = null;
+            document.getElementById("chatBody").innerHTML =
+                '<div style="text-align:center;color:#aaa;margin-top:40px;">You are offline. Go online to chat with visitors.</div>';
+
+            // Disable chat input & send button
+            document.getElementById("messageInput").disabled = true;
+            document.getElementById("messageInput").placeholder = "You are offline";
+            document.getElementById("sendBtn").style.opacity = "0.3";
+            document.getElementById("sendBtn").style.pointerEvents = "none";
+
+            // Hide visitor online dots on all cards (show as offline)
+            document.querySelectorAll(".visitor-online-dot").forEach(function(d) {
+                d.style.color = "#aaa";
+                d.textContent = "● offline";
+            });
+        }
+    });
+}
+
+
+/* ============================================================
+   APPEND MESSAGE — WhatsApp
+============================================================ */
+function appendWAMessage(msg) {
+    if (msg.date && msg.date !== lastRenderedDate) {
+        insertDateSeparator(msg.date);
+        lastRenderedDate = msg.date;
+    }
+    const sideClass = msg.direction === "out" ? "sent" : "received";
+    let content = "";
+    if (msg.message_type === "text") {
+        content = `<div class="msg-text">${escapeHtml(msg.body).replace(/\n/g, "<br>")}</div>`;
+    } else if (msg.message_type === "image") {
+        content = `<img src="${msg.file_url}" class="msg-image" loading="lazy" onload="scrollToBottom()">`;
+    } else if (msg.message_type === "video") {
+        content = `<video class="msg-video" controls preload="metadata"><source src="${msg.file_url}"></video>`;
+    } else if (msg.message_type === "audio") {
+        content = `<div class="audio-msg"><audio controls class="msg-audio"><source src="${msg.file_url}"></audio></div>`;
+    } else if (msg.message_type === "document") {
+        content = `<a href="${msg.file_url}" target="_blank" class="msg-doc">📄 Document</a>`;
+    }
+
+    document.getElementById("chatBody").insertAdjacentHTML("beforeend", `
+    <div class="msg-row ${sideClass}" data-msg-id="${msg.id}" data-date="${msg.date || ''}">
+        <div class="message ${sideClass} ${msg.message_type !== 'text' ? 'media' : ''}">
+            ${content}
+            <div class="msg-meta">
+                <span class="msg-time">${formatTimeSmart(msg.time)}</span>
+                ${sideClass === "sent"
+                    ? `<span class="msg-tick ${msg.status || 'sent'}">${msg.status === "sent" ? "✔" : "✔✔"}</span>`
+                    : ""}
+            </div>
+        </div>
+    </div>`);
+    scrollToBottom();
+}
+
+
+/* ============================================================
+   APPEND MESSAGE — Visitor
+============================================================ */
+function appendVisitorMessage(msg) {
+    const sideClass = msg.direction === "rm" ? "sent" : "received";
+    let content = "";
+    if (msg.message_type === "image") {
+        content = `<img src="${msg.file_url}" class="msg-image" loading="lazy" style="max-width:200px;border-radius:8px;cursor:pointer;" onclick="window.open('${msg.file_url}','_blank')" onload="scrollToBottom()">`;
+    } else if (msg.message_type === "file") {
+        content = `<a href="${msg.file_url}" target="_blank" class="msg-doc">📄 ${escapeHtml(msg.file_name || "File")}</a>`;
+    } else {
+        content = `<div class="msg-text">${escapeHtml(msg.body || "").replace(/\n/g, "<br>")}</div>`;
+    }
+    // FIX #1: Use formatTimeSmart so visitor message times display correctly
+    document.getElementById("chatBody").insertAdjacentHTML("beforeend", `
+    <div class="msg-row ${sideClass}" data-msg-id="${msg.id}">
+        <div class="message ${sideClass}">
+            ${content}
+            <div class="msg-meta">
+                <span class="msg-time">${formatTimeSmart(msg.time)}</span>
+                ${sideClass === "sent" ? `<span class="msg-tick sent">✔</span>` : ""}
+            </div>
+        </div>
+    </div>`);
+    scrollToBottom();
+}
+
+/* ── VISITOR FILE UPLOAD (RM side) ── */
+var visitorFileInput = document.getElementById("visitorFileInput");
+if (visitorFileInput) {
+    visitorFileInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file || !activeVisitorConvoId) return;
+        const fd = new FormData();
+        fd.append("file", file);
+        fetch(`/rm/visitor-conversation/${activeVisitorConvoId}/send-file/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": getCSRFToken() },
+            body: fd
+        });
+        this.value = "";
+    });
+}
+
+
+/* ============================================================
+   DATE SEPARATOR
+============================================================ */
+function insertDateSeparator(dateStr) {
+    const today = new Date(), msgDate = new Date(dateStr);
+    const yesterday = new Date(); yesterday.setDate(today.getDate() - 1);
+    let label = "";
+    if (today.toDateString() === msgDate.toDateString())          label = "Today";
+    else if (yesterday.toDateString() === msgDate.toDateString()) label = "Yesterday";
+    else label = msgDate.toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
+    document.getElementById("chatBody").insertAdjacentHTML(
+        "beforeend", `<div class="date-separator">${label}</div>`
+    );
+}
+
+
+/* ============================================================
+   SEARCH FILTERS
+============================================================ */
+function filterVisitors(q) {
+    q = q.toLowerCase();
+    let found = 0;
+    document.querySelectorAll("#visitorListBody .chat-item").forEach(item => {
+        const n = (item.getAttribute("data-name") || "").toLowerCase();
+        const show = !q || n.includes(q);
+        item.style.display = show ? "" : "none";
+        if (show) found++;
+    });
+    document.getElementById("visitorNoResult").style.display =
+        (found === 0 && q) ? "" : "none";
+}
+
+
+/* ============================================================
+   MOBILE BACK
+============================================================ */
+function mobileBack() {
+    document.getElementById("mainChatWindow").style.display = "none";
+    document.getElementById("mainChatList").style.display  = "";
+    // Reset active chat state so unread badges show correctly
+    activeVisitorConvoId = null;
+    activeVisitorSessionKey = null;
+    activeConversationId = null;
+    if (visitorChatSocket) { visitorChatSocket.close(); visitorChatSocket = null; }
+    if (chatSocket) { chatSocket.close(); chatSocket = null; }
+    // FIX #2c: Remove page bar when going back to list on mobile
+    var oldPageBar = document.getElementById("visitorCurrentPage");
+    if (oldPageBar) oldPageBar.remove();
+}
+
+
+/* ============================================================
+   SOUND + BROWSER NOTIFICATION
+============================================================ */
+// AudioContext for reliable sound playback (bypasses HTML5 audio autoplay quirks)
+var _audioCtx = null;
+var _notifyBuffer = null;
+
+function _getAudioContext() {
+    if (!_audioCtx) {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Resume if suspended (autoplay policy)
+    if (_audioCtx.state === "suspended") {
+        _audioCtx.resume();
+    }
+    return _audioCtx;
+}
+
+// Preload the notification sound into AudioContext buffer
+function _preloadNotifySound() {
+    var s = document.getElementById("notificationSound");
+    if (!s || !s.src) return;
+    fetch(s.src)
+        .then(function(r) { return r.arrayBuffer(); })
+        .then(function(buf) { return _getAudioContext().decodeAudioData(buf); })
+        .then(function(decoded) {
+            _notifyBuffer = decoded;
+            audioUnlocked = true;
+            console.log("[Sound] Notification sound preloaded via AudioContext");
+        })
+        .catch(function(e) { console.warn("[Sound] Preload failed:", e); });
+}
+
+function playNotificationSound() {
+    // Method 1: AudioContext (most reliable)
+    var ctx = _getAudioContext();
+    if (_notifyBuffer && ctx.state === "running") {
+        var source = ctx.createBufferSource();
+        source.buffer = _notifyBuffer;
+        source.connect(ctx.destination);
+        source.start(0);
+        console.log("[Sound] Playing via AudioContext");
+        return;
+    }
+
+    // Method 2: HTML5 Audio fallback
+    var s = document.getElementById("notificationSound");
+    if (!s) return;
+    s.currentTime = 0;
+    s.muted  = false;
+    s.volume = 1;
+    s.play().then(function() {
+        console.log("[Sound] Playing via HTML5 Audio");
+    }).catch(function(e) {
+        audioUnlocked = false;
+        console.warn("[Sound] HTML5 Audio play failed:", e.message);
+    });
+}
+
+function showBrowserNotification(title, body) {
+    if (!body) { body = title; title = "New Message 💬"; }
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+    // Use service worker notification — click handled by sw.js (focuses RM portal tab)
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(function(reg) {
+            reg.showNotification(title, {
+                body: body,
+                icon: "/static/dashboard/images/logo/logo-sm.png",
+                vibrate: [200, 100, 200],
+                tag: "new-message",
+                renotify: true,
+                data: { url: window.location.href }
+            });
+        }).catch(function() {
+            _fallbackNotification(title, body);
+        });
+    } else {
+        _fallbackNotification(title, body);
+    }
+}
+
+function _fallbackNotification(title, body) {
+    var n = new Notification(title, {
+        body: body,
+        icon: "/static/dashboard/images/logo/logo-sm.png"
+    });
+    n.onclick = function () {
+        window.focus();
+        n.close();
+    };
+}
+
+
+/* ============================================================
+   MEDIA UPLOAD (WhatsApp only)
+============================================================ */
+var micBtn = document.getElementById("micBtn");
+if (micBtn) {
+    micBtn.addEventListener("click", async function () {
+        if (!navigator.mediaDevices) { alert("Voice recording not supported"); return; }
+        let mediaRecorder;
+        let audioChunks = [];
+        if (!this._recorder || this._recorder.state === "inactive") {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            this._recorder = mediaRecorder;
+            audioChunks = [];
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(audioChunks, { type: "audio/webm" });
+                uploadMedia(new File([blob], "voice.webm", { type: "audio/webm" }), "audio");
+            };
+            mediaRecorder.start();
+            var recInd = document.getElementById("recordingIndicator");
+            if (recInd) recInd.style.display = "inline-block";
+            this.textContent = "⏹";
+        } else {
+            this._recorder.stop();
+            var recInd = document.getElementById("recordingIndicator");
+            if (recInd) recInd.style.display = "none";
+            this.textContent = "🎤";
+        }
+    });
+}
+
+var attachBtn = document.getElementById("attachBtn");
+if (attachBtn) {
+    attachBtn.addEventListener("click", function () {
+        const popup = document.getElementById("attachPopup");
+        if (popup) {
+            popup.style.display = popup.style.display === "block" ? "none" : "block";
+        }
+    });
+}
+
+document.addEventListener("click", function (e) {
+    if (!e.target.closest("#attachBtn,#attachPopup")) {
+        var popup = document.getElementById("attachPopup");
+        if (popup) popup.style.display = "none";
+    }
+});
+
+document.querySelectorAll(".attach-item").forEach(btn => {
+    btn.addEventListener("click", function () {
+        const type = this.dataset.type;
+        var popup = document.getElementById("attachPopup");
+        if (popup) popup.style.display = "none";
+        const map = { image:"fileImage", audio:"fileAudio", video:"fileVideo", doc:"fileDoc" };
+        if (map[type]) {
+            var fileInput = document.getElementById(map[type]);
+            if (fileInput) fileInput.click();
+        }
+    });
+});
+
+const fileTypeMap = {
+    fileImage: "image", fileAudio: "audio", fileVideo: "video", fileDoc: "document"
+};
+Object.keys(fileTypeMap).forEach(id => {
+    var fileInput = document.getElementById(id);
+    if (fileInput) {
+        fileInput.addEventListener("change", function () {
+            if (this.files.length) {
+                selectedFile = this.files[0];
+                selectedType = fileTypeMap[id];
+                showPreview(selectedFile, selectedType);
+                this.value = "";
+            }
+        });
+    }
+});
+
+function uploadMedia(file, messageType) {
+    if (!activeConversationId) return;
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("message_type", messageType);
+    fetch(`/rm/conversation/${activeConversationId}/send-media/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() },
+        body: fd
+    });
+}
+
+function showPreview(file, type) {
+    const pc = document.getElementById("previewContent");
+    pc.innerHTML = "";
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        if (type === "image")        pc.innerHTML = `<img src="${e.target.result}">`;
+        else if (type === "video")   pc.innerHTML = `<video controls><source src="${e.target.result}"></video>`;
+        else if (type === "audio")   pc.innerHTML = `<audio controls><source src="${e.target.result}"></audio>`;
+        else pc.innerHTML = `<div class="preview-file-name">${escapeHtml(file.name)}</div>`;
+        document.getElementById("previewModal").style.display = "flex";
+    };
+    reader.readAsDataURL(file);
+}
+
+document.querySelectorAll(".preview-cancel").forEach(btn => {
+    btn.addEventListener("click", function () {
+        selectedFile = selectedType = null;
+        document.getElementById("previewModal").style.display = "none";
+    });
+});
+document.querySelectorAll(".preview-send").forEach(btn => {
+    btn.addEventListener("click", function () {
+        if (selectedFile && selectedType) uploadMedia(selectedFile, selectedType);
+        selectedFile = selectedType = null;
+        document.getElementById("previewModal").style.display = "none";
+    });
+});
+
+
+/* ============================================================
+   KEEPALIVE
+============================================================ */
+setInterval(() => {
+    fetch("/rm/keepalive/").then(r => r.json()).then(d => {
+        if (d.status === "expired") location.href = "/rm/login/";
+    }).catch(() => {});
+}, 30000);  // every 30s — keeps last_heartbeat fresh for stale detection
+
+
+/* ============================================================
+   INIT  (on DOM ready)
+============================================================ */
+function initializeChat() {
+
+    // Format all times on page load
+    document.querySelectorAll(".chat-time[data-time]").forEach(el => {
+        const iso = el.getAttribute("data-time");
+        if (iso) el.textContent = formatTimeSmart(iso);
+    });
+
+    // Click handlers for server-rendered items
+    document.querySelectorAll(".wa-item").forEach(item => {
+        item.addEventListener("click", function () { openChatItem(this); });
+    });
+    document.querySelectorAll(".visitor-item").forEach(item => {
+        item.addEventListener("click", function () { openChatItem(this); });
+    });
+
+    // WhatsApp search
+    var waSearch = document.getElementById("waSearch");
+    if (waSearch) {
+        waSearch.addEventListener("input", function () {
+            const q = this.value.toLowerCase();
+            let found = 0;
+            document.querySelectorAll("#waChatListBody .chat-item").forEach(item => {
+                const n = (item.getAttribute("data-name") || "").toLowerCase();
+                const show = !q || n.includes(q);
+                item.style.display = show ? "" : "none";
+                if (show) found++;
+            });
+            var waNoResult = document.getElementById("waNoResult");
+            if (waNoResult) {
+                waNoResult.style.display = (found === 0 && q) ? "" : "none";
+            }
+        });
+    }
+
+    // Auto-grow textarea
+    var messageInput = document.getElementById("messageInput");
+    if (messageInput) {
+        messageInput.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    }
+
+    // Unlock audio on ANY user interaction (click, keypress, touch)
+    function unlockAudio() {
+        // Unlock AudioContext
+        var ctx = _getAudioContext();
+        if (ctx.state === "suspended") {
+            ctx.resume().then(function() {
+                console.log("[Sound] AudioContext resumed");
+            });
+        }
+        // Preload sound buffer if not done yet
+        if (!_notifyBuffer) {
+            _preloadNotifySound();
+        }
+        // Also unlock HTML5 audio element
+        if (!audioUnlocked) {
+            var s = document.getElementById("notificationSound");
+            if (s) {
+                s.play().then(function() {
+                    s.pause();
+                    s.currentTime = 0;
+                    audioUnlocked = true;
+                    console.log("[Sound] HTML5 Audio unlocked");
+                }).catch(function() {});
+            }
+        }
+    }
+
+    // Listen for user interaction to unlock audio
+    ["click", "touchstart", "keydown"].forEach(function(evt) {
+        document.addEventListener(evt, unlockAudio, { once: false, passive: true });
+    });
+
+    // Also try to unlock when tab becomes visible
+    document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") {
+            unlockAudio();
+        }
+    });
+
+    // Try to preload immediately (will work if page has user gesture already)
+    _preloadNotifySound();
+
+    // Notification permission banner
+    if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+            notificationGranted = true;
+        } else if (Notification.permission === "default") {
+            setTimeout(function () {
+                if (document.getElementById("notif-banner")) return;
+                var banner = document.createElement("div");
+                banner.id = "notif-banner";
+                banner.style.cssText = "position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#075e54;color:white;padding:12px 20px;border-radius:10px;font-size:14px;z-index:9999;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3);text-align:center;max-width:300px;";
+                banner.innerHTML = "🔔 Tap here to enable notifications & sound";
+                banner.addEventListener("click", function () {
+                    Notification.requestPermission().then(function(perm) {
+                        notificationGranted = perm === "granted";
+                    });
+                    unlockAudio();
+                    banner.remove();
+                });
+                document.body.appendChild(banner);
+                setTimeout(function() {
+                    var b = document.getElementById("notif-banner");
+                    if (b) b.remove();
+                }, 10000);
+            }, 2000);
+        }
+    }
+}
+
+// Use jQuery if available, otherwise use vanilla JS
+if (typeof $ !== 'undefined' && $.ready) {
+    $(document).ready(initializeChat);
+} else {
+    document.addEventListener('DOMContentLoaded', initializeChat);
+}
+</script>
+
 {% endblock %}

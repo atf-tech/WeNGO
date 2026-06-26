@@ -134,7 +134,7 @@ RMPortal || Add GPay Payments
       </div>
 
       <form method="POST"
-            action="{% url 'rm_gpay_payments' rm.rm_code %}"
+            action=""
             enctype="multipart/form-data">
         {% csrf_token %}
         <div class="modal-body">
@@ -223,7 +223,7 @@ RMPortal || Add GPay Payments
         <h5 class="modal-title" id="editGPayModalLabel">Edit GPay Payment</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="editGPayForm" method="POST" action="{% url 'rm_gpay_edit' %}">
+      <form id="editGPayForm" method="POST" action="">
         {% csrf_token %}
         <input type="hidden" name="payment_id" id="edit-payment-id">
         <div class="modal-body">
