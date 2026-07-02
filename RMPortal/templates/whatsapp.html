@@ -804,7 +804,7 @@ function forceGoOffline() {
 
 function connectVisitorInboxSocket() {
     const proto = location.protocol === "https:" ? "wss://" : "ws://";
-    console.log("[HeartBeat] Connecting to visitor inbox socket...");
+    console.log("[HeartBeat] Connecting to visitor inbox socket (RM " + RM_ID + ")...");
     visitorInboxSocket = new WebSocket(proto + location.host + "/ws/visitor-inbox/");
 
     visitorInboxSocket.onopen = function () {
@@ -1414,7 +1414,7 @@ function connectWASocket(convoId) {
 
 
 /* ============================================================
-   VISITOR CHAT SOCKET  (ws/visitor-chat/{id}/)
+   VISITOR CHAT SOCKET  (ws/visitor/<session_key>/)
 ============================================================ */
 function connectVisitorChatSocket(convoId) {
     if (visitorChatSocket) visitorChatSocket.close();
@@ -1423,21 +1423,16 @@ function connectVisitorChatSocket(convoId) {
         proto + location.host + "/ws/visitor-chat/" + convoId + "/"
     );
 
-    visitorChatSocket.onclose = function () {
-        // Reconnect only if this convo is still the active one
-        if (activeVisitorConvoId == convoId) {
-            setTimeout(function () { connectVisitorChatSocket(convoId); }, 3000);
-        }
-    };
-
     visitorChatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        if (data.type === "visitor_chat_message") {
+        var visitorMsgType = data.type === "rm_message" || data.type === "visitor_message" || data.type === "visitor_chat_message";
+        if (visitorMsgType) {
             appendVisitorMessage(data.message);
         }
-        if (data.type === "visitor_read") {
-            (data.message_ids || []).forEach(id => {
-                const tick = document.querySelector(
+        if (data.type === "visitor_read" || data.type === "visitor_read_receipt") {
+            var ids = data.message_ids || data.message?.message_ids || [];
+            (ids || []).forEach(id => {
+                var tick = document.querySelector(
                     `.msg-row[data-msg-id="${id}"] .msg-tick`
                 );
                 if (tick) {
@@ -1445,6 +1440,12 @@ function connectVisitorChatSocket(convoId) {
                     tick.textContent = "✔✔";
                 }
             });
+        }
+    };
+
+    visitorChatSocket.onclose = function () {
+        if (activeVisitorConvoId == convoId && chatMode === "visitor") {
+            setTimeout(function () { connectVisitorChatSocket(convoId); }, 3000);
         }
     };
 }
@@ -2109,4 +2110,4 @@ if (typeof $ !== 'undefined' && $.ready) {
 }
 </script>
 
-{% endblock %}
+{% endblock %}  

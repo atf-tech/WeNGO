@@ -35,6 +35,7 @@
 
     <link rel="stylesheet" href="{% static 'website/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'website/css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'website_v3/css/chat_widget.css' %}" />
 </head>
 
 <body class="rbt-header-sticky">
@@ -102,8 +103,8 @@
     <!-- Main JS -->
     <script src="{% static 'website/js/main.js' %}"></script>
     <script src="{% static 'website/js/custom.js' %}"></script>
-    
-    
+
+    {% include 'website/includes/chat_widget.html' %}
 
 </body>
 

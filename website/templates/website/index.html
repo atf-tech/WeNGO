@@ -140,95 +140,6 @@
                             <img src="{% static 'website/images/shape/shape-02.png' %}"
                                 alt="Hero Image Background Shape">
                         </div>
-                        
-                    </div>
-
-                    <div class="banner-card pb--60 mb--50 swiper rbt-dot-bottom-center banner-swiper-active">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="rbt-card variation-01 rbt-hover">
-                                    <div class="rbt-card-img">
-                                        <a href="{% url 'veg_briyani' %}">
-                                            <img src="{% static 'website/images/causes/veg_briyani.jpeg' %}"
-                                                alt="Card image">
-                                        </a>
-                                    </div>
-                                    <div class="rbt-card-body">
-                                        <h4 class="rbt-card-title"><a href="{% url 'veg_briyani' %}">Donate Veg Briyani</a>
-                                        </h4>
-                                        <p class="rbt-card-text">Spread kindness with every meal.
-                                            Provide fresh, warm food to those in need.</p>
-                                        <div class="rbt-card-bottom">
-                                            <div class="rbt-price">
-                                                <span class="current-price">₹ 80</span>
-                                            </div>
-                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'veg_briyani' %}">
-                                                <span class="icon-reverse-wrapper">
-                                                    <span class="btn-text">Donate Now</span>
-                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="rbt-card variation-01 rbt-hover">
-                                    <div class="rbt-card-img">
-                                        <a href="{% url 'dresses' %}">
-                                            <img src="{% static 'website/images/causes/saree.jpeg' %}" alt="Card image">
-                                        </a>
-                                    </div>
-                                    <div class="rbt-card-body">
-                                        <h4 class="rbt-card-title"><a href="{% url 'dresses' %}">Donate Dress </a>
-                                        </h4>
-                                        <p class="rbt-card-text">Turn your kindness into clothing support.
-                                            Make someone smile today.</p>
-                                        <div class="rbt-card-bottom">
-                                            <div class="rbt-price">
-                                                <span class="current-price">₹ 599</span>
-                                            </div>
-                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'dresses' %}">
-                                                <span class="icon-reverse-wrapper">
-                                                    <span class="btn-text">Donate Now</span>
-                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="rbt-card variation-01 rbt-hover">
-                                    <div class="rbt-card-img">
-                                        <a href="{% url 'napkin' %}">
-                                            <img src="{% static 'website/images/causes/napkin.png' %}"
-                                                alt="Card image">
-                                        </a>
-                                    </div>
-                                    <div class="rbt-card-body">
-                                        <h4 class="rbt-card-title"><a href="{% url 'napkin' %}">Donate Napkin</a>
-                                        </h4>
-                                        <p class="rbt-card-text">Your small contribution can help provide sanitary napkins to women in need and support their health and dignity.</p>
-                                        <div class="rbt-card-bottom">
-                                            <div class="rbt-price">
-                                                <span class="current-price">₹ 49</span>
-                                            </div>
-                                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'napkin' %}">
-                                                <span class="icon-reverse-wrapper">
-                                                    <span class="btn-text">Donate Now</span>
-                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="rbt-swiper-pagination"></div>
                     </div>
                 </div>
             </div>
@@ -259,173 +170,51 @@
 
 
         <div class="row g-5">
-
+                
+            {% for s in services %}
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="rbt-card variation-01 rbt-hover">
+                
                     <div class="rbt-card-img">
-                        <a href="{% url 'napkin' %}">
-                            <img src="{% static 'website/images/causes/napkin.png' %}" alt="Card image">
+                        <a href="{% url 'service_detail' s.slug %}">
+                            {% if s.image %}
+                                <img src="{{ s.image.url }}" alt="{{ s.service_name }}">
+                            {% else %}
+                                <img src="{% static 'website/images/no-image.png' %}" alt="{{ s.service_name }}">
+                            {% endif %}
                         </a>
                     </div>
+                
                     <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'napkin' %}">Donate Napkin</a>
+                        <h4 class="rbt-card-title">
+                            <a href="{% url 'service_detail' s.slug %}">
+                                {{ s.service_name }}
+                            </a>
                         </h4>
+                    
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
-                                <span class="current-price">₹ 49</span>
+                                <span class="current-price">
+                                    ₹ {{ s.amount }}
+                                </span>
                             </div>
-                            <a class="rbt-btn-link" href="{% url 'napkin' %}">Donate<i
-                                    class="feather-heart"></i></a>
+                        
+                            <a class="rbt-btn-link"
+                               href="{% url 'service_detail' s.slug %}">
+                                Donate
+                                <i class="feather-heart"></i>
+                            </a>
                         </div>
                     </div>
+                
                 </div>
             </div>
-
-            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="rbt-card variation-01 rbt-hover">
-                    <div class="rbt-card-img">
-                        <a href="{% url 'veg_briyani' %}">
-                            <img src="{% static 'website/images/causes/veg_briyani.jpeg' %}" alt="Card image">
-                        </a>
-                    </div>
-                    <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'veg_briyani' %}">Donate Veg Briyani</a>
-                        </h4>
-                        <div class="rbt-card-bottom">
-                            <div class="rbt-price">
-                                <span class="current-price">₹ 80</span>
-                            </div>
-                            <a class="rbt-btn-link" href="{% url 'veg_briyani' %}">Donate<i
-                                    class="feather-heart"></i></a>
-                        </div>
-                    </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <h4>No Services Available</h4>
                 </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="rbt-card variation-01 rbt-hover">
-                    <div class="rbt-card-img">
-                        <a href="{% url 'school_bag' %}">
-                            <img src="{% static 'website/images/causes/schoolbag.jpeg' %}" alt="Card image">
-                        </a>
-                    </div>
-                    <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'school_bag' %}">Donate School bag</a>
-                        </h4>
-                        <div class="rbt-card-bottom">
-                            <div class="rbt-price">
-                                <span class="current-price">₹ 599</span>
-                            </div>
-                            <a class="rbt-btn-link" href="{% url 'school_bag' %}">Donate<i
-                                    class="feather-heart"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="rbt-card variation-01 rbt-hover">
-                    <div class="rbt-card-img">
-                        <a href="{% url 'dresses' %}">
-                            <img src="{% static 'website/images/causes/saree.jpeg' %}" alt="Card image">
-                        </a>
-                    </div>
-                    <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'dresses' %}">Donate Dress</a>
-                        </h4>
-                        <div class="rbt-card-bottom">
-                            <div class="rbt-price">
-                                <span class="current-price">₹ 599</span>
-                            </div>
-                            <a class="rbt-btn-link" href="{% url 'dresses' %}">Donate<i
-                                    class="feather-heart"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="rbt-card variation-01 rbt-hover">
-                    <div class="rbt-card-img">
-                        <a href="{% url 'grocery_kit' %}">
-                            <img src="{% static 'website/images/causes/grocery_kit.jpeg' %}" alt="Card image">
-                        </a>
-                    </div>
-                    <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'grocery_kit' %}">Donate Grocery Kit</a>
-                        </h4>
-                        <div class="rbt-card-bottom">
-                            <div class="rbt-price">
-                                <span class="current-price">₹ 700</span>
-                            </div>
-                            <a class="rbt-btn-link" href="{% url 'grocery_kit' %}">Donate<i
-                                    class="feather-heart"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="rbt-card variation-01 rbt-hover">
-                    <div class="rbt-card-img">
-                        <a href="{% url 'wheel_chair' %}">
-                            <img src="{% static 'website/images/causes/wheel_chair.jpeg' %}" alt="Card image">
-                        </a>
-                    </div>
-                    <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'wheel_chair' %}">Donate Wheel Chair</a>
-                        </h4>
-                        <div class="rbt-card-bottom">
-                            <div class="rbt-price">
-                                <span class="current-price">₹ 6000</span>
-                            </div>
-                            <a class="rbt-btn-link" href="{% url 'wheel_chair' %}">Donate<i
-                                    class="feather-heart"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="rbt-card variation-01 rbt-hover">
-                    <div class="rbt-card-img">
-                        <a href="{% url 'birds_feeding' %}">
-                            <img src="{% static 'website/images/causes/bird.jpeg' %}" alt="Card image">
-                        </a>
-                    </div>
-                    <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'birds_feeding' %}">Birds feeding</a>
-                        </h4>
-                        <div class="rbt-card-bottom">
-                            <div class="rbt-price">
-                                <span class="current-price">₹ 199</span>
-                            </div>
-                            <a class="rbt-btn-link" href="{% url 'birds_feeding' %}">Donate<i
-                                    class="feather-heart"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-           
-              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="rbt-card variation-01 rbt-hover">
-                    <div class="rbt-card-img">
-                        <a href="{% url 'slipper' %}">
-                            <img src="{% static 'website/images/causes/slipper.webp' %}" alt="Card image">
-                        </a>
-                    </div>
-                    <div class="rbt-card-body">
-                        <h4 class="rbt-card-title"><a href="{% url 'slipper' %}">Donate Slippers</a>
-                        </h4>
-                        <div class="rbt-card-bottom">
-                            <div class="rbt-price">
-                                <span class="current-price">₹ 199</span>
-                            </div>
-                            <a class="rbt-btn-link" href="{% url 'slipper' %}">Donate<i
-                                    class="feather-heart"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
+            {% endfor %}
+            
         </div>
         <!-- <div class="row mt--55 mt_sm--50">
             <div class="col-lg-12">
@@ -719,7 +508,7 @@
 </div>
 <!-- End Course Content  -->
 
-<div class="rbt-advance-tab-area rbt-section-gapTop bg-color-white">
+{% comment %} <div class="rbt-advance-tab-area rbt-section-gapTop bg-color-white">
     <div class="container">
         <div class="row mb--60">
             <div class="col-lg-12">
@@ -803,7 +592,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 
 
 <!-- Start CallTo Action Area  -->

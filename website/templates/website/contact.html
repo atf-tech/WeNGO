@@ -70,14 +70,15 @@
                             <span class="subtitle bg-primary-opacity">Service FOR EVERYONE</span>
                         </div>
                         <h3 class="title">You Can Contact With Us</h3>
-                        <form id="contact-form" method="POST" action="mail.php" class="rainbow-dynamic-form max-width-auto">
+                        <form id="contact-form" method="POST" action="{% url 'contact' %}" class="rainbow-dynamic-form max-width-auto">
+                            {% csrf_token %}
                             <div class="form-group">
-                                <input name="contact-name" id="contact-name" type="text">
+                                <input name="name" id="contact-name" type="text">
                                 <label>Name</label>
                                 <span class="focus-border"></span>
                             </div>
                             <div class="form-group">
-                                <input name="contact-phone" type="email">
+                                <input name="email" type="email">
                                 <label>Email</label>
                                 <span class="focus-border"></span>
                             </div>
@@ -87,7 +88,7 @@
                                 <span class="focus-border"></span>
                             </div>
                             <div class="form-group">
-                                <textarea name="contact-message" id="contact-message"></textarea>
+                                <textarea name="message" id="contact-message"></textarea>
                                 <label>Message</label>
                                 <span class="focus-border"></span>
                             </div>

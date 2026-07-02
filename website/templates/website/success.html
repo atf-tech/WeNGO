@@ -427,24 +427,24 @@
       <div class="details-row">
         <span class="d-label">Status</span>
         <span class="d-value">
-          <span class="status-pill"><span class="status-dot"></span>Successful</span>
+          <span class="status-pill"><span class="status-dot"></span>{{donation.easebuzz_payment_status}}</span>
         </span>
       </div>
       <div class="details-row">
         <span class="d-label">Transaction ID</span>
-        <span class="d-value">#WNG-2024-8841</span>
+        <span class="d-value">{{donation.easebuzz_transaction_id}}</span>
       </div>
       <div class="details-row">
         <span class="d-label">Date</span>
-        <span class="d-value">{% now "F j, Y" %}</span>
+        <span class="d-value">{{donation.created_at|date:"F j, Y"}}</span>
       </div>
       <div class="details-row">
         <span class="d-label">Payment Method</span>
-        <span class="d-value">UPI</span>
+        <span class="d-value">{{donation.easebuzz_payment_mode}}</span>
       </div>
       <div class="details-row">
         <span class="d-label">Total Donated</span>
-        <span class="d-value amount">₹ 800.00</span>
+        <span class="d-value amount">₹ {{donation.donation_amount}}</span>
       </div>
     </div>
 

@@ -1,0 +1,692 @@
+<div id="at-chat-wrapper" data-lenis-prevent>
+
+  <!-- Last-agent-message preview (visible when widget is closed) -->
+  <div id="at-preview-strip">
+    <div class="ps-agent" id="ps-agent-name">Support Agent</div>
+    <div class="ps-msg" id="ps-msg-text">Hi! How can we help you today?</div>
+    <div class="ps-time" id="ps-msg-time">Just now</div>
+  </div>
+
+  <!-- Chat window -->
+  <div id="at-chat-window">
+
+    <!-- Header -->
+    <div id="at-chat-header">
+      <div class="at-hdr-avatar" id="hdr-avatar">WeNGO</div>
+      <div class="at-hdr-info">
+        <div class="at-hdr-name">WeNGO Support</div>
+        <div class="at-hdr-status">Online — We reply instantly</div>
+        <div class="at-hdr-brand">wengo.in</div>
+      </div>
+      <button class="at-hdr-close" id="at-close-btn" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="at-messages"></div>
+
+    <!-- Typing dots -->  
+    <div id="at-typing" style="display:none;">
+      <div class="at-msg-avatar">WeNGO</div>
+      <div class="at-typing-bubble">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Quick-reply chips (above input) -->
+    <div id="at-quick-replies" style="display:none;padding:8px 12px 4px;border-top:1px solid #eef2f7;background:#fafcff;"></div>
+
+    <!-- Input -->
+    <div id="at-input-area">
+      <div class="at-input-row">
+        <button id="at-file-btn" title="Send image or file" style="background:none;border:none;cursor:pointer;padding:0 6px;color:#888;font-size:16px;flex-shrink:0;"><i class="fa-solid fa-paperclip"></i></button>
+        <input type="file" id="at-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" style="display:none;">
+        <textarea id="at-msg-input" rows="1" placeholder="Type your message..."></textarea>
+        <button id="at-send-btn" title="Send">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+      <div class="at-footer">Powered by <a href="https://wengo.in" target="_blank">wengo.in</a></div>
+    </div>
+
+  </div><!-- /at-chat-window -->
+
+  <!-- Bubble -->
+  <button id="at-chat-bubble" title="Chat with us">
+    <span id="at-unread-badge">1</span>
+    <i class="fa-solid fa-comment-dots at-icon-chat"></i>
+    <i class="fa-solid fa-xmark at-icon-close"></i>
+    <div id="at-online-dot"></div>
+  </button>
+
+</div><!-- /at-chat-wrapper -->
+
+<script>
+(function () {
+  if (window.jQuery) { return; }
+  var s = document.createElement('script');
+  s.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
+  s.crossOrigin = 'anonymous';
+  document.head.appendChild(s);
+})();
+</script>
+
+<script>
+(function waitForJQ() {
+  if (!window.jQuery) { return setTimeout(waitForJQ, 50); }
+  initAtChatWidget(window.jQuery);
+})();
+
+function initAtChatWidget($) {
+$(function () {
+
+  var STORE_STATE = 'at_chat_state';
+  var STORE_MSGS  = 'at_chat_msgs';
+
+  /* STORAGE HELPERS */
+  function loadStoredState() {
+    try { return JSON.parse(sessionStorage.getItem(STORE_STATE) || '{}'); } catch(e) { return {}; }
+  }
+  function saveState() {
+    try {
+      sessionStorage.setItem(STORE_STATE, JSON.stringify({
+        chatStarted:  state.chatStarted,
+        sessionKey:   state.sessionKey,
+        convoId:      state.convoId,
+        rmName:       state.rmName,
+        isClosed:     state.isClosed,
+        unreadIds:    state.unreadRmMsgIds,
+        anyRmOnline:  state.anyRmOnline,
+        userReplied:  state.userReplied,
+      }));
+    } catch(e) {}
+  }
+  function loadMsgs() {
+    try { return JSON.parse(sessionStorage.getItem(STORE_MSGS) || '[]'); } catch(e) { return []; }
+  }
+  function saveMsgToStore(type, text, name, time, fileUrl, fileType, fileName) {
+    try {
+      var msgs = loadMsgs();
+      var entry = { type: type, text: text, name: name || null, time: time };
+      if (fileUrl) { entry.fileUrl = fileUrl; entry.fileType = fileType; entry.fileName = fileName; }
+      msgs.push(entry);
+      sessionStorage.setItem(STORE_MSGS, JSON.stringify(msgs));
+    } catch(e) {}
+  }
+
+  /* RESTORE SAVED STATE */
+  var saved = loadStoredState();
+
+  /* CFG */
+  var cfg = {
+    agentName: 'WeNGO',
+    agentAvatar: null,
+    autoOpenDelay: 2500,
+
+    onChatStart: function (cb) {
+      initVisitorSession(function () { cb(); });
+    },
+
+    sendToBackend: function (msg, cb) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'message', body: msg }));
+        cb(null);
+      } else {
+        $.ajax({
+          url: '/rm/visitor/send/',
+          method: 'POST',
+          contentType: 'application/json',
+          headers: { 'X-CSRFToken': getCSRF() },
+          data: JSON.stringify({ session_key: state.sessionKey, body: msg }),
+          success: function (res) {
+            if (res.auto_reply) cb(res.auto_reply.body);
+            else cb(null);
+          },
+          error: function () { cb(null); }
+        });
+      }
+    }
+  };
+
+  /* STATE */
+  var state = {
+    isOpen:         false,
+    chatStarted:    saved.chatStarted  || false,
+    unread:         0,
+    sessionKey:     saved.sessionKey   || null,
+    convoId:        saved.convoId      || null,
+    cookieId:       getCookie('vcid')  || null,
+    wsConnected:    false,
+    rmName:         saved.rmName       || null,
+    isClosed:       saved.isClosed     || false,
+    unreadRmMsgIds: saved.unreadIds    || [],
+    anyRmOnline:    saved.anyRmOnline !== undefined ? saved.anyRmOnline : null,
+    userReplied:    saved.userReplied   || false,
+  };
+
+  var QUICK_REPLIES = ['I have a question', 'Tell me more'];
+
+  /* CSRF + COOKIE */
+  function getCSRF() { return getCookie('csrftoken') || ''; }
+  function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+  function setCookie(name, value, days) {
+    var exp = new Date();
+    exp.setDate(exp.getDate() + days);
+    document.cookie = name + '=' + encodeURIComponent(value) +
+      '; expires=' + exp.toUTCString() + '; path=/; SameSite=Lax';
+  }
+
+  /* WEBSOCKET */
+  var ws = null;
+
+  function connectWebSocket(sessionKey) {
+    var proto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+    ws = new WebSocket(proto + location.host + '/ws/visitor/' + sessionKey + '/');
+
+    ws.onopen = function () {
+      state.wsConnected = true;
+      ws.send(JSON.stringify({
+        type: 'page_view',
+        url: location.href,
+        title: document.title,
+        prev_duration: 0
+      }));
+      setInterval(function () {
+        if (ws && ws.readyState === WebSocket.OPEN)
+          ws.send(JSON.stringify({ type: 'heartbeat', elapsed: 30 }));
+      }, 30000);
+    };
+
+    ws.onmessage = function (e) {
+      var data = JSON.parse(e.data);
+
+      if (data.type === 'visitor_message' || data.type === 'rm_message') {
+        var msg = data.message;
+        $('#at-typing').hide();
+        if (msg.message_type === 'image') {
+          var n = state.rmName || cfg.agentName;
+          var t = msg.time || nowTime();
+          var av = cfg.agentAvatar ? '<img src="' + cfg.agentAvatar + '">' : n.charAt(0).toUpperCase();
+          $('#at-messages').append(
+            '<div class="at-msg-row agent"><div class="at-msg-avatar">' + av + '</div>' +
+            '<div class="at-msg-col"><div class="at-sender-name">' + n + '</div>' +
+            '<div class="at-bubble agent"><img src="' + msg.file_url + '" style="max-width:180px;border-radius:8px;" onclick="window.open(\'' + msg.file_url + '\',\'_blank\')">' +
+            '<div class="at-bubble-time">' + t + '</div></div></div></div>'
+          );
+          saveMsgToStore('agent', null, n, t, msg.file_url, 'image', msg.file_name);
+          scrollBottom();
+        } else if (msg.message_type === 'file') {
+          var n = state.rmName || cfg.agentName;
+          var t = msg.time || nowTime();
+          var av = cfg.agentAvatar ? '<img src="' + cfg.agentAvatar + '">' : n.charAt(0).toUpperCase();
+          $('#at-messages').append(
+            '<div class="at-msg-row agent"><div class="at-msg-avatar">' + av + '</div>' +
+            '<div class="at-msg-col"><div class="at-sender-name">' + n + '</div>' +
+            '<div class="at-bubble agent"><a href="' + msg.file_url + '" target="_blank" style="color:#1565c0;">📄 ' + (msg.file_name || 'File') + '</a>' +
+            '<div class="at-bubble-time">' + t + '</div></div></div></div>'
+          );
+          saveMsgToStore('agent', null, n, t, msg.file_url, 'file', msg.file_name);
+          scrollBottom();
+        } else {
+          window.AT_renderAgentMsg(msg.body, state.rmName || cfg.agentName);
+        }
+        if (ws && ws.readyState === WebSocket.OPEN && msg.id && state.isOpen) {
+          ws.send(JSON.stringify({ type: 'read_receipt', message_ids: [msg.id] }));
+        } else if (msg.id) {
+          state.unreadRmMsgIds.push(msg.id);
+          saveState();
+        }
+      }
+
+      else if (data.type === 'fallback_options') {
+        // All RMs offline — show WhatsApp quick-send buttons
+        renderFallbackOptions(data.options || []);
+      }
+
+      else if (data.type === 'rm_joined') {
+        state.rmName = data.rm_name; saveState();
+        $('.at-hdr-name').text(data.rm_name);
+        $('.at-hdr-status').html(
+          '<span style="display:inline-block;width:6px;height:6px;background:#69F0AE;border-radius:50%;margin-right:4px;"></span>' +
+          data.rm_name + ' is here'
+        );
+        showTyping();
+        setTimeout(function () { $('#at-typing').hide(); }, 2000);
+      }
+
+      else if (data.type === 'conversation_closed') {
+        state.isClosed = true; saveState();
+        $('.at-hdr-status').text('Chat ended');
+        $('#at-input-area').html(
+          '<div style="text-align:center;padding:10px 12px;font-size:12px;color:#aaa;">This chat has been closed.</div>'
+        );
+      }
+    };
+
+    ws.onclose = function () {
+      state.wsConnected = false;
+      setTimeout(function () {
+        if (state.sessionKey) connectWebSocket(state.sessionKey);
+      }, 4000);
+    };
+
+    ws.onerror = function () { state.wsConnected = false; };
+  }
+
+  /* SESSION INIT */
+  function initVisitorSession(cb) {
+    if (state.sessionKey) { if (cb) cb(); return; }
+    $.ajax({
+      url: '/rm/visitor/session/init/',
+      method: 'POST',
+      contentType: 'application/json',
+      headers: { 'X-CSRFToken': getCSRF() },
+      data: JSON.stringify({
+        cookie_id:    state.cookieId,
+        url:          location.href,
+        title:        document.title,
+        referrer:     document.referrer,
+        utm_source:   new URLSearchParams(location.search).get('utm_source')   || '',
+        utm_medium:   new URLSearchParams(location.search).get('utm_medium')   || '',
+        utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || '',
+      }),
+      success: function (res) {
+        state.sessionKey   = res.session_key;
+        state.convoId      = res.conversation_id;
+        state.anyRmOnline  = res.any_rm_online;
+        if (res.cookie_id) { setCookie('vcid', res.cookie_id, 365); state.cookieId = res.cookie_id; }
+        saveState();
+        connectWebSocket(state.sessionKey);
+        if (res.fallback && res.fallback.greeting) {
+          if (!state.chatStarted) startChat();
+          setTimeout(function () {
+            window.AT_renderAgentMsg(res.fallback.greeting, 'WeNGO');
+          }, 300);
+        }
+        if (cb) cb();
+      },
+      error: function () { if (cb) cb(); }
+    });
+  }
+
+  /* On page load: always init/reconnect so RM gets notified visitor is on site */
+  if (state.sessionKey) {
+    connectWebSocket(state.sessionKey);
+  } else {
+    initVisitorSession(null);  // fires visitor_new_session → RM notification + sound
+  }
+
+  /* HELPERS */
+  function nowTime() {
+    var d = new Date(), h = d.getHours(), m = d.getMinutes();
+    var ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+  }
+  function esc(t) { return $('<s>').text(t).html(); }
+  function formatMsg(t) {
+    // Escape HTML first, then convert URLs to links and newlines to <br>
+    var safe = esc(t);
+    safe = safe.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#1565C0;text-decoration:underline;word-break:break-all;">$1</a>');
+    safe = safe.replace(/\n/g, '<br>');
+    return safe;
+  }
+
+  function setPreview(agent, msg) {
+    $('#ps-agent-name').text(agent);
+    $('#ps-msg-text').text(msg);
+    $('#ps-msg-time').text('Just now');
+    if (!state.isOpen) $('#at-preview-strip').fadeIn(250);
+  }
+
+  function setBadge(n) {
+    state.unread = n;
+    n > 0 ? $('#at-unread-badge').text(n).css('display', 'flex')
+           : $('#at-unread-badge').hide();
+  }
+
+  // Tracks whether the visitor has scrolled up to read older messages.
+  // We only auto-scroll-to-bottom when they're already near the bottom,
+  // so an incoming message / typing indicator can't yank their scroll position.
+  var atBottom = true;
+  (function bindMsgScroll() {
+    var el = document.getElementById('at-messages');
+    if (!el) return;
+    el.addEventListener('scroll', function () {
+      atBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 60;
+    }, { passive: true });
+  })();
+
+
+  // Native scroll only — the previous trapWidgetWheel handler bound a
+  // passive:false wheel listener on the wrapper, which broke 2-finger
+  // touchpad scrolling inside #at-messages on most browsers. We rely on
+  // `overscroll-behavior: contain` on #at-messages to stop the host page
+  // from scrolling when the visitor reaches the top/bottom edge.
+
+  function scrollBottom(force) {
+    var el = document.getElementById('at-messages');
+    if (!el) return;
+    if (!force && !atBottom) return;
+    requestAnimationFrame(function () {
+      el.scrollTop = el.scrollHeight;
+      atBottom = true;
+    });
+  }
+
+  /* RENDER (DOM only, no storage write) */
+  function renderAgentMsgDOM(text, name, time) {
+    var n = name || cfg.agentName;
+    var av = cfg.agentAvatar ? '<img src="' + cfg.agentAvatar + '">' : n.charAt(0).toUpperCase();
+    $('#at-typing').hide();
+    $('#at-messages').append(
+      '<div class="at-msg-row agent">' +
+      '<div class="at-msg-avatar">' + av + '</div>' +
+      '<div class="at-msg-col">' +
+      '<div class="at-sender-name">' + esc(n) + '</div>' +
+      '<div class="at-bubble agent">' + formatMsg(text) +
+      '<div class="at-bubble-time">' + (time || nowTime()) + '</div>' +
+      '</div></div></div>'
+    );
+    scrollBottom();
+  }
+
+  function renderUserMsgDOM(text, time) {
+    $('#at-messages').append(
+      '<div class="at-msg-row user">' +
+      '<div class="at-msg-avatar user-av">You</div>' +
+      '<div class="at-msg-col">' +
+      '<div class="at-bubble user">' + formatMsg(text) +
+      '<div class="at-bubble-time">' + (time || nowTime()) + '</div>' +
+      '</div></div></div>'
+    );
+    scrollBottom(true);
+  }
+
+  /* RENDER + SAVE (used for live new messages) */
+  function renderAgentMsg(text, name) {
+    var t = nowTime();
+    renderAgentMsgDOM(text, name, t);
+    saveMsgToStore('agent', text, name, t);
+    setPreview(name || cfg.agentName, text);
+    if (!state.isOpen) setBadge(state.unread + 1);
+  }
+  window.AT_renderAgentMsg = renderAgentMsg;
+
+  function renderUserMsg(text) {
+    var t = nowTime();
+    renderUserMsgDOM(text, null, t);
+    saveMsgToStore('user', text, null, t);
+  }
+
+  function showTyping() { $('#at-typing').css('display', 'flex'); scrollBottom(); }
+
+  /* QUICK-REPLY CHIPS (visitor → RM, shown once until first reply) */
+  function renderQuickReplies() {
+    if (state.userReplied) return;
+    var $bar = $('#at-quick-replies');
+    if (!$bar.length) return;
+    var html = '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+    QUICK_REPLIES.forEach(function (label) {
+      html += '<button type="button" class="at-quick-reply" data-text="' + esc(label) + '" ' +
+              'style="background:#fff;border:1px solid #1565C0;color:#1565C0;border-radius:16px;' +
+              'padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">' +
+              esc(label) + '</button>';
+    });
+    html += '</div>';
+    $bar.html(html).css('display', 'block');
+  }
+
+  function hideQuickReplies() {
+    $('#at-quick-replies').hide().empty();
+  }
+
+  $('#at-quick-replies').on('click', '.at-quick-reply', function () {
+    var text = $(this).data('text');
+    hideQuickReplies();
+    state.userReplied = true;
+    saveState();
+    if (!state.chatStarted) startChat();
+    renderUserMsg(text);
+    showTyping();
+    cfg.sendToBackend(text, function (reply) {
+      if (reply) renderAgentMsg(reply);
+      else setTimeout(function () { $('#at-typing').hide(); }, 15000);
+    });
+  });
+
+  /* FALLBACK QUICK-SEND BUTTONS (all RMs offline → WhatsApp) */
+  function renderFallbackOptions(options) {
+    if (!options || !options.length) return;
+    // Avoid duplicating the row if we already rendered it
+    if ($('#at-messages .at-fallback-row').length) return;
+    var html = '<div class="at-msg-row agent at-fallback-row">' +
+               '<div class="at-msg-avatar">' +
+               (cfg.agentAvatar ? '<img src="' + cfg.agentAvatar + '">' : 'WeNGO') +
+               '</div><div class="at-msg-col"><div class="at-bubble agent" style="background:#f0f7ff;">';
+    html += '<div style="font-size:12px;color:#1a3a5c;margin-bottom:8px;">Quick send on WhatsApp</div>';
+    options.forEach(function (opt) {
+      html += '<a href="' + opt.url + '" target="_blank" rel="noopener" ' +
+              'style="display:block;margin:4px 0;padding:8px 12px;background:#25D366;color:#fff;' +
+              'border-radius:18px;text-decoration:none;font-size:13px;text-align:center;">' +
+              '💬 ' + esc(opt.label) + '</a>';
+    });
+    html += '<div class="at-bubble-time">' + nowTime() + '</div></div></div></div>';
+    $('#at-messages').append(html);
+    scrollBottom();
+  }
+
+  /* RESTORE saved messages after page navigation */
+  function restoreMessages() {
+    var msgs = loadMsgs();
+    if (!msgs.length) return;
+    $('#at-messages').append('<div class="at-date-sep">Today</div>');
+    msgs.forEach(function (m) {
+      if (m.fileUrl) {
+        // File/image message
+        var content = m.fileType === 'image'
+          ? '<img src="' + m.fileUrl + '" style="max-width:180px;border-radius:8px;">'
+          : '<a href="' + m.fileUrl + '" target="_blank" style="color:#1565c0;">📄 ' + (m.fileName || 'File') + '</a>';
+        if (m.type === 'agent') {
+          var n = m.name || cfg.agentName;
+          var av = cfg.agentAvatar ? '<img src="' + cfg.agentAvatar + '">' : n.charAt(0).toUpperCase();
+          $('#at-messages').append(
+            '<div class="at-msg-row agent"><div class="at-msg-avatar">' + av + '</div>' +
+            '<div class="at-msg-col"><div class="at-sender-name">' + esc(n) + '</div>' +
+            '<div class="at-bubble agent">' + content +
+            '<div class="at-bubble-time">' + m.time + '</div></div></div></div>'
+          );
+        } else {
+          $('#at-messages').append(
+            '<div class="at-msg-row user"><div class="at-msg-avatar user-av">You</div>' +
+            '<div class="at-msg-col"><div class="at-bubble user">' + content +
+            '<div class="at-bubble-time">' + m.time + '</div></div></div></div>'
+          );
+        }
+      } else if (m.type === 'agent') {
+        renderAgentMsgDOM(m.text, m.name, m.time);
+      } else {
+        renderUserMsgDOM(m.text, m.time);
+      }
+    });
+    scrollBottom(true);
+    if (state.isClosed) {
+      $('#at-input-area').html(
+        '<div style="text-align:center;padding:10px 12px;font-size:12px;color:#aaa;">This chat has been closed.</div>'
+      );
+    }
+    if (state.rmName) $('.at-hdr-name').text(state.rmName);
+    var lastAgent = msgs.slice().reverse().find(function (m) { return m.type === 'agent'; });
+    if (lastAgent) setPreview(lastAgent.name || cfg.agentName, lastAgent.text);
+  }
+
+  /* OPEN / CLOSE */
+  function openWidget() {
+    state.isOpen = true;
+    $('#at-chat-window').addClass('is-open');
+    $('#at-chat-bubble').addClass('is-open');
+    $('#at-preview-strip').fadeOut(150);
+    setBadge(0);
+    if (!state.chatStarted) startChat();
+    // Land on the latest message every time the widget opens
+    atBottom = true;
+    scrollBottom(true);
+    // Flush all pending read receipts (from this page AND previous pages)
+    if (ws && ws.readyState === WebSocket.OPEN && state.unreadRmMsgIds.length) {
+      ws.send(JSON.stringify({ type: 'read_receipt', message_ids: state.unreadRmMsgIds }));
+      state.unreadRmMsgIds = [];
+      saveState();
+    }
+  }
+
+  function closeWidget() {
+    state.isOpen = false;
+    $('#at-chat-window').removeClass('is-open');
+    $('#at-chat-bubble').removeClass('is-open');
+    if (state.chatStarted) {
+      setTimeout(function () { $('#at-preview-strip').fadeIn(250); }, 350);
+    }
+  }
+
+  /* START CHAT */
+  function startChat() {
+    if (state.chatStarted) return;
+    state.chatStarted = true;
+    setBadge(0);
+    cfg.onChatStart(function () {
+      var existing = loadMsgs();
+      if (!existing.length) {
+        $('#at-messages').append('<div class="at-date-sep">Today</div>');
+        scrollBottom();
+        showTyping();
+        setTimeout(function () {
+          if (state.anyRmOnline === false) {
+            // Server will push the fallback greeting + WhatsApp quick-sends
+            // via the WebSocket (rm_message + fallback_options). Nothing to
+            // render locally — keeps a single source of truth.
+            $('#at-typing').hide();
+          } else {
+            renderAgentMsg('Hello! 👋 Welcome to WeNGO. How can we help you today?');
+            renderQuickReplies();
+          }
+        }, 900);
+      }
+      saveState();
+    });
+  }
+
+  /* IDENTIFY */
+  function tryIdentify(text) {
+    if (!state.sessionKey) return;
+    var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+    var phoneMatch = text.match(/\b[6-9]\d{9}\b|\b\+91\d{10}\b/);
+    if (emailMatch || phoneMatch) {
+      var payload = { session_key: state.sessionKey };
+      if (emailMatch) payload.email = emailMatch[0];
+      if (phoneMatch) payload.phone = phoneMatch[0].replace('+91', '');
+      $.ajax({
+        url: '/rm/visitor/identify/',
+        method: 'POST',
+        contentType: 'application/json',
+        headers: { 'X-CSRFToken': getCSRF() },
+        data: JSON.stringify(payload)
+      });
+    }
+  }
+
+  /* SEND */
+  function sendMessage() {
+    var text = $('#at-msg-input').val().trim();
+    if (!text) return;
+    if (!state.chatStarted) startChat();
+    hideQuickReplies();
+    state.userReplied = true;
+    saveState();
+    renderUserMsg(text);
+    $('#at-msg-input').val('').css('height', '22px');
+    tryIdentify(text);
+    showTyping();
+    cfg.sendToBackend(text, function (reply) {
+      if (reply) renderAgentMsg(reply);
+      else setTimeout(function () { $('#at-typing').hide(); }, 15000);
+    });
+  }
+
+  /* EVENTS */
+  $('#at-chat-bubble').on('click', function () {
+    state.isOpen ? closeWidget() : openWidget();
+  });
+  $('#at-close-btn').on('click', function (e) {
+    e.stopPropagation(); closeWidget();
+  });
+  $('#at-preview-strip').on('click', openWidget);
+  $('#at-send-btn').on('click', sendMessage);
+  $('#at-file-btn').on('click', function () { $('#at-file-input').click(); });
+  $('#at-file-input').on('change', function () {
+    var file = this.files[0];
+    if (!file || !state.sessionKey) return;
+    if (!state.chatStarted) startChat();
+    hideQuickReplies();
+    state.userReplied = true;
+    saveState();
+    var fd = new FormData();
+    fd.append('file', file);
+    fd.append('session_key', state.sessionKey);
+    var isImage = file.type.startsWith('image/');
+    var t = nowTime();
+    var preview = isImage
+      ? '<img src="' + URL.createObjectURL(file) + '" style="max-width:180px;border-radius:8px;">'
+      : '📄 ' + file.name;
+    var fileName = file.name;
+    $('#at-messages').append(
+      '<div class="at-msg-row user"><div class="at-msg-avatar user-av">You</div>' +
+      '<div class="at-msg-col"><div class="at-bubble user">' + preview +
+      '<div class="at-bubble-time">' + t + '</div></div></div></div>'
+    );
+    scrollBottom(true);
+    $.ajax({
+      url: '/rm/visitor/send-file/',
+      method: 'POST',
+      processData: false,
+      contentType: false,
+      headers: { 'X-CSRFToken': getCSRF() },
+      data: fd,
+      success: function (res) {
+        if (res.message && res.message.file_url) {
+          saveMsgToStore('user', null, null, t, res.message.file_url, isImage ? 'image' : 'file', fileName);
+        }
+      }
+    });
+    this.value = '';
+  });
+  $('#at-msg-input').on('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  $('#at-msg-input').on('input', function () {
+    this.style.height = '22px';
+    this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+  });
+
+  /* INIT */
+  if (state.chatStarted) {
+    // Returning visitor navigated to new page — restore history silently
+    restoreMessages();
+    setBadge(state.unreadRmMsgIds.length > 0 ? state.unreadRmMsgIds.length : 0);
+    var msgs = loadMsgs();
+    var lastAgent = msgs.slice().reverse().find(function (m) { return m.type === 'agent'; });
+    if (lastAgent) { setPreview(lastAgent.name || cfg.agentName, lastAgent.text); }
+    if (!state.userReplied && state.anyRmOnline !== false) renderQuickReplies();
+  } else {
+    setPreview('Support Agent', 'Hi! How can we help you today?');
+    setBadge(1);
+  }
+  // Always auto-open after delay on every page load
+  if (cfg.autoOpenDelay > 0) setTimeout(openWidget, cfg.autoOpenDelay);
+
+});
+} // /initAtChatWidget
+</script>

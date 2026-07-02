@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from dashboard import views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -10,5 +10,6 @@ urlpatterns = [
     path('RM_Portal',views.RM_Portal, name='RM_Portal'),
     path('qr_donation',views.qr_donation, name='qr_donation'),
     path('admin_search_page',views.admin_search_page, name='admin_search_page'),
-    path('add_items',views.add_items, name='add_items')
+
+    path('add_items',views.add_items, name='add_items'),
 ]

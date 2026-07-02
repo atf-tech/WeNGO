@@ -99,17 +99,21 @@ RMPortal || Add GPay Payments
                             data-donor-address="{{ payment.donor_address|default:'' }}"
                             data-package="{{ payment.package_type|default:'' }}"
                             data-pan="{{ payment.donor_pan|default:'' }}"
-                            data-gpay-ref="{{ payment.gpay_reference_id|default:'' }}">
+                            data-gpay-ref="{{ payment.gpay_reference_id|default:'' }}"
+                            data-amount="{{ payment.amount|default:'' }}"
+                            data-payment-date="{{ payment.payment_date|date:'Y-m-d\TH:i' }}"
+                            data-payment-screenshot-url="{% if payment.payment_screenshot %}{{ payment.payment_screenshot.url }}{% else %}{% endif %}">
                       <i class="ri-edit-box-line"></i>
                     </button>
-                    <form method="POST"
-                          action="{% url 'rm_gpay_delete' payment.id %}"
-                          style="display:inline;"
-                          onsubmit="return confirm('Do you want to delete this GPay entry?');">
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-danger btn-icon waves-effect waves-light">
-                        <i class="ri-delete-bin-line"></i>
-                      </button>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="payment_id" value="{{ payment.id }}">
+
+                        <button type="submit" class="btn btn-danger btn-icon waves-effect waves-light">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
                     </form>
                   </div>
                 </td>
@@ -133,10 +137,9 @@ RMPortal || Add GPay Payments
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form method="POST"
-            action=""
-            enctype="multipart/form-data">
+      <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
+        <input type="hidden" name="action" value="create">
         <div class="modal-body">
           <div class="row g-3">
 
@@ -223,8 +226,9 @@ RMPortal || Add GPay Payments
         <h5 class="modal-title" id="editGPayModalLabel">Edit GPay Payment</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="editGPayForm" method="POST" action="">
+      <form id="editGPayForm" method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
+        <input type="hidden" name="action" value="update">
         <input type="hidden" name="payment_id" id="edit-payment-id">
         <div class="modal-body">
           <div class="row g-3">
@@ -251,8 +255,21 @@ RMPortal || Add GPay Payments
               </select>
             </div>
             <div class="col-md-6">
+              <label class="form-label">Payment Date</label>
+              <input type="datetime-local"
+                    id="edit-payment-date"
+                    name="payment_date"
+                    class="form-control"
+                    required>
+            </div>
+
+            <div class="col-md-6">
               <label class="form-label">Donor Address</label>
               <textarea name="donor_address" id="edit-donor-address" class="form-control" rows="2"></textarea>
+            </div>
+             <div class="col-md-4">
+              <label class="form-label">Amount (₹)</label>
+              <input type="number" step="0.01" min="0" name="amount" id="edit-amount" class="form-control" placeholder="Enter amount" required>
             </div>
             <div class="col-md-6">
               <label class="form-label">GPay Reference / UTR</label>
@@ -266,6 +283,19 @@ RMPortal || Add GPay Payments
               <input type="text" name="donor_pan" id="edit-donor-pan" class="form-control text-uppercase"
                      placeholder="e.g. ABCDE1234F" maxlength="20" autocomplete="off">
               <small id="edit-pan-hint" class="text-success d-none"><i class="ri-file-shield-2-line"></i> 80G receipt will be generated</small>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Payment Screenshot</label>
+
+              <div class="mb-2" id="edit-existing-screenshot-wrapper" style="display: none;">
+                <div class="d-flex align-items-center gap-2">
+                  <a id="edit-existing-screenshot-link" href="#" target="_blank" class="text-primary text-decoration-underline">View current screenshot</a>
+                </div>
+                <div class="mt-2" id="edit-existing-screenshot-preview"></div>
+              </div>
+
+              <input type="file" name="payment_screenshot" id="editGPayForm" class="form-control" accept="image/*">
+              <small class="text-muted">Upload a new screenshot to replace the current one (optional).</small>
             </div>
           </div>
         </div>
@@ -311,9 +341,29 @@ RMPortal || Add GPay Payments
       document.getElementById('edit-donor-mobile').value = btn.dataset.donorMobile || '';
       document.getElementById('edit-donor-email').value = btn.dataset.donorEmail || '';
       document.getElementById('edit-donor-address').value = btn.dataset.donorAddress || '';
+      document.getElementById('edit-payment-date').value = btn.dataset.paymentDate || '';
+      document.getElementById('edit-amount').value = btn.dataset.amount || '';
       document.getElementById('edit-gpay-ref').value = btn.dataset.gpayRef || '';
       document.getElementById('edit-donor-pan').value = btn.dataset.pan || '';
       editHint.classList.toggle('d-none', !btn.dataset.pan);
+
+      // Existing screenshot preview (cannot prefill file input)
+      const existingWrapper = document.getElementById('edit-existing-screenshot-wrapper');
+      const existingPreview = document.getElementById('edit-existing-screenshot-preview');
+      const existingLink = document.getElementById('edit-existing-screenshot-link');
+
+      const existingUrl = btn.dataset.paymentScreenshotUrl || '';
+      if (existingWrapper && existingPreview && existingLink) {
+        if (existingUrl) {
+          existingLink.href = existingUrl;
+          existingWrapper.style.display = 'block';
+          existingPreview.innerHTML = `<img src="${existingUrl}" alt="Current GPay Screenshot" width="140" height="100" style="object-fit: contain; border-radius: 6px;">`;
+        } else {
+          existingWrapper.style.display = 'none';
+          existingPreview.innerHTML = '';
+          existingLink.href = '#';
+        }
+      }
 
       const pkg = document.getElementById('edit-package');
       pkg.value = btn.dataset.package || '';

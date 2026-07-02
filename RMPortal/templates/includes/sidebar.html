@@ -6,14 +6,14 @@
       <!-- LOGO -->
       <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <a href="{% url 'inbox' %}" class="logo logo-dark">
+        <a href="{% url 'webchat' rm_code=rm.rm_code %}" class="logo logo-dark">
          
           <span class="logo-lg">
             <img src="{% static 'RMPortal/images/logo-WENGO.webp' %}" alt="logo" height="45px" />
           </span>
         </a>
         <!-- Light Logo-->
-        <a href="{% url 'inbox' %}" class="logo logo-light">
+        <a href="{% url 'webchat' rm_code=rm.rm_code %}" class="logo logo-light">
          
           <span class="logo-lg">
             <img src="{% static 'RMPortal/images/logo-WENGO.webp' %}" alt="logo" height="45px" />
@@ -33,17 +33,17 @@
            
 
             <li class="nav-item">
-              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'inbox' %}active{% endif %}" 
-                  href="{% url 'inbox' %}">
+              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'rmportal_index' or request.resolver_match.url_name == 'webchat' %}active{% endif %}" 
+                  href="{% url 'rmportal_index' rm_code=rm.rm_code %}">
                 <i class=" ri-home-heart-line"></i>
                 <span>Home</span>
               </a>
             </li>
           
              <li class="nav-item">
-              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'whatsapp_chat' %}active{% endif %}" 
-                  href="{% url 'whatsapp_chat' %}">
-                <i class=" ri-message-3-fill"></i>
+              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'webchat' %}active{% endif %}" 
+                  href="{% url 'webchat' rm_code=rm.rm_code %}">
+                <i class=" ri-home-heart-line"></i>
                 <span>WEB Whatsapp</span>
               </a>
             </li>
@@ -58,10 +58,10 @@
              
 
             <li class="nav-item">
-              <a class="nav-link menu-link {% if request.resolver_match.url_name == 'add_gpay_payments' %}active{% endif %}" 
-                  href="{% url 'add_gpay_payments' %}">
+<a class="nav-link menu-link {% if request.resolver_match.url_name == 'rm_gpay_payments' %}active{% endif %}" 
+                   href="{% url 'rm_gpay_payments' rm_code=rm.rm_code %}">
                 <i class=" ri-file-paper-2-fill"></i>
-                <span>Whatsapp API Reports</span>
+                <span>Add Gpay Payments</span>
               </a>
             </li>
 

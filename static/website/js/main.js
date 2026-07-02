@@ -49,7 +49,7 @@
       eduJs.categoryOffcanvas();
       eduJs.autoslidertab();
       eduJs.moveAnimation();
-      eduJs.contactForm();
+      // eduJs.contactForm();
       eduJs.player();
       eduJs.quizAns();
       eduJs.lessonAccor();

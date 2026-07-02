@@ -25,7 +25,7 @@
 
 {% if convo.visitor.current_page %}
 <div id="visitorCurrentPage" style="padding:6px 12px;background:#1a2633;border-bottom:1px solid #2a3a4a;font-size:11px;color:#90caf9;">
-    📍 Currently on: <strong>{{ convo.visitor.current_page }}</strong>
+    &#128205; Currently on: <strong>{{ convo.visitor.current_page }}</strong>
 </div>
 {% endif %}
 
@@ -43,16 +43,16 @@
             {% if message.file %}
                 <img src="{{ message.file.url }}" class="msg-image" loading="lazy">
             {% else %}
-                <div class="msg-placeholder">📷 Image not available</div>
+                <div class="msg-placeholder">&#128247; Image not available</div>
             {% endif %}
 
         {% elif message.message_type == "file" %}
             {% if message.file %}
                 <a href="{{ message.file.url }}" target="_blank" class="msg-doc">
-                    📄 {{ message.file.name }}
+                    &#128196; {{ message.file.name }}
                 </a>
             {% else %}
-                <div class="msg-placeholder">📄 File not available</div>
+                <div class="msg-placeholder">&#128196; File not available</div>
             {% endif %}
         {% endif %}
 
@@ -60,7 +60,7 @@
             <span class="msg-time">{{ message.created_at|time:"h:i a" }}</span>
             {% if message.direction == "rm" %}
                 <span class="msg-tick {% if message.is_read %}read{% else %}sent{% endif %}">
-                    {% if message.is_read %}<span style="color:#4fc3f7;">✔✔</span>{% else %}✔{% endif %}
+                    {% if message.is_read %}<span style="color:#4fc3f7;">&#10004;&#10004;</span>{% else %}&#10004;{% endif %}
                 </span>
             {% endif %}
         </div>

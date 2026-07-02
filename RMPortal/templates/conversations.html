@@ -1,0 +1,81 @@
+
+<!-- RIGHT CHAT WINDOW -->
+<div class="chat-window">
+
+    <div class="chat-header">
+        <span class="icon-btn mobile-back">←</span>
+
+        <div class="chat-name fs-24" id="chatName">
+            Select a chat
+        </div>
+        <input type="hidden" id="activeConversationId">
+
+    </div>
+
+
+
+    <div class="chat-body" id="chatBody"></div>
+
+
+
+
+    <!-- FOOTER -->
+    <div class="chat-footer">
+        <div class="icon-btn" id="attachBtn">＋</div>
+
+        <textarea id="messageInput" class="chat-input" placeholder="Type a message" rows="1"></textarea>
+
+
+
+        <!-- RECORDING STATUS -->
+        <div class="recording-indicator" id="recordingIndicator">
+            🔴 Recording...
+        </div>
+
+        <!-- MIC / STOP BUTTON -->
+        <div class="icon-btn mic-btn" id="micBtn">🎤</div>
+
+        <!-- SEND BUTTON -->
+        <div class="send-btn" id="sendBtn">➤</div>
+
+
+        <div class="attach-popup" id="attachPopup">
+            <div class="attach-item" data-type="image">🖼 Image</div>
+            <div class="attach-item" data-type="audio">🎵 Audio</div>
+            <div class="attach-item" data-type="video">🎥 Video</div>
+            <div class="attach-item" data-type="doc">📄 Document</div>
+        </div>
+
+        <input type="file" id="fileImage" accept="image/*" hidden>
+        <input type="file" id="fileAudio" accept="audio/*" hidden>
+        <input type="file" id="fileVideo" accept="video/*" hidden>
+        <input type="file" id="fileDoc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" hidden>
+
+
+        <div id="previewModal" class="preview-modal">
+            <div class="preview-box">
+                <div id="previewContent"></div>
+
+                <div class="preview-actions">
+                    <button class="preview-cancel">Cancel</button>
+                    <button class="preview-send">Send</button>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <!-- ATTACHMENT POPUP -->
+</div>
+
+<script>
+$("#messageInput").on("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        $("#sendBtn").click();
+    }
+});
+
+
+</script>

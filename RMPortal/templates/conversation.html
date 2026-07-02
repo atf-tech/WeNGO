@@ -1,81 +1,87 @@
+{% extends 'base.html' %} {% load static %}
+{% block title %}Conversation{% endblock %}
 
-<!-- RIGHT CHAT WINDOW -->
-<div class="chat-window">
+{% block content %}
+<link href="{% static 'whatsapp/style.css' %}" rel="stylesheet" type="text/css" />
 
+<div class="chat-window" style="height:100vh;height:100dvh;">
     <div class="chat-header">
-        <span class="icon-btn mobile-back">←</span>
-
-        <div class="chat-name fs-24" id="chatName">
-            Select a chat
+        <span class="icon-btn mobile-back" onclick="history.back()">←</span>
+        <div class="chat-name" id="chatName">
+            {{ conversation.donor.phone_number }}
         </div>
-        <input type="hidden" id="activeConversationId">
-
+        <input type="hidden" id="activeConversationId" value="{{ conversation.id }}">
     </div>
 
+    <div class="chat-body" id="chatBody">
+        {% for message in messages %}
+        {% with message.created_at|date:"Y-m-d" as msg_date %}
+        {% ifchanged msg_date %}
+        <div class="date-separator" data-date="{{ msg_date }}">{{ message.created_at|date:"d M Y" }}</div>
+        {% endifchanged %}
+        {% endwith %}
 
+        <div class="msg-row {% if message.direction == 'out' %}sent{% else %}received{% endif %}"
+             data-msg-id="{{ message.id }}"
+             data-date="{{ message.created_at|date:'Y-m-d' }}">
+            <div class="message {% if message.direction == 'out' %}sent{% else %}received{% endif %} {% if message.message_type != 'text' %}media{% endif %}">
 
-    <div class="chat-body" id="chatBody"></div>
+                {% if message.message_type == "text" %}
+                    <div class="msg-text">{{ message.body|linebreaksbr }}</div>
 
+                {% elif message.message_type == "image" %}
+                    {% if message.media and message.media.file %}
+                        <img src="{{ message.media.file.url }}" class="msg-image" loading="lazy">
+                    {% else %}
+                        <div class="msg-placeholder">&#128247; Image not available</div>
+                    {% endif %}
 
+                {% elif message.message_type == "video" %}
+                    {% if message.media and message.media.file %}
+                        <video class="msg-video" controls preload="metadata">
+                            <source src="{{ message.media.file.url }}">
+                        </video>
+                    {% else %}
+                        <div class="msg-placeholder">&#127909; Video not available</div>
+                    {% endif %}
 
+                {% elif message.message_type == "audio" %}
+                    {% if message.media and message.media.file %}
+                        <div class="audio-msg">
+                            <audio controls class="msg-audio">
+                                <source src="{{ message.media.file.url }}" type="{{ message.media.mime_type }}">
+                            </audio>
+                        </div>
+                    {% else %}
+                        <div class="msg-placeholder">&#127925; Audio not available</div>
+                    {% endif %}
 
-    <!-- FOOTER -->
-    <div class="chat-footer">
-        <div class="icon-btn" id="attachBtn">＋</div>
+                {% elif message.message_type == "document" %}
+                    {% if message.media and message.media.file %}
+                        <a href="{{ message.media.file.url }}" target="_blank" class="msg-doc">
+                            &#128196; {{ message.media.file.name|cut:"whatsapp_media/" }}
+                        </a>
+                    {% else %}
+                        <div class="msg-placeholder">&#128196; Document not available</div>
+                    {% endif %}
+                {% endif %}
 
-        <textarea id="messageInput" class="chat-input" placeholder="Type a message" rows="1"></textarea>
-
-
-
-        <!-- RECORDING STATUS -->
-        <div class="recording-indicator" id="recordingIndicator">
-            🔴 Recording...
-        </div>
-
-        <!-- MIC / STOP BUTTON -->
-        <div class="icon-btn mic-btn" id="micBtn">🎤</div>
-
-        <!-- SEND BUTTON -->
-        <div class="send-btn" id="sendBtn">➤</div>
-
-
-        <div class="attach-popup" id="attachPopup">
-            <div class="attach-item" data-type="image">🖼 Image</div>
-            <div class="attach-item" data-type="audio">🎵 Audio</div>
-            <div class="attach-item" data-type="video">🎥 Video</div>
-            <div class="attach-item" data-type="doc">📄 Document</div>
-        </div>
-
-        <input type="file" id="fileImage" accept="image/*" hidden>
-        <input type="file" id="fileAudio" accept="audio/*" hidden>
-        <input type="file" id="fileVideo" accept="video/*" hidden>
-        <input type="file" id="fileDoc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" hidden>
-
-
-        <div id="previewModal" class="preview-modal">
-            <div class="preview-box">
-                <div id="previewContent"></div>
-
-                <div class="preview-actions">
-                    <button class="preview-cancel">Cancel</button>
-                    <button class="preview-send">Send</button>
+                <div class="msg-meta">
+                    <span class="msg-time">{{ message.created_at|time:"h:i a" }}</span>
+                    {% if message.direction == "out" %}
+                        <span class="msg-tick {{ message.status }}">
+                            {% if message.status == "sent" %}✔
+                            {% elif message.status == "delivered" %}✔✔
+                            {% elif message.status == "read" %}<span style="color:#4fc3f7;">✔✔</span>
+                            {% endif %}
+                        </span>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        
-
+        {% empty %}
+        <div class="no-messages" style="text-align:center;color:#aaa;margin-top:40px;">No messages yet.</div>
+        {% endfor %}
     </div>
-
-    <!-- ATTACHMENT POPUP -->
 </div>
-
-<script>
-$("#messageInput").on("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        $("#sendBtn").click();
-    }
-});
-
-
-</script>
+{% endblock %}

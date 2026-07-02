@@ -1,0 +1,86 @@
+<!-- LEFT CHAT LIST -->
+<div class="chat-list">
+    <div class="chat-list-header">Chats</div>
+
+    <div class="search-box">
+        <input type="text" placeholder="Search or start new chat">
+    </div>
+
+    <!-- SCROLLABLE CHAT LIST -->
+    <div class="chat-list-body">
+
+        {% for convo in conversations %}
+        <div class="chat-item"
+         role="button"
+        tabindex="0"
+             data-conversation-id="{{ convo.id }}"
+             data-name="{{ convo.donor.phone_number }}">
+
+            <div class="chat-info">
+                <div class="chat-name">
+                    {{ convo.donor.phone_number }}
+                </div>
+
+               <div class="chat-last-msg">
+
+    {% if convo.last_message_direction == "out" %}
+        <span class="chat-tick {{ convo.last_message_status }}">
+            {% if convo.last_message_status == "sent" %}✔
+            {% else %}✔✔{% endif %}
+        </span>
+    {% endif %}
+
+    {% if convo.last_message_type == "text" %}
+        <span class="{% if convo.unread_count %}unread-last-text{% else %}last-text{% endif %}">
+            {{ convo.last_message_preview }}
+        </span>
+
+    {% elif convo.last_message_type == "image" %}
+        <span class="last-text">
+            <i class="ri-image-2-fill"></i> Image
+        </span>
+
+    {% elif convo.last_message_type == "video" %}
+        <span class="last-text">
+            <i class="ri-video-fill"></i> Video
+        </span>
+
+    {% elif convo.last_message_type == "audio" %}
+        <span class="last-text">
+            <i class="ri-mic-fill"></i> Audio
+        </span>
+
+    {% elif convo.last_message_type == "document" %}
+        <span class="last-text">
+            <i class="ri-file-text-fill"></i> Document
+        </span>
+    {% endif %}
+
+</div>
+
+            </div>
+
+            <div class="chat-meta">
+    <div class="chat-time"
+         data-time="{% if convo.last_message_at %}{{ convo.last_message_at|date:'c' }}{% endif %}">
+    </div>
+
+    {% if convo.unread_count > 0 %}
+    <div class="chat-unread">
+        {{ convo.unread_count }}
+    </div>
+    {% endif %}
+</div>
+
+        </div>
+        {% empty %}
+        <div class="no-result">
+            No conversations
+        </div>
+        {% endfor %}
+
+        <div class="no-result" style="display:none;">
+            No result found
+        </div>
+    </div>
+</div>

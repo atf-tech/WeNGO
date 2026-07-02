@@ -33,7 +33,6 @@
         <table class="table nowrap align-middle" id="add-service-table">
             <thead>
             <tr>
-                <th>Tag</th>
                 <th>Name</th>
                 <th style="display:none;">Desc</th>
                 <th>Image</th>
@@ -48,7 +47,6 @@
             <tbody>
             {% for s in services %}
                 <tr>
-                    <td>{{ s.tag|title }}</td>
                     <td>{{ s.service_name }}</td>
 
                     <td style="display:none;">{{ s.description|safe }}</td>
@@ -69,7 +67,6 @@
                     <td>
                         <button class="btn btn-primary edit-service-btn"
                                 data-id="{{ s.id }}"
-                                data-tag="{{ s.tag }}"
                                 data-name="{{ s.service_name }}"
                                 data-amount="{{ s.amount }}"
                                 data-target="{{ s.target_amount }}"
@@ -82,7 +79,7 @@
                             <i class="ri-edit-box-line"></i>
                         </button>
 
-                        <form action="{% url 'add_service' %}" method="POST" class="d-inline"
+                        <form action="{% url 'add_items' %}" method="POST" class="d-inline"
                               onsubmit="return confirm('Delete {{ s.service_name }} ?')">
                             {% csrf_token %}
                             <input type="hidden" name="service_id" value="{{ s.id }}">
@@ -123,15 +120,6 @@
                     <input type="hidden" name="service_id" id="service_id" />
 
                     <div class="row g-3">
-                        <div class="col-xxl-6">
-                            <div>
-                                <label for="service-tag" class="form-label">Tag</label>
-                                <select class="form-control" id="service-tag" name="tag">
-                                    <option value="service">Service</option>
-                                    <option value="medical">Medical</option>
-                                </select>
-                            </div>
-                        </div>
 
                         <div class="col-xxl-6">
                             <div>
@@ -165,6 +153,20 @@
                             <div>
                                 <label for="service-display-order" class="form-label">Display Order</label>
                                 <input type="number" class="form-control" id="service-display-order" name="display_order" placeholder="Enter Display Order" />
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-6">
+                            <div class="form-check mt-4">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="is-food-service"
+                                    name="is_food_service">
+                            
+                                <label class="form-check-label" for="is-food-service">
+                                    Is Food Service?
+                                </label>
                             </div>
                         </div>
 
@@ -244,7 +246,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("service-target-amount").value = btn.dataset.target;
             document.getElementById("service-min-quantity").value = btn.dataset.min;
             document.getElementById("service-display-order").value = btn.dataset.order;
-            document.getElementById("service-tag").value = btn.dataset.tag;
 
             const descDiv = document.getElementById(btn.dataset.descId);
             if (descDiv && descDiv.innerHTML.trim() !== '') {
@@ -289,7 +290,6 @@ function resetServiceForm() {
     document.getElementById("service-target-amount").value = "";
     document.getElementById("service-min-quantity").value = "";
     document.getElementById("service-display-order").value = "";
-    document.getElementById("service-tag").value = "service";
     document.getElementById("service-image-preview").src = "{% static 'dashboard/images/new-document.png' %}";
     document.getElementById("service-image").value = "";
     if (window.quillService) window.quillService.setContents([]);

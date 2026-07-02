@@ -1,0 +1,113 @@
+{% extends 'website/base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Payment Success || Indian Public Foundation
+{% endblock %}
+
+{% block content %}
+<style>
+  .success-page {
+    min-height: 80vh;
+    background: linear-gradient(135deg, #f0fff5 0%, #f4f5f8 100%);
+    display: flex;
+    align-items: center;
+  }
+  .success-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(23,138,67,0.12);
+    padding: 50px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .success-card .donor-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #040210;
+  }
+  .success-card .donor-amount {
+    font-size: 1.1rem;
+    color: #178a43;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .success-card .note-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0fff5;
+    border: 1px solid #b6f0cc;
+    color: #178a43;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 16px 0 28px;
+  }
+  .btn-download {
+    background: #f8993a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 36px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-download:hover {
+    background: #e07f20;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+</style>
+
+<section class="success-page py-5 mt-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="success-card">
+          <div class="d-flex justify-content-center">
+            <div id="success" style="width:140px;height:140px;"></div>
+          </div>
+          <div id="success_popper" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></div>
+          <div class="donor-name mt-2">🎉 Thank You, {{ donation.donor_name }}!</div>
+          <div class="donor-amount mt-2">Your donation of ₹{{ donation.donor_amount }} was successful.</div>
+          <div class="note-badge">
+            <i class="fa-solid fa-envelope"></i>
+            Receipt has been sent to your email
+          </div>
+          <br>
+          {% comment %} <a href="{% url 'donation_pdf_download' %}?txnid={{ donation.txnid }}&type=rm" class="btn-download" style="display:inline-flex;"> {% endcomment %}
+            <i class="fa-solid fa-download"></i> Download Receipt
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '773800662282024');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=773800662282024&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+{% endblock %}

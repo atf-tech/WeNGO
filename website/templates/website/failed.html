@@ -469,20 +469,20 @@
       <div class="details-row">
         <span class="d-label">Status</span>
         <span class="d-value">
-          <span class="failed-tag"><span class="failed-dot"></span>Failed</span>
+          <span class="failed-tag"><span class="failed-dot"></span>{{donation.easebuzz_payment_status}}</span>
         </span>
       </div>
       <div class="details-row">
         <span class="d-label">Attempted on</span>
-        <span class="d-value">{% now "F j, Y · g:i A" %}</span>
+        <span class="d-value">{{donation.created_at|date:"F j, Y · g:i A"}}</span>
       </div>
       <div class="details-row">
         <span class="d-label">Payment Method</span>
-        <span class="d-value">•••• 4242</span>
+        <span class="d-value">{{donation.easebuzz_payment_mode}}</span>
       </div>
       <div class="details-row">
         <span class="d-label">Amount</span>
-        <span class="d-value">$50.00</span>
+        <span class="d-value">₹ {{donation.donation_amount}}</span>
       </div>
       <div class="details-row">
         <span class="d-label">Error Code</span>

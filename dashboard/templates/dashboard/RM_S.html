@@ -52,7 +52,7 @@
   </div>
   
   <div class="row job-list-row" id="rmContainer">
-    {% for rm in rmsv2 %}
+    {% for rm in rm_s %}
       <div class="col-xxl-3 col-md-4">
         <div class="card ribbon-box right material-shadow">
           <div class="card-header">
@@ -207,7 +207,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" >Add RM's</h5>
+          <h5 class="modal-title" id="addRMLabel">Add RM's</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -215,6 +215,7 @@
             {% csrf_token %}
             <input type="hidden" name="rm_code" id="rm_code" />
             <input type="hidden" name="rm_id" id="rm_id" />
+            <input type="hidden" name="action" id="action">
             <div class="row g-3">
               <div class="col-xxl-6">
                 <div>
@@ -376,93 +377,75 @@
 
 {% comment %} script for edit  {% endcomment %}
 <script>
-document.querySelectorAll('.edit-rm-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    // ... your existing field population code ...
+document.addEventListener("DOMContentLoaded", () => {
 
-    const rmId = btn.dataset.id;
-    const rmName = btn.dataset.name;
-
-    // Set delete button
-    const deleteBtn = document.getElementById('rm-delete-btn');
-    deleteBtn.style.display = 'inline-block';
-    deleteBtn.onclick = function () {
-      if (confirm(`Do you want to delete ${rmName}?`)) {
-        window.location.href = `/dashboard/rms?delete_rm_id=${rmId}&action=delete`;
-      }
-    };
-  });
-});
-
-</script>
-
-
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("#addRM form");
-  const modalTitle = document.querySelector("#addRM .modal-title");
+  const modalTitle = document.querySelector("#addRMLabel");
   const submitBtn = document.querySelector("#addRM form button[type='submit']");
-  const deleteBtn = document.querySelector("#addRM .btn-danger");
+  const deleteBtn = document.getElementById("rm-delete-btn");
 
-  // --- Add RM button ---
-  document.querySelector(".btn-success[data-bs-target='#addRM']").addEventListener('click', () => {
-    form.reset(); 
-    document.getElementById('rm_id').value = ""; 
-    document.getElementById('rm-mail').value = "";
-    document.getElementById('rm-password').value = "";
-    document.getElementById('rm-whatsapp-active').checked = false;
-    document.getElementById('rm-chat-active').checked = false;
+  document.querySelectorAll('.edit-rm-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
 
+      const rmId = btn.dataset.id;
+      const rmName = btn.dataset.name;
+
+      // SHOW delete button
+      deleteBtn.onclick = null;
+      deleteBtn.style.display = "inline-block";
+
+      // DELETE ACTION
+      deleteBtn.onclick = function () {
+        if (confirm(`Do you want to delete ${rmName}?`)) {
+
+          document.getElementById("action").value = "delete";
+          document.getElementById("rm_id").value = rmId;
+
+          form.submit();
+        }
+      };
+
+      // fill form (existing logic safe)
+      document.getElementById('rm_id').value = rmId;
+      document.getElementById('rm-name').value = btn.dataset.name;
+      document.getElementById('rm-no').value = btn.dataset.mobile;
+      document.getElementById('rm-mail').value = btn.dataset.email;
+      document.getElementById('rm-target').value = btn.dataset.target;
+      document.getElementById('rm-branch').value = btn.dataset.branch;
+      document.getElementById('tl_name').value = btn.dataset.tl_name;
+
+      document.querySelectorAll('input[name="rm_gender"]').forEach(radio => {
+        radio.checked = (radio.value.toLowerCase() === (btn.dataset.gender || '').toLowerCase());
+
+      });
+
+      document.getElementById('rm-active').checked = (btn.dataset.active === 'true');
+      document.getElementById('rm-whatsapp-active').checked = (btn.dataset.wa_active === 'true');
+      document.getElementById('rm-chat-active').checked = (btn.dataset.chat_active === 'true');
+
+      modalTitle.textContent = "Edit RM";
+      submitBtn.textContent = "Update";
+      submitBtn.classList.add("btn-warning");
+      submitBtn.classList.remove("btn-primary");
+    });
+  });
+
+
+
+  // ADD button reset
+  document.querySelector(".btn-success")  .addEventListener('click', () => {
+    form.reset();
+    deleteBtn.style.display = "none";
     modalTitle.textContent = "Add RM";
     submitBtn.textContent = "Submit";
     submitBtn.classList.remove("btn-warning");
     submitBtn.classList.add("btn-primary");
-
-    deleteBtn.style.display = "none"; 
   });
 
-  document.querySelectorAll('.edit-rm-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.getElementById('rm_id').value = btn.dataset.id;
-
-    document.getElementById('rm-name').value = btn.dataset.name;
-    document.getElementById('rm-no').value = btn.dataset.mobile;
-    document.getElementById('rm-mail').value = btn.dataset.email;
-    document.getElementById('rm-target').value = btn.dataset.target;
-    document.getElementById('rm-password').value = '';
-    document.getElementById('rm-confirm-password').value = '';
-    document.getElementById('rm-branch').value = btn.dataset.branch;
-    document.getElementById('tl_name').value = btn.dataset.tl_name;
-    const preview = document.getElementById('qr-image-preview');
-    if (preview) {
-      preview.src = btn.dataset.qr_image; // use btn.dataset.qr_image instead of this.dataset.image
-    }
-
-    document.getElementById('rm-active').checked = (btn.dataset.active === 'true');
-    document.getElementById('rm-whatsapp-active').checked = (btn.dataset.wa_active === 'true');
-    document.getElementById('rm-chat-active').checked = (btn.dataset.chat_active === 'true');
-
-
-
-    document.querySelectorAll('input[name="rm_gender"]').forEach(radio => {
-      radio.checked = radio.value.toLowerCase() === btn.dataset.gender.toLowerCase();
-    });
-
-    document.getElementById('addRMLabel').textContent = 'Edit RM';
-    const submitBtn = document.querySelector('#addRM form button[type="submit"]');
-    submitBtn.textContent = 'Update';
-    submitBtn.classList.remove('btn-primary');
-    submitBtn.classList.add('btn-warning');
-
-
-  });
 });
-});
+
 
 </script>
-
 
 
 

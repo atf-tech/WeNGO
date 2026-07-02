@@ -43,7 +43,7 @@
                             <div class="header-info d-none d-xl-block">
                                 <ul class="social-share-transparent">
                                     <li>
-                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="https://www.facebook.com/people/Women-Empowerment-NGO/61588659902378/"><i class="fab fa-facebook-f"></i></a>
                                     </li>
                                     <li>
                                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -52,7 +52,7 @@
                                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                                     </li>
                                     <li>
-                                        <a href="#"><i class="fab fa-instagram"></i></a>
+                                        <a href="https://www.instagram.com/womenempowermentngo/reels/?hl=en"><i class="fab fa-instagram"></i></a>
                                     </li>
                                 </ul>
                             </div>
@@ -93,31 +93,29 @@
                             <li class="{% if request.resolver_match.url_name == 'index' %}current{% endif %}">
                                 <a href="/">Home</a>
                             </li>
-                            <li class="{% if request.resolver_match.url_name == 'about' %}current{% endif %}">
-                                <a href="{% url 'about' %}">Who We Are</a>
-                            </li>
+                            
                               <li class="{% if request.resolver_match.url_name == 'food' %}current{% endif %}">
                                 <a href="{% url 'food' %}">Food</a>
                             </li>
                             <li
                                 class="with-megamenu has-menu-child-item position-static {% if request.resolver_match.url_name == 'service' %}current{% endif %}">
-                                <a href="{% url 'service' %}">What We Do <i class="feather-chevron-down"></i></a>
+                                <a href="{% url 'service' %}">Service <i class="feather-chevron-down"></i></a>
                                 <!-- Start Mega Menu  -->
+                                {% for s in services %}
                                 <div class="rbt-megamenu grid-item-2">
                                     <div class="wrapper">
                                         <div class="row row--15">
                                             <div class="col-lg-12 col-xl-6 col-xxl-6 single-mega-item">
                                                 <h3 class="rbt-short-title">Our Service</h3>
                                                 <ul class="mega-menu-item">
-                                                    <li><a href="{% url 'napkin' %}">Donate Napkin</a></li>
+                                                   {% for s in services %}
+                                                    <li>
+                                                        <a href="{% url 'service_detail' s.slug %}">
+                                                            {{ s.service_name }}
+                                                        </a>
+                                                    </li>
+                                                    {% endfor %}
 
-                                                    <li><a href="{% url 'veg_briyani' %}">Donate Veg Briyani</a></li>
-                                                    <li><a href="{% url 'school_bag' %}">Donate School bag</a></li>
-                                                    <li><a href="{% url 'dresses' %}">Donate Dress</a></li>
-                                                    <li><a href="{% url 'grocery_kit' %}">Donate Grocery Kit</a></li>
-                                                    <li><a href="{% url 'wheel_chair' %}">Donate Wheel Chair</a></li>
-                                                    <li><a href="{% url 'birds_feeding' %}">Birds feeding</a></li>
-                                                    <li><a href="{% url 'slipper' %}">Donate Slipper </a></li>
                                                 </ul>
                                             </div>
 
@@ -133,20 +131,23 @@
                                                                     <div
                                                                         class="rbt-card event-grid-card variation-01 rbt-hover">
                                                                         <div class="rbt-card-img">
-                                                                            <a href="{% url 'veg_briyani' %}">
-                                                                                <img src="{% static 'website/images/causes/veg_briyani.jpeg' %}"
-                                                                                    alt="Card image">
+                                                                            <a href="{% url 'service_detail' s.slug %}">
+                                                                                {% if s.image %}
+                                                                                    <img src="{{ s.image.url }}" alt="{{ s.service_name }}">
+                                                                                {% else %}
+                                                                                    <img src="{% static 'website/images/no-image.png' %}" alt="No Image">
+                                                                                {% endif %}
                                                                             </a>
                                                                         </div>
                                                                         <div class="rbt-card-body">
-                                                                            <h6 class="fs-3 mb-1"><a href="{% url 'veg_briyani' %}">Donate Veg
-                                                                                    Briyani</a></h6>
+                                                                            <h6 class="fs-3 mb-1"><a href="{% url 'service_detail' s.slug %}">
+                                                                                {{ s.service_name }}</a></h6>
                                                                             <div class="rbt-price">
-                                                                                <span class="current-price">₹ 80</span>
+                                                                                <span class="current-price">₹ {{ s.amount }}</span>
                                                                             </div>
                                                                             <div class="read-more-btn">
                                                                                 <a class="rbt-btn btn-border hover-icon-reverse btn-sm radius-round"
-                                                                                    href="{% url 'veg_briyani' %}">
+                                                                                    href="{% url 'service_detail' s.slug %}">
                                                                                     <span class="icon-reverse-wrapper">
                                                                                         <span class="btn-text">Donate
                                                                                             Now</span>
@@ -161,173 +162,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="swiper-slide">
-                                                                <div class="single-slide">
-                                                                    <div
-                                                                        class="rbt-card event-grid-card variation-01 rbt-hover">
-                                                                        <div class="rbt-card-img">
-                                                                            <a href="{% url 'school_bag' %}">
-                                                                                <img src="{% static 'website/images/causes/schoolbag.jpeg' %}"
-                                                                                    alt="Card image">
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="rbt-card-body">
-                                                                            <h6 class="fs-3 mb-1"><a href="{% url 'school_bag' %}">Donate
-                                                                                    School bag</a></h6>
-                                                                            <div class="rbt-price">
-                                                                                <span class="current-price">₹ 599</span>
-                                                                            </div>
-                                                                            <div class="read-more-btn">
-                                                                                <a class="rbt-btn btn-border hover-icon-reverse btn-sm radius-round"
-                                                                                    href="{% url 'school_bag' %}">
-                                                                                    <span class="icon-reverse-wrapper">
-                                                                                        <span class="btn-text">Donate
-                                                                                            Now</span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                    </span>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
                                                             </div>
-                                                            <div class="swiper-slide">
-                                                                <div class="single-slide">
-                                                                    <div
-                                                                        class="rbt-card event-grid-card variation-01 rbt-hover">
-                                                                        <div class="rbt-card-img">
-                                                                            <a href="{% url 'dresses' %}">
-                                                                                <img src="{% static 'website/images/causes/saree.jpeg' %}"
-                                                                                    alt="Card image">
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="rbt-card-body">
-                                                                            <h6 class="fs-3 mb-1"><a href="{% url 'dresses' %}">Donate
-                                                                                    Dress</a></h6>
-                                                                            <div class="rbt-price">
-                                                                                <span class="current-price">₹ 599</span>
-                                                                            </div>
-                                                                            <div class="read-more-btn">
-                                                                                <a class="rbt-btn btn-border hover-icon-reverse btn-sm radius-round"
-                                                                                    href="{% url 'dresses' %}">
-                                                                                    <span class="icon-reverse-wrapper">
-                                                                                        <span class="btn-text">Donate
-                                                                                            Now</span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                    </span>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="swiper-slide">
-                                                                <div class="single-slide">
-                                                                    <div
-                                                                        class="rbt-card event-grid-card variation-01 rbt-hover">
-                                                                        <div class="rbt-card-img">
-                                                                            <a href="{% url 'grocery_kit' %}">
-                                                                                <img src="{% static 'website/images/causes/grocery_kit.jpeg' %}"
-                                                                                    alt="Card image">
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="rbt-card-body">
-                                                                            <h6 class="fs-3 mb-1"><a href="{% url 'grocery_kit' %}">Donate
-                                                                                    Grocery Kit</a></h6>
-                                                                            <div class="rbt-price">
-                                                                                <span class="current-price">₹ 700</span>
-                                                                            </div>
-                                                                            <div class="read-more-btn">
-                                                                                <a class="rbt-btn btn-border hover-icon-reverse btn-sm radius-round"
-                                                                                    href="{% url 'grocery_kit' %}">
-                                                                                    <span class="icon-reverse-wrapper">
-                                                                                        <span class="btn-text">Donate
-                                                                                            Now</span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                    </span>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="swiper-slide">
-                                                                <div class="single-slide">
-                                                                    <div
-                                                                        class="rbt-card event-grid-card variation-01 rbt-hover">
-                                                                        <div class="rbt-card-img">
-                                                                            <a href="{% url 'wheel_chair' %}">
-                                                                                <img src="{% static 'website/images/causes/wheel_chair.jpeg' %}"
-                                                                                    alt="Card image">
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="rbt-card-body">
-                                                                            <h6 class="fs-3 mb-1"><a href="{% url 'wheel_chair' %}">Donate
-                                                                                    Wheel Chair</a></h6>
-                                                                            <div class="rbt-price">
-                                                                                <span class="current-price">₹
-                                                                                    6000</span>
-                                                                            </div>
-                                                                            <div class="read-more-btn">
-                                                                                <a class="rbt-btn btn-border hover-icon-reverse btn-sm radius-round"
-                                                                                    href="{% url 'wheel_chair' %}">
-                                                                                    <span class="icon-reverse-wrapper">
-                                                                                        <span class="btn-text">Donate
-                                                                                            Now</span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                    </span>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="swiper-slide">
-                                                                <div class="single-slide">
-                                                                    <div
-                                                                        class="rbt-card event-grid-card variation-01 rbt-hover">
-                                                                        <div class="rbt-card-img">
-                                                                            <a href="{% url 'birds_feeding' %}">
-                                                                                <img src="{% static 'website/images/causes/bird.jpeg' %}"
-                                                                                    alt="Card image">
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="rbt-card-body">
-                                                                            <h6 class="fs-3 mb-1"><a href="{% url 'birds_feeding' %}">Birds
-                                                                                    feeding</a></h6>
-                                                                            <div class="rbt-price">
-                                                                                <span class="current-price">₹ 199</span>
-                                                                            </div>
-                                                                            <div class="read-more-btn">
-                                                                                <a class="rbt-btn btn-border hover-icon-reverse btn-sm radius-round"
-                                                                                    href="{% url 'birds_feeding' %}">
-                                                                                    <span class="icon-reverse-wrapper">
-                                                                                        <span class="btn-text">Donate
-                                                                                            Now</span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                        <span class="btn-icon"><i
-                                                                                                class="feather-heart"></i></span>
-                                                                                    </span>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
 
 
                                                     </div>
@@ -336,13 +171,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endfor %}
                                 <!-- End Mega Menu  -->
                             </li>
+                            <li class="{% if request.resolver_match.url_name == 'about' %}current{% endif %}">
+                                <a href="{% url 'about' %}">About</a>
+                            </li>
                             <li class="{% if request.resolver_match.url_name == 'join_us' %}current{% endif %}">
-                                <a href="{% url 'join_us' %}">Join Us</a>
+                                <a href="{% url 'join_us' %}">Volunteer</a>
                             </li>
                             <li class="{% if request.resolver_match.url_name == 'contact' %}current{% endif %}">
-                                <a href="{% url 'contact' %}">Connect</a>
+                                <a href="{% url 'contact' %}">Contact</a>
                             </li>
                         </ul>
                     </nav>
@@ -351,7 +190,7 @@
                 <div class="header-right">
                     <div class="rbt-btn-wrapper d-none d-xl-block">
                         <a class="rbt-btn rbt-marquee-btn marquee-auto btn-border-gradient radius-round btn-sm hover-transform-none"
-                            href="#">
+                            href="{% url 'service' %}">
                             <span data-text="Donate Now">Donate Now</span>
                         </a>
                     </div>
@@ -412,36 +251,19 @@
                     <a href="/">Home</a>
                 </li>
                 <li class="{% if request.resolver_match.url_name == 'about' %}current{% endif %}">
-                    <a href="{% url 'about' %}">Who We Are</a>
+                    <a href="{% url 'about' %}">About</a>
                 </li>
                 <li
                     class="{% if request.resolver_match.url_name == 'service' %}current{% endif %} with-megamenu has-menu-child-item position-static">
-                    <a href="{% url 'service' %}">What We Do <i class="feather-chevron-down"></i></a>
-                    <!-- Start Mega Menu  -->
-                    <div class="rbt-megamenu grid-item-1">
-                        <div class="wrapper">
-                            <div class="row row--15">
-                                <div class="col-lg-12 col-xl-12 col-xxl-12 single-mega-item">
-                                    <h3 class="rbt-short-title">Our Service</h3>
-                                    <ul class="mega-menu-item">
-                                        <li><a href="{% url 'veg_briyani' %}">Veg Briyani</a></li>
-                                        <li><a href="{% url 'school_bag' %}">School bag</a></li>
-                                        <li><a href="{% url 'dresses' %}">Dress</a></li>
-                                        <li><a href="{% url 'grocery_kit' %}">Grocery Kit</a></li>
-                                        <li><a href="{% url 'wheel_chair' %}">Wheel Chair</a></li>
-                                        <li><a href="{% url 'birds_feeding' %}">Birds feeding</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="{% url 'service' %}">Service <i class="feather-chevron-down"></i></a>
+                   
                     <!-- End Mega Menu  -->
                 </li>
                 <li class="{% if request.resolver_match.url_name == 'join_us' %}current{% endif %}">
-                    <a href="{% url 'join_us' %}">Join Us</a>
+                    <a href="{% url 'join_us' %}">Volunteer</a>
                 </li>
                 <li class="{% if request.resolver_match.url_name == 'contact' %}current{% endif %}">
-                    <a href="{% url 'contact' %}">Connect</a>
+                    <a href="{% url 'contact' %}">Contact</a>
                 </li>
             </ul>
         </nav>
@@ -449,7 +271,7 @@
         <div class="mobile-menu-bottom">
             <div class="rbt-btn-wrapper mb--20">
                 <a class="rbt-btn btn-border-gradient radius-round btn-sm hover-transform-none w-100 justify-content-center text-center"
-                    href="#">
+                    href="{% url 'service' %}">
                     <span>Donate Now</span>
                 </a>
             </div>

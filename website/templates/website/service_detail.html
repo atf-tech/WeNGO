@@ -1,0 +1,285 @@
+    {% extends 'website/base.html' %} {% load static %}
+
+
+    {% block title %} {{ service.service_name }} - WeNGO {% endblock %}
+
+
+    {% block content %}
+
+
+    <!-- Start breadcrumb Area -->
+    <div class="rbt-breadcrumb-default rbt-breadcrumb-style-3 version-02">
+        <div class="breadcrumb-inner">
+            <img src="{% static 'website/images/bg/breadcrumb-bg-01.png' %}" alt="Bg Image">
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <div class="content text-start">
+                        <ul class="page-list mb--80 mb_md--60 mb_sm--40">
+                            <li class="rbt-breadcrumb-item"><a href="/">Home</a></li>
+                            <li>
+                                <div class="icon-right"><i class="feather-chevron-right"></i></div>
+                            </li>
+                            <li class="rbt-breadcrumb-item active">{{ service.service_name }}</li>
+                        </ul>
+                        <h2 class="w-600 mb--10">{{ service.service_name }}</h2>
+                        <p class="mb--20">{{ service.description|safe}}</p>
+
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="radius-10 overflow-hidden p-4 bg-color-white-opacity mt_md--60 mt_sm--60 mt_mobile--40">
+                        <div class="content">
+                            {% if service.image %}
+                                <img src="{{ service.image.url }}" alt="{{ service.service_name }}">
+                            {% else %}
+                                <img src="{% static 'website/images/no-image.png' %}" alt="{{ service.service_name }}">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumb Area -->
+
+
+    <div class="rbt-course-details-area ptb--60">
+        <div class="container">
+            <div class="row g-5">
+
+                <div class="col-lg-8">
+                    <div class="course-details-content">
+                        <div class="rbt-course-feature-box rbt-shadow-box thuumbnail">
+                            <div id="billing-form">
+                                <h3 class="title">Donation Form</h3>
+                                <hr class="mb--30">
+                                <form method="POST" id="donation-form">
+                                    {% csrf_token %}
+                                <div class="row">
+                                
+                                    <div class="col-md-4 col-12 mb--20">
+                                        <label>Donor Name</label>
+                                        <input required type="text" name="donor_name" placeholder="First Name">
+                                    </div>
+
+                                    <div class="col-md-4 col-12 mb--20">
+                                        <label>Donor Mobile No</label>
+                                        <input required type="number" name="donor_mobile" placeholder="Phone number">
+                                    </div>
+
+                                    <div class="col-md-4 col-12 mb--20">
+                                        <label>Donor Email Address</label>
+                                        <input required type="email" name="donor_email" placeholder="Email Address">
+                                    </div>
+
+                                    <div class="col-md-6 col-12 mb--20">
+                                        <label>Service Date</label>
+                                        <input type="date" name="service_date">
+                                    </div>
+
+                                    <div class="col-md-6 col-12 mb--20">
+                                        <label>Pan Number</label>
+                                        <input
+                                            type="text"
+                                            name="pan_number"
+                                            maxlength="10"
+                                            placeholder="ABCDE1234F">
+                                    </div>
+
+                                    <div class="col-12 mb--20">
+                                        <label>Address</label>
+                                        <textarea required placeholder="Address line 1" name="address"></textarea>
+                                    </div>
+
+                                    <!-- ── Food Item Display ── -->
+                                    <div class="col-md-12 col-12 mb--20">
+                                        <label>Provide Service</label>
+                                        <div class="rbt-food-item-box">
+                                            <div class="food-item-info">
+                                                <span class="food-item-name">
+                                                    <i class="feather-package"></i> {{ service.service_name }}
+                                                </span>
+                                                <span class="food-item-price">
+                                                    ₹<span id="unit-price" data-unit="feed">{{ service.amount }}</span> per feed
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ── Quantity Selector ── -->
+                                    <div class="col-md-12 col-12 mb--20">
+                                        <label>Select Quantity (No. of Pieces)</label>
+                                        <div class="quantity-selector">
+                                            <div class="qty-quick-btns">
+                                                <button type="button" class="qty-btn" data-qty="10">10</button>
+                                                <button type="button" class="qty-btn" data-qty="20">20</button>
+                                                <button type="button" class="qty-btn" data-qty="30">30</button>
+                                                <button type="button" class="qty-btn" data-qty="50">50</button>
+                                            </div>
+                                            <div class="qty-manual-wrap">   
+                                                <span class="qty-label-or">or enter custom</span>
+                                                <div class="qty-input-group">
+                                                    <button type="button" id="qty-minus">−</button>
+                                                    <input type="number" id="quantity-input" name="quantity" value="{{ service.min_quantity }}" min="{{ service.min_quantity }}" placeholder="Qty">  
+                                                    <button type="button" id="qty-plus">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ── Donation Amount (auto-calculated) ── -->
+                                    <div class="col-md-12 col-12 mb--20">
+                                        <label>Donation Amount</label>
+                                        <div class="donation-amount-display">
+                                            <input type="number" id="donation-amount" name="donation_amount" readonly>
+                                            <span class="amount-breakdown" id="amount-breakdown">10 Birds Pair × ₹80 =
+                                                ₹800</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 text-center mb--20">
+                                        <div class="submit-btn">
+                                            <button type="submit" class="rbt-btn btn-gradient hover-icon-reverse">
+                                                <span class="icon-reverse-wrapper">
+                                                    <span class="btn-text">Donate Now</span>
+                                                    <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                                    <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                                </span>
+                                            </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div style="top: 100px;" class="course-sidebar sticky-top rbt-shadow-box  rbt-gradient-border">
+                        <div class="inner">
+
+                            <!-- Start Viedo Wrapper  -->
+
+                            <div class="video-content">
+                                <img class="w-100 rbt-radius"  src="{{ service.image.url }}"
+                                    alt="Video Images">
+                            </div>
+                            <!-- End Viedo Wrapper  -->
+
+                            <div class="content-item-content">
+                                <h4 class="w-600 mb--10 mt--10">{{ service.service_name }}</h4>
+                                <div class="rbt-price-wrapper d-flex flex-wrap align-items-center justify-content-between">
+                                    <div class="rbt-price">
+                                        <span class="current-price">₹ {{ service.amount }}</span>
+                                    </div>
+                                    <div class="discount-time">
+                                        <span class="rbt-badge color-primary bg-color-primary-opacity"><i
+                                                class="feather-heart"></i> Give a little. Change a lot.</span>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                                <div class="rbt-widget-details has-show-more">
+                                    <p class="">{{ service.description|safe }}</p>
+                                </div>
+
+                                <div class="social-share-wrapper text-center">
+
+                                    <hr class="mt--20">
+                                    <div class="contact-with-us text-center">
+                                        <p>For details about the Service Please reach us</p>
+                                        <p class="rbt-badge-2 mt--10 justify-content-center w-100">
+                                            <i class="fab fa-whatsapp mr--5"></i> Whatsapp
+                                            <a href="https://wa.me/919087249777?text=Hello%20I%20would%20like%20to%20make%20a%20donation.%20Please%20share%20the%20details."
+                                                target="_blank"><strong>+91 908 724 9777</strong></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/v2.0.0/easebuzz-checkout-v2.min.js"></script>
+
+<script>
+const easebuzzCheckout = new EasebuzzCheckout(
+    "{{ easebuzz.merchant_key }}",
+    "{{ easebuzz.env }}"
+);
+
+document.getElementById("donation-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    try {
+        const payload = {
+            service_slug: "{{ service.slug }}",
+            donor_name: document.querySelector('[name="donor_name"]').value,
+            donor_mobile: document.querySelector('[name="donor_mobile"]').value,
+            donor_email: document.querySelector('[name="donor_email"]').value,
+            service_date: document.querySelector('[name="service_date"]').value,
+            pan_number: document.querySelector('[name="pan_number"]').value,
+            address: document.querySelector('[name="address"]').value,
+            quantity: document.querySelector('[name="quantity"]').value,
+            donation_amount: document.querySelector('[name="donation_amount"]').value
+        };
+
+        const response = await fetch("/donation/payment/initiate/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!result.key) {
+            alert(result.error || "Payment initiation failed");
+            return;
+        }
+
+        easebuzzCheckout.initiatePayment(
+            { access_key: result.key },
+            {
+                onResponse: async function (res) {
+
+                    console.log("Easebuzz response:", res);
+
+                    // Always send callback to backend
+                    await fetch("{% url 'donation_payment_callback' %}", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(res)
+                    });
+
+                    const txnid = res.txnid || "";
+
+                    if (res.status === "success") {
+                        window.location.href = "/payment/success/";} 
+                    else {
+                        window.location.href = "/payment/failed/";
+                    }
+                }
+            }
+        );
+
+    } catch (err) {
+        console.error(err);
+        alert("Payment error occurred");
+    }
+});
+</script>
+    {% endblock %}
+
+
