@@ -1,0 +1,70 @@
+{% load static %}
+
+{% if past_conversations %}
+<div style="padding:8px 12px;background:#1e2a35;border-bottom:1px solid #2a3a4a;">
+    <div style="font-size:11px;color:#aaa;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Previous conversations</div>
+    {% for past in past_conversations %}
+    <details style="margin-bottom:4px;">
+        <summary style="font-size:11px;color:#64b5f6;cursor:pointer;padding:3px 0;">
+            {{ past.created_at|date:"d M Y" }} — {{ past.status|capfirst }}
+            ({{ past.messages.count }} message{{ past.messages.count|pluralize }})
+        </summary>
+        <div style="padding:6px 0 2px 10px;border-left:2px solid #2a3a4a;">
+            {% for m in past.messages.all %}
+            <div style="margin-bottom:4px;font-size:12px;color:{% if m.direction == 'rm' %}#81c784{% else %}#ccc{% endif %};">
+                <span style="opacity:.6;">{{ m.created_at|time:"h:i a" }}</span>
+                <span style="margin-left:6px;">{% if m.direction == 'rm' %}RM{% else %}Visitor{% endif %}:</span>
+                {{ m.body }}
+            </div>
+            {% endfor %}
+        </div>
+    </details>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if convo.visitor.current_page %}
+<div id="visitorCurrentPage" style="padding:6px 12px;background:#1a2633;border-bottom:1px solid #2a3a4a;font-size:11px;color:#90caf9;">
+    📍 Currently on: <strong>{{ convo.visitor.current_page }}</strong>
+</div>
+{% endif %}
+
+{% for message in messages %}
+<div class="msg-row {% if message.direction == 'rm' %}sent{% else %}received{% endif %}"
+     data-msg-id="{{ message.id }}"
+     data-date="{{ message.created_at|date:'Y-m-d' }}">
+
+    <div class="message {% if message.direction == 'rm' %}sent{% else %}received{% endif %}">
+
+        {% if message.message_type == "text" %}
+            <div class="msg-text">{{ message.body|linebreaksbr }}</div>
+
+        {% elif message.message_type == "image" %}
+            {% if message.file %}
+                <img src="{{ message.file.url }}" class="msg-image" loading="lazy">
+            {% else %}
+                <div class="msg-placeholder">📷 Image not available</div>
+            {% endif %}
+
+        {% elif message.message_type == "file" %}
+            {% if message.file %}
+                <a href="{{ message.file.url }}" target="_blank" class="msg-doc">
+                    📄 {{ message.file.name }}
+                </a>
+            {% else %}
+                <div class="msg-placeholder">📄 File not available</div>
+            {% endif %}
+        {% endif %}
+
+        <div class="msg-meta">
+            <span class="msg-time">{{ message.created_at|time:"h:i a" }}</span>
+            {% if message.direction == "rm" %}
+                <span class="msg-tick {% if message.is_read %}read{% else %}sent{% endif %}">
+                    {% if message.is_read %}<span style="color:#4fc3f7;">✔✔</span>{% else %}✔{% endif %}
+                </span>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endfor %}

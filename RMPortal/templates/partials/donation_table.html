@@ -1,0 +1,130 @@
+  {% if donations %}
+    <table id="rm-donation-link-qr" class="table nowrap align-middle" style="width:100%">
+      <thead class="table-light">
+        <tr>
+          <th>SR No</th>
+          <th hidden>SortKey</th> 
+          <th>Donated Date & Time</th>
+          <th>Source</th>
+          <th>Package</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Payment Transaction ID (Put this ID in FT)</th>
+          {% comment %} <th>Txnid</th> {% endcomment %}
+          <th>Mode of Payment</th>
+          <th>Donor Name</th>
+          <th>Mobile</th>
+          <th>Email</th>
+          <th>Donor Address</th>
+          <th>Receipt No</th>
+          <th>Virtual Label</th>
+          <th>PAN / Aadhaar</th>
+          <th>Update</th>
+          <th>Download Receipt</th>
+        </tr>
+      </thead>  
+      <tbody>
+        {% for d in donations %}
+        <tr data-id="{{ d.donation_id }}">
+          <td>{{ forloop.counter }}</td>
+          <td hidden>{{ d.sort_key|date:"Y-m-d H:i:s" }}</td>
+          <td>{{ d.submitted_at|default_if_none:"-" }}</td>
+          <td>{{ d.source|default_if_none:"-" }}</td>
+          <td>{{ d.package_type|default_if_none:"-" }}</td>
+          
+          <td>₹{{ d.amount|default_if_none:"-" }}</td>
+          
+          {% comment %} <td>
+          {% if d.status == 'success' %}
+            <span class="badge rounded-pill bg-success-subtle text-success">Success</span>
+          {% else %}
+            <span class="badge rounded-pill bg-danger-subtle text-danger">{{ d.status }}</span>
+          {% endif %}
+          </td> {% endcomment %}
+          <td>
+                    {% with status=d.status %}
+                      {% if status %}
+                        {% if status|lower == "success" or status|lower == "unsettled" or status|lower == "paid" %}
+                          <span class="badge rounded-pill bg-success-subtle text-success">Success</span>
+                        {% elif status|lower in "failed failure" %}
+                          <span class="badge rounded-pill bg-danger-subtle text-danger">Failed</span>
+                        {% elif status|lower in "usercancelled user_cancelled" %}
+                          <span class="badge rounded-pill bg-dark-subtle text-body">User Cancelled</span>
+                        {% elif status|lower == "dropped" %}
+                          <span class="badge rounded-pill bg-dark-subtle text-secondary">Dropped</span>
+                        {% elif status|lower == "unsettled" %}
+                          <span class="badge rounded-pill bg-success-subtle text-success">Success</span>
+                        {% else %}
+                          <span class="badge rounded-pill bg-warning-subtle text-warning">Pending</span>
+                        {% endif %}
+                      {% else %}
+                        <span class="badge rounded-pill bg-warning-subtle text-warning">Pending</span>
+                      {% endif %}
+                    {% endwith %}
+                  </td>
+          <td>{{ d.ptid|default_if_none:"-" }}</td>
+          {% comment %} <td>{{ d.uqid|default_if_none:"-" }}</td> {% endcomment %}
+          <td>{{ d.mode|default_if_none:"-" }}</td>
+          <td>{{ d.donor_name|default_if_none:"-" }}</td>
+          <td>{{ d.donor_mobile|default_if_none:"-" }}</td>
+          <td>{{ d.donor_email|default_if_none:"-" }}</td>
+          <td>{{ d.donor_address|default_if_none:"-" }}</td>
+          <td>{{ d.receipt_no|default_if_none:"-" }}</td>
+          <td>{{ d.virtual_label|default_if_none:"-" }}</td>
+          <td id="pan-cell-{{ d.donation_id }}">
+            {% if d.pan_no %}
+              <span class="badge bg-success-subtle text-success">{{ d.pan_no }}</span>
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </td>
+          <td>
+            <button type="button"
+                    class="btn btn-primary btn-icon edit-donation-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editDonation"
+                    data-id="{{ d.donation_id }}"
+                    data-source="{{ d.source }}"
+                    data-rm-name="{{ d.rm_name }}"
+                    data-rm-code="{{ d.rm_code }}"
+                    data-amount="{{ d.amount }}"
+                    data-status="{{ d.status }}"
+                    data-payment-mode="{{ d.mode }}"
+                    data-donor-package="{{ d.package_type }}"
+                    data-donor-name="{{ d.donor_name }}"
+                    data-donor-mobile="{{ d.donor_mobile }}"
+                    data-donor-email="{{ d.donor_email }}"
+                    data-donor-address="{{ d.donor_address|default:'-' }}"
+                    data-ptid="{{ d.ptid }}"
+                    data-uqtid="{{ d.uqid }}"
+                    data-pan-no="{{ d.pan_no|default:'' }}">
+              <i class="ri-edit-box-line"></i>
+            </button>
+          </td>
+          <td>
+            {% if d.donor_complete %}
+              <form action="{% url 'generate_receipt' %}" method="post" class="receipt-form">
+                {% csrf_token %}
+                <input type="hidden" name="donation_id" value="{{ d.donation_id }}">
+                <input type="hidden" name="donation_source" value="{{ d.source }}">
+                <button type="submit"
+                        data-has-pan="{{ d.pan_no|yesno:'true,false' }}"
+                        class="btn btn-sm {% if d.pan_no %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                  {% if d.pan_no %}
+                    <i class="ri-file-shield-2-line"></i> 80G Receipt
+                  {% else %}
+                    <i class="ri-file-text-line"></i> Normal Receipt
+                  {% endif %}
+                </button>
+              </form>
+            {% else %}
+              <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Please update donor details">
+                <i class="ri-file-text-line"></i> Normal Receipt
+              </button>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}

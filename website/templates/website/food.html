@@ -1,0 +1,1248 @@
+﻿{% extends 'website/base.html' %} {% load static %}
+
+{% block title %} Food - WeNGO {% endblock %}
+
+{% block content %}
+
+<style>
+/* ══════════════════════════════════════════
+   WeNGO THEME TOKENS
+   Primary   : #E84B3A  (warm red / brand)
+   Accent    : #F4A024  (amber / highlight)
+   Deep      : #1A1A2E  (dark navy base)
+   Surface   : #F9F5F1  (warm off-white)
+   White     : #FFFFFF
+   Success   : #27AE60
+   Critical  : #E84B3A
+   Text Main : #1A1A2E
+   Text Sub  : #6B6B8A
+══════════════════════════════════════════ */
+
+:root {
+  --wg-red:      #E84B3A;
+  --wg-amber:    #F4A024;
+  --wg-deep:     #1A1A2E;
+  --wg-surface:  #F9F5F1;
+  --wg-white:    #FFFFFF;
+  --wg-success:  #27AE60;
+  --wg-critical: #E84B3A;
+  --wg-text:     #1A1A2E;
+  --wg-sub:      #6B6B8A;
+  --wg-line:     #E8E3DE;
+  --wg-shadow:   0 4px 24px rgba(26,26,46,0.10);
+  --wg-shadow2:  0 12px 40px rgba(26,26,46,0.16);
+}
+
+/* ── RESET / BASE ─────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── HERO ─────────────────────────────── */
+.wg-hero {
+  position: relative;
+  min-height: 600px;
+  display: grid;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+  background: var(--wg-deep);
+}
+/*
+@media (min-width: 992px) {
+  .wg-hero { grid-template-columns: 58% 42%; min-height: 640px; }
+}
+*/
+/* Left image panel */
+.wg-hero__img-panel {
+  position: relative;
+  min-height: 300px;
+  overflow: hidden;
+}
+@media (min-width: 992px) { .wg-hero__img-panel { min-height: 640px; } }
+
+.wg-hero__img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  position: absolute; inset: 0;
+  transition: transform 9s ease;
+}
+.wg-hero__img-panel:hover .wg-hero__img { transform: scale(1.05); }
+
+.wg-hero__img-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(26,26,46,0.55) 0%,
+    rgba(26,26,46,0.10) 60%,
+    transparent 100%
+  );
+}
+
+/* Badge on image */
+.wg-hero__badge {
+  position: absolute;
+  bottom: 24px; left: 24px;
+  background: var(--wg-white);
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--wg-shadow2);
+}
+.wg-hero__badge-icon {
+  width: 46px; height: 46px;
+  background: linear-gradient(135deg, var(--wg-red), #c93a2a);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(232,75,58,0.35);
+}
+.wg-hero__badge-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--wg-text); line-height: 1; display: block;
+}
+.wg-hero__badge-lbl {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: var(--wg-sub); font-weight: 500;
+  margin-top: 3px; display: block;
+}
+
+/* Right content panel */
+.wg-hero__content {
+  background: var(--wg-deep);
+  padding: 48px 32px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+@media (min-width: 992px) { .wg-hero__content { padding: 60px 48px; } }
+
+/* Decorative glow */
+.wg-hero__content::before {
+  content: '';
+  position: absolute;
+  right: -80px; top: -80px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,75,58,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.wg-hero__content::after {
+  content: '';
+  position: absolute;
+  left: -60px; bottom: -60px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244,160,36,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.wg-hero__eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--wg-amber); margin-bottom: 22px;
+}
+.wg-hero__eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%; background: var(--wg-amber);
+  display: inline-block;
+}
+
+.wg-hero__h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 4vw, 56px);
+  font-weight: 700; color: var(--wg-white);
+  line-height: 1.08; margin-bottom: 18px;
+}
+.wg-hero__h1 em {
+  font-style: italic;
+  color: var(--wg-red);
+}
+
+.wg-hero__desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; line-height: 1.8;
+  color: rgba(255,255,255,0.58);
+  font-weight: 300; margin-bottom: 36px; max-width: 380px;
+}
+
+/* Stat strip */
+.wg-hero__stats {
+  display: flex;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px; overflow: hidden;
+  margin-bottom: 36px;
+  background: rgba(255,255,255,0.04);
+}
+.wg-hero__stat {
+  flex: 1; padding: 16px 10px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.wg-hero__stat:last-child { border-right: none; }
+.wg-hero__stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--wg-amber); line-height: 1; display: block;
+}
+.wg-hero__stat-lbl {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; color: rgba(255,255,255,0.38);
+  font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; display: block; margin-top: 5px;
+}
+
+/* Hero CTA */
+.wg-hero__btn {
+  background: linear-gradient(135deg, var(--wg-red) 0%, #c93a2a 100%);
+  color: var(--wg-white); border: none; border-radius: 12px;
+  padding: 15px 32px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.22s;
+  display: inline-flex; align-items: center; gap: 10px;
+  box-shadow: 0 8px 24px rgba(232,75,58,0.38);
+  text-decoration: none;
+}
+.wg-hero__btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(232,75,58,0.45);
+  color: var(--wg-white);
+}
+
+/* ── SECTION COMMONS ──────────────────── */
+.wg-sec-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--wg-red); display: block; margin-bottom: 10px;
+}
+.wg-sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3vw, 40px);
+  font-weight: 700; color: var(--wg-text); line-height: 1.15;
+}
+.wg-sec-title em { font-style: italic; color: var(--wg-red); }
+.wg-sec-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: var(--wg-sub);
+  line-height: 1.85; font-weight: 400;
+}
+
+/* ── MEAL SECTION ─────────────────────── */
+.wg-meals { background: var(--wg-white); }
+
+/* Package label */
+.wg-pkg-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--wg-sub); margin-bottom: 12px; display: block;
+}
+
+/* Full day package cards */
+.wg-pkg {
+  border: 2px solid var(--wg-line);
+  border-radius: 18px; cursor: pointer;
+  background: var(--wg-white);
+  position: relative; overflow: hidden;
+  transition: all 0.22s;
+  padding: 20px;
+  -webkit-tap-highlight-color: transparent;
+}
+.wg-pkg::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; opacity: 0; transition: opacity 0.22s;
+}
+.wg-pkg--veg::before  { background: linear-gradient(90deg, #27AE60, #2ECC71); }
+.wg-pkg--nveg::before { background: linear-gradient(90deg, var(--wg-red), #c93a2a); }
+
+.wg-pkg:hover { transform: translateY(-3px); box-shadow: var(--wg-shadow); }
+.wg-pkg.is-on::before { opacity: 1; }
+.wg-pkg--veg.is-on  { border-color: var(--wg-success); background: rgba(39,174,96,0.03); box-shadow: 0 0 0 3px rgba(39,174,96,0.12); }
+.wg-pkg--nveg.is-on { border-color: var(--wg-red);     background: rgba(232,75,58,0.03);  box-shadow: 0 0 0 3px rgba(232,75,58,0.12); }
+
+.wg-pkg__emoji { font-size: 28px; display: block; margin-bottom: 12px; }
+.wg-pkg__check {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--wg-line);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: transparent;
+  transition: all 0.22s; flex-shrink: 0;
+}
+.wg-pkg--veg.is-on  .wg-pkg__check { background: var(--wg-success); border-color: var(--wg-success); color: #fff; }
+.wg-pkg--nveg.is-on .wg-pkg__check { background: var(--wg-red);     border-color: var(--wg-red);     color: #fff; }
+
+.wg-pkg__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--wg-text); line-height: 1.2; margin-bottom: 6px;
+}
+.wg-pkg__meals {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: var(--wg-sub); margin-bottom: 14px;
+}
+.wg-pkg__price {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--wg-text); line-height: 1; display: block; margin-bottom: 6px;
+}
+.wg-pkg--veg.is-on  .wg-pkg__price { color: var(--wg-success); }
+.wg-pkg--nveg.is-on .wg-pkg__price { color: var(--wg-red); }
+.wg-pkg__badge {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+  background: rgba(244,160,36,0.12); color: var(--wg-amber);
+  padding: 3px 9px; border-radius: 5px;
+}
+
+/* Or divider */
+.wg-or {
+  display: flex; align-items: center; gap: 14px; margin: 24px 0;
+}
+.wg-or::before, .wg-or::after {
+  content: ''; flex: 1; height: 1px; background: var(--wg-line);
+}
+.wg-or__text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--wg-sub); white-space: nowrap;
+}
+
+/* ── MEAL CARDS ───────────────────────── */
+.wg-mc {
+  border: 2px solid var(--wg-line);
+  border-radius: 18px; overflow: hidden;
+  background: var(--wg-white);
+  cursor: pointer; transition: all 0.22s;
+  -webkit-tap-highlight-color: transparent;
+}
+.wg-mc:hover { border-color: var(--wg-red); box-shadow: var(--wg-shadow); }
+.wg-mc.is-on {
+  border-color: var(--wg-red);
+  background: rgba(232,75,58,0.02);
+  box-shadow: 0 0 0 3px rgba(232,75,58,0.12);
+}
+
+.wg-mc__img {
+  object-fit: cover; width: 100%; display: block;
+}
+@media (max-width: 575px)  { .wg-mc__img { height: 160px; } }
+@media (min-width: 576px)  {
+  .wg-mc__img { width: 130px; height: 100%; min-height: 140px; flex-shrink: 0; }
+}
+
+.wg-mc__body { padding: 18px; flex: 1; }
+.wg-mc__name {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--wg-text); margin-bottom: 10px;
+}
+
+/* Veg / non-veg badge */
+.wg-badge-veg, .wg-badge-nveg {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 6px; margin-bottom: 12px;
+}
+.wg-badge-veg  { color: var(--wg-success); background: rgba(39,174,96,0.10); }
+.wg-badge-nveg { color: var(--wg-red);     background: rgba(232,75,58,0.10); }
+.wg-badge-dot  { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.wg-badge-dot--veg  { background: var(--wg-success); }
+.wg-badge-dot--nveg { background: var(--wg-red); }
+
+/* Chips */
+.wg-mc__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.wg-mc__chip {
+  font-family: 'DM Sans', sans-serif; font-size: 11px;
+  background: var(--wg-surface); color: var(--wg-sub);
+  padding: 4px 11px; border-radius: 20px; font-weight: 500;
+}
+
+/* Lunch toggle */
+.wg-lunch-toggle {
+  display: inline-flex;
+  border: 1.5px solid var(--wg-line);
+  border-radius: 9px; overflow: hidden; margin-bottom: 12px;
+}
+.wg-lunch-toggle__sep { width: 1px; background: var(--wg-line); flex-shrink: 0; }
+.wg-lunch-btn {
+  padding: 6px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 700;
+  border: none; cursor: pointer;
+  background: var(--wg-white); color: var(--wg-sub);
+  transition: all 0.18s;
+}
+.wg-lunch-btn--veg.is-active  { background: rgba(39,174,96,0.10); color: var(--wg-success); }
+.wg-lunch-btn--nveg.is-active { background: rgba(232,75,58,0.10); color: var(--wg-red); }
+
+/* Right price panel */
+.wg-mc__right {
+  background: var(--wg-surface);
+  border-top: 1.5px solid var(--wg-line);
+  padding: 16px 18px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+  transition: background 0.2s;
+}
+@media (min-width: 576px) {
+  .wg-mc__right {
+    border-top: none; border-left: 1.5px solid var(--wg-line);
+    min-width: 130px; flex-direction: column;
+    justify-content: center; padding: 20px 18px;
+  }
+}
+.wg-mc.is-on .wg-mc__right { background: rgba(232,75,58,0.06); }
+
+.wg-mc__price {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--wg-red); line-height: 1; display: block;
+}
+.wg-mc__for {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; color: var(--wg-sub);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.8px; display: block; margin-top: 4px;
+}
+.wg-mc__check {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--wg-line); background: var(--wg-white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: transparent; transition: all 0.22s; flex-shrink: 0;
+}
+.wg-mc.is-on .wg-mc__check { background: var(--wg-red); border-color: var(--wg-red); color: #fff; }
+
+/* ── DONATION FORM CARD ───────────────── */
+.wg-form-card {
+  border-radius: 22px; overflow: hidden;
+  box-shadow: var(--wg-shadow2);
+  border: 1.5px solid var(--wg-line);
+  background: var(--wg-white);
+}
+@media (min-width: 992px) {
+  .wg-form-card { position: sticky; top: 24px; }
+}
+
+.wg-form-card__head {
+  background: linear-gradient(135deg, var(--wg-deep) 0%, #2d2d4e 100%);
+  padding: 24px 26px 0;
+}
+.wg-form-card__head-icon {
+  width: 44px; height: 44px;
+  background: rgba(232,75,58,0.20);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  border: 1px solid rgba(232,75,58,0.3);
+}
+.wg-form-card__head-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px; font-weight: 700; color: var(--wg-white); margin-bottom: 2px;
+}
+.wg-form-card__head-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; color: rgba(255,255,255,0.45);
+}
+
+/* Recent donors strip */
+.wg-donors {
+  display: flex; overflow-x: auto; scrollbar-width: none;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 0;
+}
+.wg-donors::-webkit-scrollbar { display: none; }
+
+.wg-donor {
+  flex-shrink: 0; padding: 11px 16px;
+  display: flex; align-items: center; gap: 9px;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.wg-donor__av {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--wg-red), #c93a2a);
+  color: var(--wg-white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.wg-donor__name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: rgba(255,255,255,0.60);
+  white-space: nowrap; font-weight: 500;
+}
+.wg-donor__amt {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: var(--wg-amber);
+  font-weight: 700; white-space: nowrap;
+}
+
+/* Form body */
+.wg-form-body { padding: 22px 24px 26px; }
+
+.wg-form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--wg-text); margin-bottom: 18px;
+}
+
+/* Form controls scoped overrides */
+.wg-form-card .form-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 600;
+  color: var(--wg-sub); margin-bottom: 0;
+}
+.wg-form-card .form-control:focus,
+.wg-form-card .form-select:focus {
+  border-color: var(--wg-red);
+  box-shadow: 0 0 0 3px rgba(232,75,58,0.12);
+  background: var(--wg-white); color: var(--wg-text); outline: none;
+}
+.wg-form-card .form-control::placeholder { color: var(--wg-sub); opacity: 0.7; }
+.wg-form-card .form-check-input:checked {
+  background-color: var(--wg-red); border-color: var(--wg-red);
+}
+.wg-form-card .form-check-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; color: var(--wg-sub); line-height: 1.5;
+}
+.wg-form-card .alert-info {
+  background: rgba(232,75,58,0.05);
+  border-color: rgba(232,75,58,0.18);
+  color: var(--wg-sub);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; border-radius: 10px;
+}
+
+/* Order summary */
+.wg-order-box {
+  background: var(--wg-surface);
+  border: 1.5px solid var(--wg-line);
+  border-radius: 14px; padding: 16px 18px; margin-bottom: 18px;
+}
+.wg-order-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; color: var(--wg-sub);
+}
+.wg-order-row.is-active { color: var(--wg-text); font-weight: 600; }
+.wg-order-row.is-active .wg-order-row__val { color: var(--wg-red); font-weight: 700; }
+.wg-order-sep { height: 1px; background: var(--wg-line); margin: 10px 0; }
+.wg-order-total-lbl {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--wg-text);
+}
+.wg-order-total-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700; color: var(--wg-red);
+}
+
+/* Pay button */
+.wg-pay-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--wg-red) 0%, #c93a2a 100%);
+  border: none; border-radius: 14px; padding: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 700; color: var(--wg-white);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(232,75,58,0.35);
+  transition: all 0.22s; margin-bottom: 14px;
+}
+.wg-pay-btn:hover {
+  opacity: 0.92; transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(232,75,58,0.45);
+}
+
+.wg-form-note {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: var(--wg-sub);
+  text-align: center; line-height: 1.7; margin-bottom: 14px;
+}
+.wg-trust {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 18px;
+  padding-top: 14px; border-top: 1px solid var(--wg-line);
+}
+.wg-trust__item {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: var(--wg-sub); font-weight: 600;
+}
+
+/* ── MAP SECTION ──────────────────────── */
+.wg-map-section {
+  background: var(--wg-deep);
+  padding: 60px 0;
+  position: relative; overflow: hidden;
+}
+.wg-map-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(232,75,58,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.wg-map-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3.5vw, 38px);
+  font-weight: 700; color: var(--wg-white);
+  margin-bottom: 8px;
+}
+.wg-map-title em { font-style: italic; color: var(--wg-amber); }
+.wg-map-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  margin-bottom: 28px;
+}
+.wg-map-frame {
+  width: 100%; height: 420px; border: 0;
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+  display: block;
+}
+
+/* ── GALLERY ──────────────────────────── */
+.wg-gallery { background: var(--wg-surface); }
+</style>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<div class="wg-hero" id="at-home">
+
+  <!-- Left: Image -->
+  <div class="wg-hero__img-panel">
+    <img class="wg-hero__img" src="{{ home.home_image.url }}" alt="{{ home.name }}" />
+    <div class="wg-hero__img-overlay"></div>
+    <div class="wg-hero__badge">
+      <div class="wg-hero__badge-icon">🏡</div>
+      <div>
+        <span class="wg-hero__badge-num">{{ home.members }}</span>
+        <span class="wg-hero__badge-lbl">Beloved Residents</span>
+      </div>
+    </div>
+  </div>
+
+ 
+
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     MEALS + DONATION FORM
+════════════════════════════════════════════════ -->
+<section class="wg-meals py-5" id="at-meals">
+  <div class="container-xl px-3 px-md-4">
+    <div class="row g-4 g-xl-5 align-items-start">
+
+      <!-- ── Left: Meal selector ── -->
+      <div class="col-12 col-lg-7">
+        <span class="wg-sec-label">Meal Sponsorship</span>
+        <h2 class="wg-sec-title mb-2">
+          Feed All {{ home.members }} Elders<br />with <em>One Kind Act</em>
+        </h2>
+        <p class="wg-sec-desc mb-4">
+          Select one or more meals below. Your contribution directly nourishes every resident.
+        </p>
+
+        <!-- Full-day packages -->
+        <span class="wg-pkg-label">⚡ Sponsor a Full Day</span>
+        <div class="row g-3 mb-1">
+          <div class="col-6">
+            <div class="wg-pkg wg-pkg--veg" id="at-pkg-veg" data-at-pkg="veg">
+              <div class="d-flex align-items-start justify-content-between mb-2">
+                <span class="wg-pkg__emoji">🥗</span>
+                <div class="wg-pkg__check"><i class="fa-solid fa-check"></i></div>
+              </div>
+              <div class="wg-pkg__title">Full Day Pure Veg</div>
+              <div class="wg-pkg__meals">Breakfast + Veg Lunch + Dinner</div>
+              <span class="wg-pkg__price">₹14,000</span>
+              <span class="wg-pkg__badge">BEST VALUE</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="wg-pkg wg-pkg--nveg" id="at-pkg-nveg" data-at-pkg="nonveg">
+              <div class="d-flex align-items-start justify-content-between mb-2">
+                <span class="wg-pkg__emoji" style="rotate:260deg;">🍗</span>
+                <div class="wg-pkg__check"><i class="fa-solid fa-check"></i></div>
+              </div>
+              <div class="wg-pkg__title">Full Day Non-Veg</div>
+              <div class="wg-pkg__meals">Breakfast + Non-Veg Lunch + Dinner</div>
+              <span class="wg-pkg__price">₹16,500</span>
+              <span class="wg-pkg__badge">COMPLETE PACK</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wg-or"><span class="wg-or__text">or choose individually</span></div>
+
+        <!-- Individual meal cards -->
+        <div class="d-flex flex-column gap-3">
+
+          <!-- Breakfast -->
+          <div class="wg-mc" id="at-mc-bf" data-at-meal="bf">
+            <div class="d-flex flex-column flex-sm-row">
+              <img class="wg-mc__img" src="{% static 'website/images/home-food/breakfast.jpg' %}" alt="Breakfast" style="height:150px" />
+              <div class="wg-mc__body">
+                <div class="wg-mc__name">Morning Breakfast</div>
+                <span class="wg-badge-veg">
+                  <span class="wg-badge-dot wg-badge-dot--veg"></span> Pure Veg
+                </span>
+                <div class="wg-mc__chips">
+                  <span class="wg-mc__chip">Idli</span>
+                  <span class="wg-mc__chip">Pongal</span>
+                  <span class="wg-mc__chip">Vada</span>
+                  <span class="wg-mc__chip">Coconut Chutney</span>
+                  <span class="wg-mc__chip">Kesari</span>
+                </div>
+              </div>
+              <div class="wg-mc__right">
+                <div>
+                  <span class="wg-mc__price">₹4,000</span>
+                  <span class="wg-mc__for">for {{ home.members }} members</span>
+                </div>
+                <div class="wg-mc__check"><i class="fa-solid fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lunch -->
+          <div class="wg-mc" id="at-mc-lunch" data-at-meal="lunch">
+            <div class="d-flex flex-column flex-sm-row">
+              <img class="wg-mc__img" src="{% static 'website/images/home-food/lunch.jpg' %}" alt="Lunch" style="height:150px" />
+              <div class="wg-mc__body">
+                <div class="wg-mc__name">Afternoon Lunch</div>
+                <div class="wg-lunch-toggle" id="at-lunch-toggle">
+                  <button type="button" class="wg-lunch-btn wg-lunch-btn--veg is-active" id="at-lt-veg">
+                    <i class="fa-solid fa-circle"></i> Veg
+                  </button>
+                  <div class="wg-lunch-toggle__sep"></div>
+                  <button type="button" class="wg-lunch-btn wg-lunch-btn--nveg" id="at-lt-nveg">
+                    <i class="fa-solid fa-play fa-rotate-270"></i> Non-Veg
+                  </button>
+                </div>
+                <div id="at-lunch-veg-chips" class="wg-mc__chips">
+                  <span class="wg-mc__chip">Rice</span>
+                  <span class="wg-mc__chip">Sambar</span>
+                  <span class="wg-mc__chip">Rasam</span>
+                  <span class="wg-mc__chip">Poriyal</span>
+                  <span class="wg-mc__chip">Kootu</span>
+                  <span class="wg-mc__chip">Payasam</span>
+                </div>
+                <div id="at-lunch-nveg-chips" class="wg-mc__chips" style="display:none">
+                  <span class="wg-mc__chip">Rice</span>
+                  <span class="wg-mc__chip">Chicken Curry</span>
+                  <span class="wg-mc__chip">Poriyal</span>
+                  <span class="wg-mc__chip">Rasam</span>
+                  <span class="wg-mc__chip">Payasam</span>
+                </div>
+              </div>
+              <div class="wg-mc__right">
+                <div>
+                  <span class="wg-mc__price" id="at-lunch-price">₹6,000</span>
+                  <span class="wg-mc__for">for {{ home.members }} members</span>
+                </div>
+                <div class="wg-mc__check"><i class="fa-solid fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dinner -->
+          <div class="wg-mc" id="at-mc-dn" data-at-meal="dn">
+            <div class="d-flex flex-column flex-sm-row">
+              <img class="wg-mc__img" src="{% static 'website/images/home-food/breakfast.jpg' %}" alt="Dinner" style="height:150px" />
+              <div class="wg-mc__body">
+                <div class="wg-mc__name">Evening Dinner</div>
+                <span class="wg-badge-veg">
+                  <span class="wg-badge-dot wg-badge-dot--veg"></span> Pure Veg
+                </span>
+                <div class="wg-mc__chips">
+                  <span class="wg-mc__chip">Idli</span>
+                  <span class="wg-mc__chip">Veg Khichdi</span>
+                  <span class="wg-mc__chip">Sambar</span>
+                  <span class="wg-mc__chip">Tomato Chutney</span>
+                  <span class="wg-mc__chip">Banana</span>
+                </div>
+              </div>
+              <div class="wg-mc__right">
+                <div>
+                  <span class="wg-mc__price">₹4,000</span>
+                  <span class="wg-mc__for">for {{ home.members }} members</span>
+                </div>
+                <div class="wg-mc__check"><i class="fa-solid fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Right: Donation Form ── -->
+      <div class="col-12 col-lg-5">
+        <div class="wg-form-card">
+
+          <!-- Card head -->
+          <div class="wg-form-card__head">
+            <div class="d-flex align-items-center gap-3">
+              <div class="wg-form-card__head-icon">
+                <i class="fa-solid fa-heart" style="color: var(--wg-red);"></i>
+              </div>
+              <div>
+                <div class="wg-form-card__head-title">Make a Donation</div>
+                <div class="wg-form-card__head-sub">Join 200+ supporters this month</div>
+              </div>
+            </div>
+
+            <!-- Recent donors strip -->
+            <div class="wg-donors">
+              {% for donor in last5_donors %}
+              <div class="wg-donor">
+                <div class="wg-donor__av">{{ donor.donor_name|slice:":2" }}</div>
+                <div>
+                  <div class="wg-donor__name">{{ donor.donor_name }}</div>
+                  <div class="wg-donor__amt">₹{{ donor.total_price|floatformat:"0" }}</div>
+                </div>
+              </div>
+              {% empty %}
+              <div class="wg-donor">
+                <div class="wg-donor__av">🙏</div>
+                <div>
+                  <div class="wg-donor__name">No recent donors yet</div>
+                  <div class="wg-donor__amt">Be the first!</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Form body -->
+          <div class="wg-form-body">
+            <div class="wg-form-title">Make them happy with your support</div>
+
+            <form id="donation-form" novalidate>
+              <input type="hidden" name="home_name"      value="{{ home.name }}" />
+              <input type="hidden" name="donation_type"  value="home" />
+
+              <div class="row g-2 mb-2">
+                <div class="col-12 col-sm-6">
+                  <label for="donor_name" class="form-label">Name</label>
+                  <input type="text" class="form-control" id="donor_name" name="donor_name"
+                    placeholder="e.g. John Joe *" required />
+                </div>
+                <div class="col-12 col-sm-6">
+                  <label for="donor_email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="donor_email" name="donor_email"
+                    placeholder="e.g. john@gmail.com *" required />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-2">
+                <div class="col-12 col-sm-6">
+                  <label for="donor_mobile" class="form-label">WhatsApp Number</label>
+                  <input type="tel" class="form-control" id="donor_mobile" name="donor_mobile"
+                    placeholder="e.g. 9876543210 *" required />
+                  <small class="text-muted" style="font-size:12px;">
+                    📲 Receipt sent on WhatsApp after payment.
+                  </small>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <label for="service_date" class="form-label">Service Date</label>
+                  <input type="text" class="form-control" id="service_date" name="service_date" required />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-2">
+                <div class="col-12 col-sm-6">
+                  <label for="instagram_id" class="form-label">Instagram ID <span class="text-muted">(Optional)</span></label>
+                  <input type="text" class="form-control" id="instagram_id" name="instagram_id"
+                    placeholder="e.g. @yourid" />
+                </div>
+                <div class="col-12 col-sm-6">
+                  <label for="celebrity_name" class="form-label">Celebrity Name <span class="text-muted">(Optional)</span></label>
+                  <input type="text" class="form-control" id="celebrity_name" name="celebrity_name"
+                    placeholder="e.g. Sakthi" />
+                </div>
+              </div>
+
+              <div class="mb-2">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" class="form-control" id="address" name="address"
+                  placeholder="e.g. Chennai, Tamil Nadu – 600028 *" required />
+              </div>
+
+              <div class="alert alert-info d-flex align-items-start gap-2 py-2 px-3 mb-2" role="alert">
+                <i class="fa-solid fa-circle-info mt-1" style="color: var(--wg-red); flex-shrink:0;"></i>
+                <span>To claim an 80G certificate or tax redemption, provide your PAN card. (Optional)</span>
+              </div>
+
+              <div class="mb-3">
+                <label for="pan_number" class="form-label">PAN Number</label>
+                <input type="text" class="form-control text-uppercase" id="pan_number"
+                  name="pan_number" maxlength="10" />
+              </div>
+
+              <input type="hidden" class="home-total-price-int" name="total_price" value="" />
+
+              <!-- Order summary -->
+              <div class="wg-order-box">
+                <div class="wg-order-row" id="at-ob-bf">
+                  <span>Breakfast</span>
+                  <span class="wg-order-row__val">Not selected</span>
+                </div>
+                <div class="wg-order-row" id="at-ob-lunch">
+                  <span>Lunch</span>
+                  <span class="wg-order-row__val">Not selected</span>
+                </div>
+                <div class="wg-order-row" id="at-ob-dn">
+                  <span>Dinner</span>
+                  <span class="wg-order-row__val">Not selected</span>
+                </div>
+                <div class="wg-order-sep"></div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="wg-order-total-lbl">Total Amount</span>
+                  <span class="wg-order-total-val" id="at-ob-total">₹ 0</span>
+                </div>
+              </div>
+
+              <div id="message" class="mt-2 mb-2" style="color: var(--wg-red); font-size:0.875rem; font-family:'DM Sans',sans-serif;"></div>
+
+              <button id="donate-now-btn" class="wg-pay-btn" type="submit">
+                <i class="fa-regular fa-credit-card"></i>
+                Proceed to Pay
+              </button>
+
+            </form>
+
+            <p class="wg-form-note">Your support directly feeds {{ home.members }} beloved elders 🙏</p>
+            <div class="wg-trust">
+              <span class="wg-trust__item">🔒 Secure</span>
+              <span class="wg-trust__item">🏅 80G Tax</span>
+              <span class="wg-trust__item">⚡ Instant Receipt</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     MAP SECTION
+════════════════════════════════════════════════ -->
+<section class="wg-map-section">
+  <div class="container-xl px-3 px-md-4">
+    <div class="text-center mb-4 position-relative" style="z-index:1;">
+      <span class="wg-sec-label" style="color: var(--wg-amber);">Our Location</span>
+      <h2 class="wg-map-title">Find <em>{{ home.name }}</em></h2>
+      <p class="wg-map-sub">Come visit us or use the map to get directions</p>
+    </div>
+    <div class="text-center position-relative" style="z-index:1;">
+      <iframe
+        class="wg-map-frame"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1964.7444124997235!2d78.08742251807253!3d9.976419028573064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c962daffc4b9%3A0xc9a6c7f34d545494!2sMadurai%20Meenakshi%20Old%20Age%20Home!5e0!3m2!1sen!2sin!4v1782553539155!5m2!1sen!2sin"
+        allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     GALLERY
+════════════════════════════════════════════════ -->
+{% with service_imgs=home.get_service_images %}
+{% if service_imgs %}
+<section class="wg-gallery py-5" id="at-gallery">
+  <div class="container">
+    <div class="heading-section text-center mb-4">
+      <span class="wg-sec-label d-block text-center">Photo Gallery</span>
+      <h3 class="wg-sec-title text-center">Our Services</h3>
+      <p class="wg-sec-desc text-center mt-2">
+        A glimpse of the love and care shared recently at {{ home.name }}!
+      </p>
+    </div>
+    <div
+      dir="ltr"
+      class="swiper tf-sw-shop-gallery"
+      data-preview="5"
+      data-tablet="3"
+      data-mobile="2"
+      data-space-lg="10"
+      data-space-md="10"
+      data-space="8"
+      data-pagination="2"
+      data-pagination-md="3"
+      data-pagination-lg="1"
+    >
+      <div class="swiper-wrapper">
+        {% for img in service_imgs %}
+        <div class="swiper-slide">
+          <div class="gallery-item hover-overlay hover-img wow fadeInUp" data-wow-delay=".{{ forloop.counter }}s">
+            <div class="img-style">
+              <img
+                class="lazyload img-hover"
+                data-src="{{ img.url }}"
+                src="{{ img.url }}"
+                alt="Service image {{ forloop.counter }}"
+              />
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="sw-pagination-gallery sw-dots type-circle justify-content-center"></div>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endwith %}
+
+
+<!-- ════════════════════════════════════════════════
+     EASEBUZZ + MEAL INTERACTION JS
+════════════════════════════════════════════════ -->
+<script src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/v2.0.0/easebuzz-checkout-v2.min.js"></script>
+<script>
+/* ── PRICING ── */
+const PRICES = {
+  bf:           4000,
+  lunch_veg:    6000,
+  lunch_nonveg: 8500,
+  dn:           4000,
+};
+
+/* ── STATE ── */
+const state = {
+  bf:         false,
+  lunch:      false,
+  lunch_type: "pure_veg",   // "pure_veg" | "non_veg"
+  dn:         false,
+};
+
+/* ── CALC ── */
+function calcTotal() {
+  let t = 0;
+  if (state.bf)    t += PRICES.bf;
+  if (state.lunch) t += state.lunch_type === "non_veg" ? PRICES.lunch_nonveg : PRICES.lunch_veg;
+  if (state.dn)    t += PRICES.dn;
+  return t;
+}
+
+/* ── RENDER ── */
+function updateUI() {
+  const total = calcTotal();
+
+  /* meal card active classes */
+  document.getElementById("at-mc-bf")   .classList.toggle("is-on", state.bf);
+  document.getElementById("at-mc-lunch").classList.toggle("is-on", state.lunch);
+  document.getElementById("at-mc-dn")   .classList.toggle("is-on", state.dn);
+
+  /* order summary */
+  const obBf    = document.querySelector("#at-ob-bf    .wg-order-row__val");
+  const obLunch = document.querySelector("#at-ob-lunch .wg-order-row__val");
+  const obDn    = document.querySelector("#at-ob-dn    .wg-order-row__val");
+
+  document.getElementById("at-ob-bf")   .classList.toggle("is-active", state.bf);
+  document.getElementById("at-ob-lunch").classList.toggle("is-active", state.lunch);
+  document.getElementById("at-ob-dn")   .classList.toggle("is-active", state.dn);
+
+  obBf.textContent    = state.bf    ? "₹4,000 ✓" : "Not selected";
+  obLunch.textContent = state.lunch
+    ? (state.lunch_type === "non_veg" ? "Non-Veg ₹8,500 ✓" : "Pure Veg ₹6,000 ✓")
+    : "Not selected";
+  obDn.textContent    = state.dn    ? "₹4,000 ✓" : "Not selected";
+
+  /* total */
+  document.getElementById("at-ob-total").textContent =
+    total > 0 ? "₹ " + total.toLocaleString("en-IN") : "₹ 0";
+  document.querySelector(".home-total-price-int").value = total > 0 ? total : "";
+
+  /* lunch price label */
+  document.getElementById("at-lunch-price").textContent =
+    state.lunch_type === "non_veg" ? "₹8,500" : "₹6,000";
+
+  /* package highlights */
+  const allVeg    = state.bf && state.lunch && state.dn && state.lunch_type === "pure_veg";
+  const allNonVeg = state.bf && state.lunch && state.dn && state.lunch_type === "non_veg";
+  document.getElementById("at-pkg-veg") .classList.toggle("is-on", allVeg);
+  document.getElementById("at-pkg-nveg").classList.toggle("is-on", allNonVeg);
+}
+
+/* ── MEAL CARD CLICKS ── */
+document.getElementById("at-mc-bf").addEventListener("click", function () {
+  state.bf = !state.bf; updateUI();
+});
+
+document.getElementById("at-mc-lunch").addEventListener("click", function (e) {
+  if (e.target.closest("#at-lunch-toggle")) return;
+  state.lunch = !state.lunch; updateUI();
+});
+
+document.getElementById("at-mc-dn").addEventListener("click", function () {
+  state.dn = !state.dn; updateUI();
+});
+
+/* ── LUNCH TYPE TOGGLE ── */
+document.getElementById("at-lt-veg").addEventListener("click", function (e) {
+  e.stopPropagation();
+  state.lunch_type = "pure_veg"; state.lunch = true;
+  this.classList.add("is-active");
+  document.getElementById("at-lt-nveg").classList.remove("is-active");
+  document.getElementById("at-lunch-veg-chips") .style.display = "";
+  document.getElementById("at-lunch-nveg-chips").style.display = "none";
+  updateUI();
+});
+
+document.getElementById("at-lt-nveg").addEventListener("click", function (e) {
+  e.stopPropagation();
+  state.lunch_type = "non_veg"; state.lunch = true;
+  this.classList.add("is-active");
+  document.getElementById("at-lt-veg").classList.remove("is-active");
+  document.getElementById("at-lunch-nveg-chips").style.display = "";
+  document.getElementById("at-lunch-veg-chips") .style.display = "none";
+  updateUI();
+});
+
+/* ── FULL-DAY PACKAGES ── */
+document.getElementById("at-pkg-veg").addEventListener("click", function () {
+  if (this.classList.contains("is-on")) {
+    state.bf = state.lunch = state.dn = false;
+  } else {
+    state.bf = state.lunch = state.dn = true;
+    state.lunch_type = "pure_veg";
+    document.getElementById("at-lt-veg") .classList.add("is-active");
+    document.getElementById("at-lt-nveg").classList.remove("is-active");
+    document.getElementById("at-lunch-veg-chips") .style.display = "";
+    document.getElementById("at-lunch-nveg-chips").style.display = "none";
+  }
+  updateUI();
+});
+
+document.getElementById("at-pkg-nveg").addEventListener("click", function () {
+  if (this.classList.contains("is-on")) {
+    state.bf = state.lunch = state.dn = false;
+  } else {
+    state.bf = state.lunch = state.dn = true;
+    state.lunch_type = "non_veg";
+    document.getElementById("at-lt-nveg").classList.add("is-active");
+    document.getElementById("at-lt-veg") .classList.remove("is-active");
+    document.getElementById("at-lunch-nveg-chips").style.display = "";
+    document.getElementById("at-lunch-veg-chips") .style.display = "none";
+  }
+  updateUI();
+});
+
+/* ── PAYMENT ── */
+const easebuzzCheckout = new EasebuzzCheckout("{{ easebuzz.merchant_key }}", "{{ easebuzz.env }}");
+
+document.getElementById("donation-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const donor_name     = document.getElementById("donor_name").value.trim();
+  const donor_email    = document.getElementById("donor_email").value.trim();
+  const donor_mobile   = document.getElementById("donor_mobile").value.trim();
+  const service_date   = document.getElementById("service_date").value;
+  const instagram_id   = document.getElementById("instagram_id").value.trim();
+  const celebrity_name = document.getElementById("celebrity_name").value.trim();
+  const address        = document.getElementById("address").value.trim();
+  const pan_number     = document.getElementById("pan_number").value.trim();
+  const home_name      = document.querySelector("input[name='home_name']").value;
+  const total_price    = document.querySelector(".home-total-price-int").value;
+
+  const donateBtn = this.querySelector("button[type='submit']");
+  donateBtn.disabled = true;
+  document.getElementById("message").innerText = "";
+
+  /* validation */
+  if (!donor_name || !donor_email || !donor_mobile || !service_date || !address) {
+    document.getElementById("message").innerText = "Please fill all required details.";
+    donateBtn.disabled = false;
+    return;
+  }
+  if (!state.bf && !state.lunch && !state.dn) {
+    document.getElementById("message").innerText = "Please select at least one meal.";
+    donateBtn.disabled = false;
+    return;
+  }
+  if (!total_price || Number(total_price) <= 0) {
+    document.getElementById("message").innerText = "Total price is invalid. Please select a meal.";
+    donateBtn.disabled = false;
+    return;
+  }
+
+  try {
+    const response = await fetch("", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        donation_type:      "home",
+        donor_name,
+        donor_email,
+        donor_mobile,
+        service_date,
+        instagram_id,
+        celebrity_name,
+        address,
+        pan_number,
+        breakfast_selected: state.bf,
+        lunch_selected:     state.lunch,
+        lunch_type:         state.lunch_type,
+        dinner_selected:    state.dn,
+        total_price,
+        home_name,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.key) {
+      easebuzzCheckout.initiatePayment({
+        access_key: result.key,
+        onResponse: async (pbRes) => {
+          const cbRes  = await fetch("", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...pbRes, donation_type: "home" }),
+          });
+          const cbData = await cbRes.json();
+          console.log("Callback:", cbData);
+
+          window.location.href = pbRes.status === "success" ? "" : "";
+        },
+        theme: "#E84B3A",
+      });
+    } else {
+      document.getElementById("message").innerText = result?.error || "Failed to initiate payment.";
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("message").innerText = "Something went wrong. Please try again.";
+  } finally {
+    donateBtn.disabled = false;
+  }
+});
+
+/* ── BACK-NAV GUARDS ── */
+window.addEventListener("pageshow", function (e) {
+  const entries = performance.getEntriesByType("navigation");
+  const type    = entries.length ? entries[0].type : performance.navigation.type;
+  if (e.persisted || type === "back_forward" || type === 2) {
+    window.location.reload();
+  }
+});
+history.pushState(null, null, location.href);
+window.addEventListener("popstate", function () {
+  history.pushState(null, null, location.href);
+});
+</script>
+
+{% endblock content %}

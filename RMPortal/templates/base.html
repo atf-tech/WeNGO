@@ -29,6 +29,7 @@
   <link href="{% static 'dashboard/css/custom.min.css' %}" rel="stylesheet" type="text/css" />
   <!--index Css-->
   <link href="{% static 'dashboard/css/index-whatsapp.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'RMPortal/css/index.css' %}" rel="stylesheet" type="text/css" />
 </head>
 
  <link href="{% static 'whatsapp/style.css' %}" rel="stylesheet" type="text/css" />
@@ -41,7 +42,7 @@
 
     {% include 'includes/sidebar.html' %}
 
-
+     {% include 'includes/footer.html' %}
 
 
 
@@ -83,15 +84,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://img.themesbrand.com/velzon/apexchart-js/stock-prices.js"></script>
    
-    <script src="{% static 'dashboard/js/pages/datatables.init.js' %}"></script>
+   
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+     
+             <!-- App js -->
+      <script src="{%static 'RMPortal/js/app.js' %}"></script>
+      <script src="{%static 'RMPortal/js/custom.js' %}"></script>
+     
+      <script src="{%static 'RMPortal/js/whatsapp.js' %}"></script>
+      <script src="{%static 'RMPortal/js/gradient_chart.js' %}"></script>
+      <script src="{%static 'RMPortal/js/month_chart.js' %}"></script>
+       <script src="{%static 'RMPortal/js/week_chart.js' %}"></script>
 
-         <!-- App js -->
-   <script src="{%static 'RMPortal/js/app.js' %}"></script>
-  <script src="{%static 'RMPortal/js/custom.js' %}"></script>
-  <script src="{%static 'RMPortal/js/gradient_chart.js' %}"></script>
-  <script src="{%static 'RMPortal/js/whatsapp.js' %}"></script>
-    
 
 
 </body>

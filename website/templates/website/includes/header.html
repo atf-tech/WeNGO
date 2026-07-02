@@ -96,6 +96,9 @@
                             <li class="{% if request.resolver_match.url_name == 'about' %}current{% endif %}">
                                 <a href="{% url 'about' %}">Who We Are</a>
                             </li>
+                              <li class="{% if request.resolver_match.url_name == 'food' %}current{% endif %}">
+                                <a href="{% url 'food' %}">Food</a>
+                            </li>
                             <li
                                 class="with-megamenu has-menu-child-item position-static {% if request.resolver_match.url_name == 'service' %}current{% endif %}">
                                 <a href="{% url 'service' %}">What We Do <i class="feather-chevron-down"></i></a>

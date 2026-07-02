@@ -268,7 +268,7 @@
   --vz-vertical-menu-sub-item-font-family: var(--vz-font-family-secondary);
 }
 [data-theme="default"][data-sidebar="dark"] {
-  --vz-vertical-menu-bg:linear-gradient(135deg, #0d6efd 0%, #022fab 50%, #be0561 100%);
+  --vz-vertical-menu-bg: #405189;
   --vz-vertical-menu-border: var(--vz-primary);
   --vz-vertical-menu-item-color: #abb9e8;
   --vz-vertical-menu-item-bg: rgba(255, 255, 255, 0.15);
@@ -3107,7 +3107,7 @@
   width: var(--vz-vertical-menu-width);
   z-index: 1002;
   background: var(--vz-vertical-menu-bg);
-  border-right: 1px solid #ffffff;
+
   bottom: 0;
   margin-top: 0;
   position: fixed;

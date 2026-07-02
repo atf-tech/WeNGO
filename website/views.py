@@ -9,6 +9,9 @@ def about(request):
 def service(request):
     return render(request, 'website/service.html')
 
+def food(request):
+    return render(request, 'website/food.html')
+
 def join_us(request):
     return render(request, 'website/join_us.html')
 

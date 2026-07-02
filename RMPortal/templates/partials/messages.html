@@ -1,0 +1,98 @@
+{% load static %}
+
+{% for message in messages %}
+
+{% with message.created_at|date:"Y-m-d" as msg_date %}
+{% ifchanged msg_date %}
+<div class="date-separator" data-date="{{ msg_date }}">{{ message.created_at|date:"d M Y" }}</div>
+{% endifchanged %}
+{% endwith %}
+
+<div class="msg-row {% if message.direction == 'out' %}sent{% else %}received{% endif %}"
+     data-msg-id="{{ message.id }}"
+     data-date="{{ message.created_at|date:'Y-m-d' }}">
+     
+    <div class="message {% if message.direction == 'out' %}sent{% else %}received{% endif %} {% if message.message_type != 'text' %}media{% endif %}">
+
+
+        {% if message.message_type == "text" %}
+            <div class="msg-text">  
+                {{ message.body|linebreaksbr }}
+            </div>
+
+
+        {% elif message.message_type == "image" %}
+            {% if message.media and message.media.file %}
+                <img src="{{ message.media.file.url }}"
+                     class="msg-image"
+                     loading="lazy"
+                     onerror="this.onerror=null;this.src='{% static 'dashboard/images/logo-sm.png' %}';">
+            {% else %}
+                <div class="msg-placeholder">📷 Image not available</div>
+            {% endif %}
+
+
+        {% elif message.message_type == "video" %}
+            {% if message.media and message.media.file %}
+                <video class="msg-video" controls preload="metadata">
+                    <source src="{{ message.media.file.url }}">
+                    Your browser does not support video.
+                </video>
+            {% else %}
+                <div class="msg-placeholder">🎥 Video not available</div>
+            {% endif %}
+
+
+       {% elif message.message_type == "audio" %}
+        {% if message.media and message.media.file %}
+            <div class="audio-msg">
+                <audio controls class="msg-audio">
+                    <source src="{{ message.media.file.url }}" type="{{ message.media.mime_type }}">
+                    Your browser does not support audio.
+                </audio>
+            </div>
+        {% else %}
+            <div class="msg-placeholder">🎵 Audio not available</div>
+        {% endif %}
+
+
+
+        {% elif message.message_type == "document" %}
+            {% if message.media and message.media.file %}
+                <a href="{{ message.media.file.url }}" 
+                   target="_blank" 
+                   class="msg-doc">
+                    📄 {{ message.media.file.name|cut:"whatsapp_media/" }}
+                </a>
+            {% else %}
+                <div class="msg-placeholder">📄 Document not available</div>
+            {% endif %}
+        {% endif %}
+
+
+        <div class="msg-meta">
+            <span class="msg-time">
+                {{ message.created_at|time:"h:i a" }}
+            </span>
+
+            {% if message.direction == "out" %}
+                <span class="msg-tick {{ message.status }}">
+                    {% if message.status == "sent" %}
+                        ✔
+                    {% elif message.status == "delivered" %}
+                        ✔✔
+                    {% elif message.status == "read" %}
+                        <span style="color:#4fc3f7;">✔✔</span>
+                    {% endif %}
+                </span>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+{% empty %}
+<div class="no-messages">
+    No messages yet.
+</div>
+{% endfor %}

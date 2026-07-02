@@ -69,5 +69,5 @@ var options = {
   },
 };
 
-var chart = new ApexCharts(document.querySelector('#gradient-1'), options);
+var chart = new ApexCharts(document.querySelector('#gradient01'), options);
 chart.render();
