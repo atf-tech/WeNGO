@@ -154,15 +154,22 @@ table.dataTable.table-striped>tbody>tr.odd>* {
         --bs-gutter-x: 0.5rem;
 }
 
+.bg-warning-subtle {
+    background-color: #ffffff !important;
+}
+
 </style>
+
+
 
 
  <div class="row ">
               <div class="col-lg-4">
-                <div class="card">
+                <div class="card" style="height: 125px;">
                   <div class="card-body">
                     <h5 class="fs-15 fw-semibold">Complete Your Target</h5>
-                    <p class="mb-1">
+                    <span class="counter-value" data-target="183.35"
+                            >1001
                       {{target}} {% comment %}
                       <span class="float-end badge bg-success-subtle text-info">
                         {% endcomment %}
@@ -175,13 +182,11 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                           >progressing</span
                         >
                         {% else %}
-                        <span class="float-end badge bg-danger-subtle text-danger"
-                          >pending</span
-                        >
+                       
                         {% endif %} {% comment %}
                       </span>
                       {% endcomment %}
-                    </p>
+                    </span>
                     <div class="d-flex flex-wrap justify-content-evenly">
                       <p class="text-muted mb-0">
                         <i
@@ -238,7 +243,7 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                <div class="col-xl-3 col-md-6" style="width:22%">
                 <!-- card -->
                 <div class="card card-animate">
-                  <div class="card-body">
+                  <div class="card-body" style="background-color: #e9b1f9;">
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-muted mb-0">
@@ -255,8 +260,8 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                       <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-4">
                           <span class="counter-value" data-target="183.35"
-                            >0</span
-                          >M
+                            >152</span
+                          >
                         </h4>
                        
                       </div>
@@ -277,19 +282,15 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                <div class="col-xl-3 col-md-6" style="width:22%">
                 <!-- card -->
                 <div class="card card-animate">
-                  <div class="card-body">
+                  <div class="card-body" style="background-color: #e9b1f9;">
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-muted mb-0">
-                          Today's Web QR collection
+                         Today's Web QR collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
-                        <h5 class="text-success fs-14 mb-0">
-                            
-                         
-                        </h5>
-                        
+                       
                       </div>
                     </div>
                     <div
@@ -297,58 +298,18 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                     >
                       <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                          
+                          <span class="counter-value" data-target="183.35"
+                            >125</span
+                          >
                         </h4>
-                        
-                      </div>
-                      
-                        <div class="avatar-sm flex-shrink-0">
-                        <span
-                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
-                        >
-                          <i class="bx bx-user-circle text-warning"></i>
-                        </span>
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card -->
-             
-              <!-- end col -->
-               
-              <!-- end col -->
-               <div class="col-xl-3 col-md-6" style="width:22%">
-                <!-- card -->
-                <div class="card card-animate">
-                  <div class="card-body">
-                    <div class="d-flex align-items-center">
-                      <div class="flex-grow-1">
-                        <p class="text-uppercase fw-medium text-muted mb-0">
-                          Today's Web link collection
-                        </p>
-                      </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-success fs-14 mb-0">
-                         
-                        </h5>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-end justify-content-between mt-4"
-                    >
-                      <div>
-                        
-                        </div>                      
-                         <div class="avatar-sm flex-shrink-0">
-                        <span
-                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
-                        >
-                          <i class="bx bx-user-circle text-warning"></i>
-                        </span>
-                      </div>
                        
+                      </div>
+                      <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -356,9 +317,47 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                 </div>
                 <!-- end card -->
               </div>
+             
               <!-- end col -->
-            </div>
-        </div>
+               
+              <div class="col-xl-3 col-md-6" style="width:22%">
+                <!-- card -->
+                <div class="card card-animate">
+                  <div class="card-body" style="background-color: #e9b1f9;">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <p class="text-uppercase fw-medium text-muted mb-0">
+                          Today's Web link collection
+                        </p>
+                      </div>
+                      <div class="flex-shrink-0">
+                       
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-end justify-content-between mt-4"
+                    >
+                      <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                          <span class="counter-value" data-target="183.35"
+                            >102</span
+                          >
+                        </h4>
+                       
+                      </div>
+                      <div class="avatar-sm flex-shrink-0">
+                        <span
+                          class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+                        >
+                          <i class="bx bx-user-circle text-warning"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end card body -->
+                </div>
+                <!-- end card -->
+              </div>
 
        <div class="row">
               <div class="col-xl-4" style="width:34%">
@@ -369,7 +368,7 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                   <!-- end card header -->
 
                   <div class="card-body">
-                   <lable class="form-label">Full Name :</lable>
+                 
 
                     <div id="users">
                       <div class="row mb-2">
@@ -485,7 +484,7 @@ table.dataTable.table-striped>tbody>tr.odd>* {
               <div class="col-xl-3 col-md-6" style="width:22%">
                 <!-- card -->
                 <div class="card card-animate">
-                  <div class="card-body">
+                  <div class="card-body" style="background-color: #e9b1f9;">
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-muted mb-0">
@@ -502,8 +501,8 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                       <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-4">
                           <span class="counter-value" data-target="183.35"
-                            >0</span
-                          >M
+                            >145</span
+                          >
                         </h4>
                        
                       </div>
@@ -520,23 +519,20 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                 </div>
                 <!-- end card -->
               </div>
-              <!-- end col -->
-               <div class="col-xl-3 col-md-6" style="width:22%">
+              <div class="col-xl-3 col-md-6" style="width:22%">
                 <!-- card -->
                 <div class="card card-animate">
-                  <div class="card-body">
+                  <div class="card-body" style="background-color: #e9b1f9;">
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-muted mb-0">
-                          This Month's Collection
+                         This Month's Collection
+
+
                         </p>
                       </div>
                       <div class="flex-shrink-0">
-                        <h5 class="text-success fs-14 mb-0">
-                            
-                         
-                        </h5>
-                        
+                       
                       </div>
                     </div>
                     <div
@@ -544,32 +540,33 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                     >
                       <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                          
+                          <span class="counter-value" data-target="183.35"
+                            >169</span
+                          >
                         </h4>
-                        
+                       
                       </div>
-                      
-                        <div class="avatar-sm flex-shrink-0">
+                      <div class="avatar-sm flex-shrink-0">
                         <span
                           class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
                         >
                           <i class="bx bx-user-circle text-warning"></i>
                         </span>
                       </div>
-                      </div>
                     </div>
                   </div>
                   <!-- end card body -->
                 </div>
                 <!-- end card -->
+              </div>
              
               <!-- end col -->
                
               <!-- end col -->
-               <div class="col-xl-3 col-md-6" style="width:22%">
+                <div class="col-xl-3 col-md-6" style="width:22%">
                 <!-- card -->
                 <div class="card card-animate">
-                  <div class="card-body">
+                  <div class="card-body" style="background-color: #e9b1f9;">
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-muted mb-0">
@@ -577,25 +574,26 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                         </p>
                       </div>
                       <div class="flex-shrink-0">
-                        <h5 class="text-success fs-14 mb-0">
-                         
-                        </h5>
+                       
                       </div>
                     </div>
                     <div
                       class="d-flex align-items-end justify-content-between mt-4"
                     >
                       <div>
-                        
-                        </div>                      
-                         <div class="avatar-sm flex-shrink-0">
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                          <span class="counter-value" data-target="183.35"
+                            >142</span
+                          >
+                        </h4>
+                       
+                      </div>
+                      <div class="avatar-sm flex-shrink-0">
                         <span
                           class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
                         >
-                          <i class="bx bx-user-circle text-warning"></i>
+                          <i class=" ri-money-pound-circle-line"></i>
                         </span>
-                      </div>
-                       
                       </div>
                     </div>
                   </div>
@@ -603,44 +601,10 @@ table.dataTable.table-striped>tbody>tr.odd>* {
                 </div>
                 <!-- end card -->
               </div>
-               
-              </div>
-             <!-- end row -->
 
-             <div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header align-items-center d-flex">
-        <h4 class="card-title mb-0 me-2">Donation Table</h4>
-      </div>
-
-      <div class="card-header">
-        <h5 class="card-title mb-0">Web Link & QR transactions only</h5>
-      </div>
-
-      <div class="card-body">
-        <form id="dateForm" class="d-flex gap-2 mb-3">
-          <input
-            type="text"
-            id="allcat-date"
-            name="allcat-date"
-            class="form-control"
-            placeholder="Select Date"
-          />
-          <button type="submit" name="submit" class="btn btn-primary">
-            Submit
-          </button>
-          <button type="button" id="clear" name="clear" class="btn btn-light">
-            Clear
-          </button>
+              
         </form>
-
-        <div>
-        
-        </div>
-
-
-<div class="page-wrapper">
+      <div class="page-wrapper">
   <div class="card">
     <div class="card-header">
       <div style="display:flex;align-items:center;gap:10px;">
@@ -735,6 +699,9 @@ table.dataTable.table-striped>tbody>tr.odd>* {
 
     </div>
   </div>
+  </div>
+</div>
+
 </div>
 
   <div class="col-x10-7">

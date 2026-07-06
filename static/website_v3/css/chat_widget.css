@@ -248,7 +248,7 @@
 
   /* Header */
   #at-chat-header {
-    background: linear-gradient(135deg, #f9811e 0%, #f9811e 100%);
+    background: linear-gradient(132deg, #ed74a8 0%, #14bdef 100%);
     padding: 13px 14px 11px;
     display: flex;
     align-items: center;
@@ -314,7 +314,7 @@
   }
 
   .at-hdr-close {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.15);
     border: none;
     border-radius: 50%;
     width: 28px;
@@ -386,7 +386,7 @@
     width: 27px;
     height: 27px;
     border-radius: 50%;
-    background: #02a054;
+    background: #f48fb1;
     color: #fff;
     font-size: 10px;
     font-weight: 700;
@@ -410,11 +410,16 @@
 
   .at-sender-name {
     font-size: 10px;
-    color: #02a054;
     font-weight: 700;
     margin-bottom: 3px;
     padding-left: 2px;
-  }
+
+    background: linear-gradient(80deg, #0543ff, #ea2eff 40%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
 
   .at-bubble {
     max-width: 100%;
@@ -494,13 +499,13 @@
     align-items: center;
     gap: 7px;
     background: #ffffff;
-    border: 1.5px solid #02a054;
+    border: 1.5px solid #42A5F5;
     border-radius: 22px;
     padding: 5px 7px 5px 13px;
     transition: border-color 0.2s;
   }
 
-  .at-input-row:focus-within { border-color: #02a054; }
+  .at-input-row:focus-within { border-color: #42A5F5; }
 
   #at-msg-input {
     flex: 1;
@@ -524,7 +529,7 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: #02a054;
+    background:#f48fb1;
     border: none;
     cursor: pointer;
     display: flex;
