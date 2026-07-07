@@ -602,7 +602,16 @@
                         hiddenDateTo.value   = initDateFrom;
                         dateDisplay.value = fp.formatDate(p1, "d/m/Y");
                     }
+                } else {
+                    // Backend might provide empty values; fall back to today display only.
+                    // (Filtering is controlled by backend defaults; this just keeps UI consistent.)
+                    var todayIso = getTodayDateValue();
+                    hiddenDateFrom.value = todayIso;
+                    hiddenDateTo.value = todayIso;
+                    fp.setDate(flatpickr.parseDate(todayIso, "Y-m-d"));
+                    dateDisplay.value = fp.formatDate(fp.input._flatpickr.selectedDates[0], "d/m/Y");
                 }
+
             }
         }
         var txnClearBtn = document.getElementById('clear_transaction_id');
@@ -645,9 +654,6 @@
                 if (hiddenDateTo && hiddenDateTo.value && hiddenDateTo.value !== hiddenDateFrom.value) {
                     params.set('date_to', hiddenDateTo.value);
                 }
-            } else if (!txnVal && (params.has('branch') || params.has('rm_code'))) {
-                // Branch/Name selected with no date and no ID search → default to today
-                params.set('date_from', getTodayDateValue());
             }
             var qs = params.toString();
             var base = window.location.pathname;

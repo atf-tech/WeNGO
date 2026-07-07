@@ -6,8 +6,19 @@ from django.utils import timezone
 from .models import RM
 
 
+def _resolve_whatsapp_credentials(phone_number_id=None, access_token=None):
+    phone_number_id = phone_number_id or settings.WA_PHONE_NUMBER_ID
+    access_token = access_token or settings.WA_ACCESS_TOKEN
+    if not phone_number_id or not access_token:
+        raise ValueError(
+            "WhatsApp Cloud API credentials are not configured. "
+            "Set WA_PHONE_NUMBER_ID and WA_ACCESS_TOKEN in environment variables."
+        )
+    return phone_number_id, access_token
+
+
 def _wa_headers(access_token=None):
-    token = access_token or settings.WA_ACCESS_TOKEN
+    _, token = _resolve_whatsapp_credentials(access_token=access_token)
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -45,7 +56,7 @@ def _post_to_meta(url, payload, timeout=10, files=None, access_token=None):
 
 
 def send_whatsapp_message(to, text, phone_number_id=None, access_token=None):
-    pid = phone_number_id or settings.WA_PHONE_NUMBER_ID
+    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
     url = f"https://graph.facebook.com/v21.0/{pid}/messages"
     payload = {
         "messaging_product": "whatsapp",
@@ -62,7 +73,7 @@ def mark_whatsapp_message_as_read(message_id, phone_number_id=None, access_token
     Triggers blue ticks on donor side. Best-effort — failures are logged but
     never propagate (don't want to break the chat-open flow).
     """
-    pid = phone_number_id or settings.WA_PHONE_NUMBER_ID
+    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
     url = f"https://graph.facebook.com/v21.0/{pid}/messages"
     payload = {
         "messaging_product": "whatsapp",
@@ -78,7 +89,7 @@ def mark_whatsapp_message_as_read(message_id, phone_number_id=None, access_token
 # Media Support (All Types)
 
 def upload_media_to_whatsapp(file_path, mime_type, phone_number_id=None, access_token=None):
-    pid = phone_number_id or settings.WA_PHONE_NUMBER_ID
+    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
     url = f"https://graph.facebook.com/v21.0/{pid}/media"
     with open(file_path, "rb") as f:
         files = {
@@ -89,7 +100,7 @@ def upload_media_to_whatsapp(file_path, mime_type, phone_number_id=None, access_
 
 
 def send_whatsapp_media_message(to, media_id, media_type, caption=None, phone_number_id=None, access_token=None):
-    pid = phone_number_id or settings.WA_PHONE_NUMBER_ID
+    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
     url = f"https://graph.facebook.com/v21.0/{pid}/messages"
     payload = {
         "messaging_product": "whatsapp",
@@ -104,6 +115,23 @@ def send_whatsapp_media_message(to, media_id, media_type, caption=None, phone_nu
         if caption and media_type in ["image", "video", "document"]:
             payload[media_type]["caption"] = caption
 
+    return _post_to_meta(url, payload, timeout=10, access_token=access_token)
+
+
+def send_whatsapp_template(to, template_name, phone_number_id=None, access_token=None, language_code="en_US", components=None):
+    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
+    url = f"https://graph.facebook.com/v21.0/{pid}/messages"
+    payload = {
+        "messaging_product": "whatsapp",
+        "to": to,
+        "type": "template",
+        "template": {
+            "name": template_name,
+            "language": {"code": language_code},
+        },
+    }
+    if components:
+        payload["template"]["components"] = components
     return _post_to_meta(url, payload, timeout=10, access_token=access_token)
 
 

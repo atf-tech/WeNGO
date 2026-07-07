@@ -1,4 +1,5 @@
 DONATION_TYPE_LABELS = {
+    "manual": "Manual Donation",
     "service": "Service Donation",
     "home": "Home Donation",
     # "student": "Student Donation",
@@ -22,9 +23,9 @@ def get_amount(donation):
 
 def get_template_name(donor_pan, donation_type=None):
     if donor_pan and donor_pan.strip():
-        return "receipts/80g_receipt.html"
+        return "receipt/80g_receipt.html"
 
-    return "receipts/normal_receipt.html"
+    return "receipt/normal_receipt.html"
 
 
 def get_download_identifier(donation, donation_type):
@@ -48,12 +49,12 @@ def get_date_label(donation_type):
 
 
 def get_pdf_filename(donor_name, donor_pan=None, donation_type="manual"):
-    donor_name_clean = donor_name.replace(
+    donor_name_clean = str(donor_name or "donor").replace(
         " ",
         "_"
     )
 
-    if donation_type == "manual" and donor_pan and donor_pan.strip():
+    if donor_pan and donor_pan.strip():
         return f"{donor_name_clean}_80g.pdf"
 
     return f"{donor_name_clean}.pdf"

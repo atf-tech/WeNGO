@@ -13,6 +13,7 @@ from .generate_pdf import (
     download_pdf_response,
     generate_donation_pdf,
     get_donation_pdf_filename,
+    download_donation_receipt,
 )
 from .helper import (
     has_pan,
@@ -33,6 +34,7 @@ __all__ = [
     "download_pdf_response",
     "generate_donation_pdf",
     "get_donation_pdf_filename",
+    "download_donation_receipt",
     "has_pan",
     "get_amount",
     "get_template_name",

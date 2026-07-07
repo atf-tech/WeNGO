@@ -4,10 +4,25 @@
 Dashboard ||RM Portal WeNgo
 {% endblock %}
 
+
 {% block content %}
 
-<!-- Filter bar -->  
+<style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+.table-responsive {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.table-responsive table {
+    white-space: nowrap;
+}
+
+</style>
+
+<!-- Filter bar -->  
 <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -22,11 +37,12 @@ Dashboard ||RM Portal WeNgo
                             <form method="get" class="d-flex align-items-center gap-3 flex-wrap" id="filterForm">
                                 <select id="rmFilter" name="rm_code" class="form-select" style="width: 250px;">
                                     <option value="">-- All RM Names --</option>
-                                    {% for rm in rm_choices %}
-                                        <option value="{{ rm.rm_code }}" {% if rm.rm_code == selected_rm_code %}selected{% endif %}>
+                                    {% for rm in rm_list %}
+                                        <option value="{{ rm.rm_code }}" 
+                                        {% if rm.rm_code == selected_rm_code %}selected{% endif %}>
                                             {{ rm.virtual_label }}
                                         </option>
-                                    {% endfor %}
+                                    {% endfor %}  
                                 </select>
                                 <div class="input-group" style="width: 260px;">
                                     <span class="input-group-text"><i class="bx bx-calendar"></i></span>
@@ -49,7 +65,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Today Collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -66,11 +82,9 @@ Dashboard ||RM Portal WeNgo
                     >
                       <div>
                         <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="36894"
-                            >0</span
-                          >
+                          class="fs-22 fw-semibold ff-secondary mb-4 text-white">
+                            ₹{{ today_collection }}
+                          
                         </h4>
                        
                       </div>
@@ -98,7 +112,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Yesterday Collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -115,11 +129,8 @@ Dashboard ||RM Portal WeNgo
                     >
                       <div>
                         <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="194"
-                            >0</span
-                          >
+                          class="fs-22 fw-semibold ff-secondary mb-4 text-white">
+                          ₹{{ yesterday_collection }}
                         </h4>
                        
                       </div>
@@ -147,7 +158,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          This Month Collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -164,11 +175,8 @@ Dashboard ||RM Portal WeNgo
                     >
                       <div>
                         <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="34"
-                            >0</span
-                          >
+                          class="fs-22 fw-semibold ff-secondary mb-4 text-white">
+                          ₹{{ this_month_collection }}
                         </h4>
                        
                       </div>
@@ -196,7 +204,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Last Month Collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -215,9 +223,7 @@ Dashboard ||RM Portal WeNgo
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="394"
-                            >0</span
-                          >
+                          ₹{{ last_month_collection }}
                         </h4>
                        
                       </div>
@@ -249,7 +255,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Link — Today Collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -268,9 +274,7 @@ Dashboard ||RM Portal WeNgo
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="36894"
-                            >0</span
-                          >
+                          ₹{{ link_today }}
                         </h4>
                        
                       </div>
@@ -298,7 +302,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          GPay — Today Collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -317,9 +321,7 @@ Dashboard ||RM Portal WeNgo
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="194"
-                            >0</span
-                          >
+                          ₹{{ gpay_today }}
                         </h4>
                        
                       </div>
@@ -347,7 +349,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Total—Today Collection
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -366,9 +368,7 @@ Dashboard ||RM Portal WeNgo
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="34"
-                            >0</span
-                          >
+                          ₹{{ total_today }}
                         </h4>
                        
                       </div>
@@ -385,63 +385,9 @@ Dashboard ||RM Portal WeNgo
                 </div>
                 <!-- end card -->
               </div>
-              <!-- end col -->
-            
-              <!--end-->
- 
-               <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-animate bg-info">
-                  <div class="card-body">
-                    <div class="d-flex align-items-center">
-                      <div class="flex-grow-1">
-                        <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
-                        </p>
-                      </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex align-items-end justify-content-between mt-4"
-                    >
-                      <div>
-                        <h4
-                          class="fs-22 fw-semibold ff-secondary mb-4 text-white"
-                        >
-                          <span class="counter-value" data-target="394"
-                            >0</span
-                          >
-                        </h4>
-                       
-                      </div>
-                      <div class="avatar-sm flex-shrink-0">
-                        <span
-                          class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow"
-                        >
-                          <i class="bx bx-shopping-bag text-white"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card -->
-              </div>
-              <!-- end col -->
-            
-              <!--end-->
-     
+              
 
-
-
-              <div class='row '>
+<div class='row '>
 
 <div class="col-xl-3 col-md-6">
                 <!-- card -->
@@ -450,7 +396,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Madurai — Today
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -469,9 +415,7 @@ Dashboard ||RM Portal WeNgo
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="36894"
-                            >0</span
-                          >
+                          ₹{{ madurai_today }}
                         </h4>
                        
                       </div>
@@ -499,7 +443,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Chennai — Today
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -518,9 +462,7 @@ Dashboard ||RM Portal WeNgo
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="194"
-                            >0</span
-                          >
+                          ₹{{ chennai_today }}
                         </h4>
                        
                       </div>
@@ -548,7 +490,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          Bangalore — Today
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -567,9 +509,7 @@ Dashboard ||RM Portal WeNgo
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="34"
-                            >0</span
-                          >
+                          ₹{{ bangalore_today }}
                         </h4>
                        
                       </div>
@@ -597,7 +537,7 @@ Dashboard ||RM Portal WeNgo
                     <div class="d-flex align-items-center">
                       <div class="flex-grow-1">
                         <p class="text-uppercase fw-medium text-white-50 mb-0">
-                          Orders
+                          All Branches — Today
                         </p>
                       </div>
                       <div class="flex-shrink-0">
@@ -610,15 +550,12 @@ Dashboard ||RM Portal WeNgo
                       </div>
                     </div>
                     <div
-                      class="d-flex align-items-end justify-content-between mt-4"
-                    >
+                      class="d-flex align-items-end justify-content-between mt-4">
                       <div>
                         <h4
                           class="fs-22 fw-semibold ff-secondary mb-4 text-white"
                         >
-                          <span class="counter-value" data-target="394"
-                            >0</span
-                          >
+                          ₹{{ all_branches_today }}
                         </h4>
                        
                       </div>
@@ -640,206 +577,106 @@ Dashboard ||RM Portal WeNgo
               <!--end-->
 
                    
-              <div class="row">
+<div class="row">
   <div class="col-lg-12">
     <div class="card">
       <div class="card-header">
-        <h5 class="card-title mb-0">Student's</h5>
+        <h5 class="card-title mb-0">RM - Link , GPay</h5>
       </div>
 
       <div class="card-body">
-        <table
-          id="website_donation_table_student"
-          class="table table-bordered dt-responsive nowrap table-striped align-middle"
-          style="width: 100%"
-        >
-          <thead>
-            <tr>
-              <th data-ordering="false">SR No.</th>
-              <th data-ordering="false">ID</th>
-              <th data-ordering="false">Purchase ID</th>
-              <th data-ordering="false">Title</th>
-              <th data-ordering="false">User</th>
-              <th>Assigned To</th>
-              <th>Created By</th>
-              <th>Create Date</th>
-              <th>Status</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
+        <div class="table-responsive" style="overflow-x:auto; width:100%;">
 
-          <tbody>
-            <tr>
-              <td>01</td>
-              <td>VLZ-452</td>
-              <td>VLZ1400087402</td>
-              <td>Post launch reminder/ post list</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>03 Oct, 2021</td>
-              <td>
-                <span class="badge bg-info-subtle text-info">
-                  Re-open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
+          <table id="website_donation_table_student" class="table table-bordered table-striped align-middle nowrap" style="min-width:1800px;">
+            <thead>
+                <tr>
+                    <th data-ordering="false">SR No.</th>
+                    <th>Virtual Label</th>
+                    <th>Receipt No</th>
+                    <th>Donor Name</th>
+                    <th>RM Name</th>
+                    <th>Package</th>
+                    <th>Submitted Date</th>
+                    <th>Payment Status</th>
+                    <th>Source</th>
+                    <th>Amount</th>
+                    <th>Donor Mobile No</th>
+                    <th>Donor Email</th>
+                    <th>Donor Address</th>
+                
+                    <th>RM Code</th>
+                    <th>Branch</th>
+                    <th>Payment Mode</th>
+                    <th>Payment Transaction ID</th>
+                    <th>Unique Transaction ID</th>
+                </tr>
+            </thead>
+          
+            <tbody>
+              {% for donation in rm_donations %}
+              <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ donation.virtual_label }}</td>
+                  <td>{{ donation.receipt_no }}</td>
+                  <td>{{ donation.donor_name }}</td>
+                  <td>{{ donation.rm_name }}</td>
+                  <td>{{ donation.package_type|default:"-" }}</td>
+                  <td>{{ donation.submitted_at|date:"d-m-Y h:i A" }}</td>
+              
+                  <td>
+                      {% if donation.payment_status|lower == "success" %}
+                          <span class="badge rounded-pill bg-success-subtle text-success">
+                              Success
+                          </span>
+                        
+                      {% elif donation.payment_status|lower == "failed" or donation.payment_status|lower == "failure" %}
+                          <span class="badge rounded-pill bg-danger-subtle text-danger">
+                              Failed
+                          </span>
+                        
+                      {% elif donation.payment_status|lower == "pending" %}
+                          <span class="badge rounded-pill bg-warning-subtle text-warning">
+                              Pending
+                          </span>
+                        
+                      {% else %}
+                          <span class="badge rounded-pill bg-secondary-subtle text-secondary">
+                              {{ donation.payment_status }}
+                          </span>
+                      {% endif %}
+                  </td>
+                
+                  <td>{{ donation.source }}</td>
+                
+                  <td>₹{{ donation.amount|floatformat:2 }}</td>
+                
+                  <td>{{ donation.donor_mobile }}</td>
+                
+                  <td>{{ donation.donor_email }}</td>
+                
+                  <td>{{ donation.donor_address }}</td>
+                
+                  <td>{{ donation.rm_code }}</td>
 
-            <tr>
-              <td>02</td>
-              <td>VLZ-453</td>
-              <td>VLZ1400087425</td>
-              <td>Additional Calendar</td>
-              <td>Diana Kohler</td>
-              <td>Admin</td>
-              <td>Mary Rucker</td>
-              <td>05 Oct, 2021</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
+                  <td>{{ donation.branch }}</td>
+                
+                  <td>{{ donation.payment_mode }}</td>
+                
+                  <td>{{ donation.transaction_id }}</td>
+                
+                  <td>{{ donation.unique_transaction_id }}</td>
+              </tr>
 
-            <tr>
-              <td>03</td>
-              <td>VLZ-454</td>
-              <td>VLZ1400087438</td>
-              <td>Make a creating an account profile</td>
-              <td>Tonya Noble</td>
-              <td>Admin</td>
-              <td>Tonya Noble</td>
-              <td>27 April, 2022</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>04</td>
-              <td>VLZ-455</td>
-              <td>VLZ1400087748</td>
-              <td>Apologize for shopping Error!</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>14 June, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>05</td>
-              <td>VLZ-456</td>
-              <td>VLZ1400087547</td>
-              <td>Support for theme</td>
-              <td>Donald Palmer</td>
-              <td>Admin</td>
-              <td>Donald Palmer</td>
-              <td>25 June, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>06</td>
-              <td>VLZ-457</td>
-              <td>VLZ1400087245</td>
-              <td>Benner design for FB & Twitter</td>
-              <td>Mary Rucker</td>
-              <td>Jennifer Carter</td>
-              <td>Mary Rucker</td>
-              <td>14 Aug, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>07</td>
-              <td>VLZ-458</td>
-              <td>VLZ1400087785</td>
-              <td>Change email option process</td>
-              <td>James Morris</td>
-              <td>Admin</td>
-              <td>James Morris</td>
-              <td>12 March, 2022</td>
-              <td>
-                <span class="badge bg-primary-subtle text-primary">
-                  Open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>08</td>
-              <td>VLZ-460</td>
-              <td>VLZ1400087745</td>
-              <td>Support for theme</td>
-              <td>Nathan Cole</td>
-              <td>Nancy Martino</td>
-              <td>Nathan Cole</td>
-              <td>28 Feb, 2022</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>09</td>
-              <td>VLZ-461</td>
-              <td>VLZ1400087179</td>
-              <td>Form submit issue</td>
-              <td>Grace Coles</td>
-              <td>Admin</td>
-              <td>Grace Coles</td>
-              <td>07 Jan, 2022</td>
-              <td>
-                <span class="badge bg-success-subtle text-success">
-                  New
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>10</td>
-              <td>VLZ-462</td>
-              <td>VLZ140008856</td>
-              <td>Edit customer testimonial</td>
-              <td>Freda</td>
-              <td>Alexis Clarke</td>
-              <td>Freda</td>
-              <td>16 Aug, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
+              {% empty %}
+              <tr>
+                  <td colspan="17" class="text-center">
+                      No Donations Found
+                  </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -850,4 +687,22 @@ Dashboard ||RM Portal WeNgo
         </div>
     </div>
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    flatpickr("#qr-date", {
+        mode: "range",              // Single date + Range support
+        dateFormat: "d M, Y",       // Matches Django parser (%d %b, %Y)
+        allowInput: false,
+        clickOpens: true,
+        defaultDate: "{{ selected_date_str|default:filter_start_date|date:'d M, Y' }}"
+    });
+});
+</script>
                       {% endblock %}
+
+
+                      

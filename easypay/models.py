@@ -43,7 +43,7 @@ class RMGPayPayment(models.Model):
     payment_date = models.DateTimeField( default=timezone.now)
     gpay_reference_id = models.CharField( max_length=100, blank=True, null=True, db_index=True, help_text="UPI Ref / UTR / GPay Transaction ID")
     payment_screenshot = models.ImageField( upload_to="gpay_screenshots/", blank=True, null=True, help_text="Upload GPay payment screenshot" )
-    receipt_no = models.CharField( max_length=25, unique=True, editable=False)
+    receipt_no = models.CharField(max_length=20, unique=True, editable=False, null=True, blank=True)
 
     PACKAGE_CHOICES = [
         ("birthday", "Birthday Package"),

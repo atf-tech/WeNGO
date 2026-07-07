@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-# from .webhook import webhook
+from .webhook import webhook
 
 urlpatterns = [
     path('', views.rmportal_index, name='rmportal_index'),
@@ -11,7 +11,7 @@ urlpatterns = [
     path('rm_keepalive/', views.rm_keepalive, name='rm_keepalive'),
     path('keepalive/', views.rm_keepalive),
 
-    # path("webhook/", webhook, name="whatsapp_webhook"),
+    path("webhook/", webhook, name="whatsapp_webhook"),
 
     # WhatsApp conversation endpoints
     path("conversation/<int:convo_id>/messages/", views.messages_partial, name="messages-partial"),

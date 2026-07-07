@@ -1,97 +1,133 @@
-var options = {
-  series: [
-    {
-      name: 'PRODUCT A',
-      data: [1200000, 1500000, 1800000, 1700000, 1400000, 1600000, 1900000],
-    },
-    {
-      name: 'PRODUCT B',
-      data: [900000, 1300000, 1600000, 1400000, 1200000, 1350000, 1500000],
-    },
-    {
-      name: 'PRODUCT C',
-      data: [700000, 1000000, 1250000, 1500000, 1100000, 1300000, 1450000],
-    },
-  ],
+(function () {
+  const dayChartEl = document.getElementById("area_chart_irregular_0101");
+  if (!dayChartEl) return;
 
-  colors: ['#45d7eb', '#f7b84b', '#f672a7'],
+  // Avoid duplicate chart initialization if this script is loaded twice.
+  if (dayChartEl.dataset.apexInitialized === "true") return;
+  dayChartEl.dataset.apexInitialized = "true";
 
-  chart: {
-    type: 'area',
-    height: 350,
-    stacked: false,
-    zoom: {
+  function readJson(id) {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    try {
+      return JSON.parse(el.textContent);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Coerce every value to a number; fall back to 0 for null/undefined/NaN
+  // so the chart still renders when a series has empty or zero values.
+  function toNumberArray(arr) {
+    if (!Array.isArray(arr)) return [];
+    return arr.map(function (v) {
+      const n = Number(v);
+      return n != null && !isNaN(n) ? n : 0;
+    });
+  }
+
+  const dayLabels = readJson("day-labels");
+  const chennaiData = readJson("chennai-day");
+  const maduraiData = readJson("madurai-day");
+  const bangaloreData = readJson("bangalore-day");
+
+  if (
+    !Array.isArray(dayLabels) ||
+    !Array.isArray(chennaiData) ||
+    !Array.isArray(maduraiData) ||
+    !Array.isArray(bangaloreData)
+  ) {
+    // Required JSON scripts are missing; do not initialize the chart.
+    return;
+  }
+
+  const chennai = toNumberArray(chennaiData);
+  const madurai = toNumberArray(maduraiData);
+  const bangalore = toNumberArray(bangaloreData);
+
+  const options = {
+    series: [
+      { name: "Chennai", data: chennai },
+      { name: "Madurai", data: madurai },
+      { name: "Bangalore", data: bangalore },
+    ],
+
+    colors: ["#4cc1d6", "#f0a728", "#e884ac"],
+
+    chart: {
+      type: "area",
+      height: 350,
+      stacked: false,
+      toolbar: { show: false },
+      zoom: {
+        enabled: false,
+      },
+    },
+
+    dataLabels: {
       enabled: false,
     },
-  },
 
-  dataLabels: {
-    enabled: false,
-  },
-
-  markers: {
-    size: 4,
-  },
-
-  stroke: {
-    curve: 'smooth',
-    width: 2,
-  },
-
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shadeIntensity: 1,
-      inverseColors: false,
-      opacityFrom: 0.45,
-      opacityTo: 0.05,
-      stops: [20, 100, 100, 100],
+    markers: {
+      size: 4,
     },
-  },
 
-  yaxis: {
+    stroke: {
+      curve: "smooth",
+      width: 2,
+    },
+
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        inverseColors: false,
+        opacityFrom: 0.45,
+        opacityTo: 0.05,
+        stops: [20, 100, 100, 100],
+      },
+    },
+
+    yaxis: {
+    min: 0,
+    max: 50000,
+    tickAmount: 5,
     labels: {
-      style: {
-        colors: '#8e8da4',
-      },
-      formatter: function (val) {
-        return (val / 1000000).toFixed(1) + 'M';
+        formatter: function (value) {
+            return Math.round(value).toLocaleString("en-IN");
+        }
+    }
+    },
+
+    xaxis: {
+      categories: dayLabels,
+      labels: {
+        style: {
+          colors: "#8e8da4",
+        },
       },
     },
-  },
 
-  xaxis: {
-    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    labels: {
-      style: {
-        colors: '#8e8da4',
+    title: {
+      text: "7 Days Data",
+      align: "left",
+    },
+
+    tooltip: {
+      shared: true,
+      y: {
+        formatter: function (val) {
+          return "₹" + Number(val).toLocaleString("en-IN");
+        },
       },
     },
-  },
 
-  title: {
-    text: '7 Days Data',
-    align: 'left',
-  },
-
-  tooltip: {
-    shared: true,
-    y: {
-      formatter: function (val) {
-        return (val / 1000000).toFixed(1) + 'M';
-      },
+    legend: {
+      position: "top",
+      horizontalAlign: "right",
     },
-  },
+  };
 
-  legend: {
-    position: 'top',
-    horizontalAlign: 'right',
-  },
-};
-
-var chart = new ApexCharts(
-  document.querySelector('#area_chart_irregular_0101'),
-  options
-);
-
-chart.render();
+  const chart = new ApexCharts(dayChartEl, options);
+  chart.render();
+})();

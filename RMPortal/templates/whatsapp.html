@@ -175,7 +175,7 @@ RMPortal || index wengo
                 📱 WhatsApp
             </div>
             <div class="inbox-tab" id="visitorTabBtn" onclick="switchTab('visitor')">
-                🌐 Visitors
+                🌐 Website
                 <span class="tab-badge" id="visitorTabBadge"></span>
             </div>
         </div>
@@ -267,20 +267,24 @@ RMPortal || index wengo
             </button>
             <div id="rmStatsPanel" style="display:none;gap:6px;margin:0 0 6px;">
                 <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
-                    <div style="font-size:16px;font-weight:800;color:#0ab39c;">{{ active_count }}</div>
+                    <div id="rmStatActive" style="font-size:16px;font-weight:800;color:#0ab39c;">{{ active_count }}</div>
                     <div style="font-size:9px;font-weight:600;color:#878a99;">Active</div>
                 </div>
                 <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
-                    <div style="font-size:16px;font-weight:800;color:#aaa;">{{ reassigned_count }}</div>
+                    <div id="rmStatReassigned" style="font-size:16px;font-weight:800;color:#aaa;">{{ reassigned_count }}</div>
                     <div style="font-size:9px;font-weight:600;color:#878a99;">Reassigned</div>
                 </div>
                 <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
-                    <div style="font-size:16px;font-weight:800;color:#f06548;">{{ missed_count }}</div>
+                    <div id="rmStatMissed" style="font-size:16px;font-weight:800;color:#f06548;">{{ missed_count }}</div>
                     <div style="font-size:9px;font-weight:600;color:#878a99;">Missed</div>
                 </div>
                 <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
-                    <div style="font-size:16px;font-weight:800;color:#888;">{{ quickly_left_count }}</div>
+                    <div id="rmStatQuickLeft" style="font-size:16px;font-weight:800;color:#888;">{{ quickly_left_count }}</div>
                     <div style="font-size:9px;font-weight:600;color:#878a99;">Quick Left</div>
+                </div>
+                <div style="flex:1;background:#fff;border-radius:6px;border:1px solid #e9ebec;padding:6px 2px;text-align:center;">
+                    <div id="rmStatNightChat" style="font-size:16px;font-weight:800;color:#636ebb;">{{ night_chat_count }}</div>
+                    <div style="font-size:9px;font-weight:600;color:#878a99;">Night Chat</div>
                 </div>
             </div>
 
@@ -518,6 +522,23 @@ let _totalUnread = 0;
 function updateTabTitle() {
     _totalUnread = visitorTabUnread;
     document.title = _totalUnread > 0 ? `(${_totalUnread}) ${_baseTitle}` : _baseTitle;
+}
+
+// Stats helpers — update numeric stat DOM nodes safely
+function _getStatValue(id) {
+    var el = document.getElementById(id);
+    if (!el) return 0;
+    var v = parseInt(el.textContent || "0", 10);
+    return isNaN(v) ? 0 : v;
+}
+function _setStatValue(id, v) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = String(Math.max(0, parseInt(v || 0, 10)));
+}
+function _updateStat(id, delta) {
+    var cur = _getStatValue(id);
+    _setStatValue(id, cur + (parseInt(delta || 0, 10) || 0));
 }
 
 
@@ -968,6 +989,19 @@ function handleVisitorInboxUpdate(data) {
         }
     }
 
+    // Update today's stats panel in-place based on status transitions
+    try {
+        if (data.status === 'active') {
+            _updateStat('rmStatActive', 1);
+        } else if (data.status === 'reassigned') {
+            _updateStat('rmStatReassigned', 1);
+        } else if (data.status === 'missed') {
+            _updateStat('rmStatMissed', 1);
+            if (data.missed_reason === 'quickly_left') _updateStat('rmStatQuickLeft', 1);
+            if (data.missed_reason === 'night_chat') _updateStat('rmStatNightChat', 1);
+        }
+    } catch(e) { console.warn('stat update failed', e); }
+
     // Real-time read-only: if RM is currently viewing this chat and it became missed → disable input
     if (data.status === "missed" && activeVisitorConvoId == data.conversation_id && chatMode === "visitor") {
         activeVisitorConvoId = null;
@@ -1101,6 +1135,9 @@ function handleVisitorRemoved(data) {
         var badge = item.querySelector(".chat-unread");
         if (badge) badge.remove();
     }
+
+    // Update stats: a conversation was reassigned away from this RM
+    try { _updateStat('rmStatReassigned', 1); } catch(e){}
 
     // If this was the active open chat, close the socket
     if (activeVisitorConvoId == data.conversation_id) {

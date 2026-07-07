@@ -1,113 +1,88 @@
-var options = {
-  series: [
-    {
-      name: 'Session Duration',
-      data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10],
-    },
-    {
-      name: 'Page Views',
-      data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35],
-    },
-    {
-      name: 'Total Visits',
-      data: [87, 57, 74, 99, 75, 38, 62, 47, 82, 56, 45, 47],
-    },
-  ],
+(function () {
+  const monthChartEl = document.querySelector("#line_chart_dashed_111");
+  if (!monthChartEl) return;
 
-  colors: ['#2e65d3', '#4ab02b', '#f672a7'],
-  
-  chart: {
-    height: 350,
-    type: 'line',
-    zoom: {
+  // Avoid duplicate chart initialization if this script is loaded twice.
+  if (monthChartEl.dataset.apexInitialized === "true") return;
+  monthChartEl.dataset.apexInitialized = "true";
+
+  const monthLabelsScript = document.getElementById("month-labels");
+  const chennaiMonthScript = document.getElementById("chennai-month");
+  const maduraiMonthScript = document.getElementById("madurai-month");
+  const bangaloreMonthScript = document.getElementById("bangalore-month");
+
+  if (!monthLabelsScript || !chennaiMonthScript || !maduraiMonthScript || !bangaloreMonthScript) {
+    // Required JSON scripts are missing; do not initialize the chart.
+    return;
+  }
+
+  const monthLabels = JSON.parse(monthLabelsScript.textContent);
+  const chennaiMonth = JSON.parse(chennaiMonthScript.textContent);
+  const maduraiMonth = JSON.parse(maduraiMonthScript.textContent);
+  const bangaloreMonth = JSON.parse(bangaloreMonthScript.textContent);
+
+  // Validate array lengths to prevent ApexCharts failures.
+  const len = monthLabels.length;
+  if (
+    !Array.isArray(monthLabels) ||
+    !Array.isArray(chennaiMonth) ||
+    !Array.isArray(maduraiMonth) ||
+    !Array.isArray(bangaloreMonth) ||
+    chennaiMonth.length !== len ||
+    maduraiMonth.length !== len ||
+    bangaloreMonth.length !== len
+  ) {
+    return;
+  }
+
+  const monthOptions = {
+    chart: {
+      type: "line",
+      height: 350,
+      toolbar: { show: false },
+    },
+    colors: ["#2e65d3", "#4ab02b", "#f672a7"],
+    series: [
+      { name: "Chennai", data: chennaiMonth },
+      { name: "Madurai", data: maduraiMonth },
+      { name: "Bangalore", data: bangaloreMonth },
+    ],
+    xaxis: {
+      categories: monthLabels,
+    },
+    stroke: {
+      curve: "smooth",
+      width: 4,
+    },
+    dataLabels: {
       enabled: false,
     },
-  },
-
-  dataLabels: {
-    enabled: false,
-  },
-
-  stroke: {
-    width: [5, 7, 5],
-    curve: 'straight',
-    dashArray: [0, 8, 5],
-  },
-
-  title: {
-    text: 'Page Statistics',
-    align: 'left',
-  },
-
-  legend: {
-    tooltipHoverFormatter: function (val, opts) {
-      return (
-        val +
-        ' - <strong>' +
-        opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-        '</strong>'
-      );
+    markers: {
+      size: 5,
     },
-  },
-
-  markers: {
-    size: 0,
-    hover: {
-      sizeOffset: 6,
+    yaxis: {
+      min: 0,
+      max: 1500000,
+      tickAmount: 5,
+      labels: {
+        formatter: function (val) {
+          return "₹" + Number(val).toLocaleString("en-IN");
+        },
+      },
     },
-  },
-
-  xaxis: {
-    categories: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ],
-  },
-
-  tooltip: {
-    y: [
-      {
-        title: {
-          formatter: function (val) {
-            return val + ' (mins)';
-          },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: function (val) {
+          return "₹" + Number(val).toLocaleString("en-IN");
         },
       },
-      {
-        title: {
-          formatter: function (val) {
-            return val + ' per session';
-          },
-        },
-      },
-      {
-        title: {
-          formatter: function (val) {
-            return val;
-          },
-        },
-      },
-    ],
-  },
+    },
+    grid: {
+      borderColor: "#f1f1f1",
+    },
+  };
 
-  grid: {
-    borderColor: '#f1f1f1',
-  },
-};
-
-var chart = new ApexCharts(
-  document.querySelector('#line_chart_dashed_111'),
-  options
-);
-
-chart.render();
+  new ApexCharts(monthChartEl, monthOptions).render();
+})();

@@ -69,10 +69,16 @@ def whatsapp(request, rm_code):
         .order_by("-sort_time")
     )
 
-    today = timezone.now().date()
+    now = timezone.localtime()
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    tomorrow_start = today_start + timedelta(days=1)
 
     # Spec §12 — RM dashboard today-counters
-    rm_today = VisitorConversation.objects.filter(rm=rm, created_at__date=today)
+    rm_today = VisitorConversation.objects.filter(
+        rm=rm,
+        created_at__gte=today_start,
+        created_at__lt=tomorrow_start,
+    )
 
     count_active = rm_today.filter(status="active").count()
     count_reassigned = rm_today.filter(status="reassigned").count()
@@ -101,12 +107,23 @@ def whatsapp(request, rm_code):
         rm_first_response_at__isnull=True,
     ).count()
 
-    # Visitors that came while THIS RM was offline (assigned to other RMs today)
-    missed_while_offline = (
-        VisitorConversation.objects.filter(created_at__date=today).exclude(rm=rm).count()
-        if not rm.active_visitor_chat else 0
-    )
+    # Visitors that came while THIS RM was offline: calculate using RMLoginHistory
+    missed_while_offline = 0
+    try:
+        # Current active login record for this RM (should exist after rm_login)
+        current_login = RMLoginHistory.objects.filter(rm=rm, status=True).order_by('-login_time').first()
+        if current_login:
+            # Find the previous login/logout record (the one immediately before current)
+            prev = RMLoginHistory.objects.filter(rm=rm, login_time__lt=current_login.login_time).order_by('-login_time').first()
+            if prev and prev.logout_time:
+                missed_while_offline = VisitorConversation.objects.filter(
+                    created_at__gt=prev.logout_time,
+                    created_at__lte=current_login.login_time
+                ).count()
+    except Exception:
+        missed_while_offline = 0
 
+    # Provide both `count_*` and template-friendly names used elsewhere
     return render(request, "whatsapp.html", {
         "rm": rm,
         "count_active": count_active,
@@ -114,6 +131,12 @@ def whatsapp(request, rm_code):
         "count_quickly_left": count_quickly_left,
         "count_missed": count_missed,
         "count_night_chat": count_night_chat,
+        # Template expects these variable names in some places — keep both
+        "active_count": count_active,
+        "reassigned_count": count_reassigned,
+        "quickly_left_count": count_quickly_left,
+        "missed_count": count_missed,
+        "night_chat_count": count_night_chat,
         "missed_no_reply": missed_no_reply,
         "missed_while_offline": missed_while_offline,
         "conversations": conversations,

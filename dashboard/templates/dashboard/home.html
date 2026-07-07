@@ -4,6 +4,12 @@
 Dashboard || Home wengo
 {% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'dashboard/js/home/gradient_charts.js' %}"></script>
+<script src="{% static 'dashboard/js/home/pie_chart.js' %}"></script>
+<script src="{% static 'dashboard/js/home/home_bar_chart.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
 <h4 class="fs-26 mb-1">Good Morning, Admin!</h4>

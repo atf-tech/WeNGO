@@ -4,13 +4,107 @@
 Dashboard || visitor_chat wengo
 {% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'dashboard/js/visitor_chat_js/overview_chart.js' %}"></script>
+<script src="{% static 'dashboard/js/visitor_chat_js/polar_chart.js' %}"></script>
+<script src="{% static 'dashboard/js/visitor_chat_js/branch_wise_bar.js' %}"></script>
+<script src="{% static 'dashboard/js/visitor_chat_js/response_time.js' %}"></script>
+{% endblock %}
+
 {% block content %}
+
+<style>
+:root {
+  --primary: #405189; --success: #0ab39c; --info: #299cdb;
+  --warning: #f7b84b; --danger: #f06548; --chat-blue: #299cdb;
+  --muted: #878a99; --border: #e9ebec;
+}
+.wa-header {
+  background: linear-gradient(135deg,#299cdb,#1a6fa0);
+  border-radius:14px; padding:22px 28px; margin-bottom:20px;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:14px; box-shadow:0 4px 20px rgba(41,156,219,.3);
+}
+.wa-header h4 { color:#fff; font-size:20px; font-weight:700; margin:0; display:flex; align-items:center; gap:8px; }
+.wa-header p  { color:rgba(255,255,255,.6); font-size:13px; margin:4px 0 0; }
+.wa-header .hr { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.hdr-sel {
+  border-radius:8px; font-size:13px; padding:8px 14px; border:none;
+  background:rgba(255,255,255,.15); color:#fff; cursor:pointer; outline:none;
+}
+.hdr-sel option { background:#1a6fa0; }
+.btn-ref {
+  padding:8px 18px; border-radius:8px; border:none;
+  background:var(--success); color:#fff; font-size:13px; font-weight:600;
+  cursor:pointer; display:flex; align-items:center; gap:6px; transition:opacity .2s;
+}
+.btn-ref:hover { opacity:.85; }
+.filter-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+.filter-label { font-size:13px; font-weight:600; color:#495057; }
+.pill-group { display:flex; background:#fff; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.pf-btn {
+  padding:7px 15px; font-size:12.5px; font-weight:600; border:none;
+  background:none; cursor:pointer; color:var(--muted);
+  border-right:1px solid var(--border); transition:background .15s,color .15s;
+}
+.pf-btn:last-child { border-right:none; }
+.pf-btn.active { background:var(--primary); color:#fff; }
+.pf-btn:not(.active):hover { background:#eef1fb; color:var(--primary); }
+
+
+.lb-wrap { background:#fff; border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+.lb-head { padding:14px 18px 10px; border-bottom:1px solid #f3f6f9; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.lb-head h5 { font-size:15px; font-weight:700; color:#212529; margin:0; }
+.lb-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.lb-table thead tr { background:#f8f9ff; }
+.lb-table thead th { padding:9px 12px; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; border-bottom:1px solid var(--border); white-space:nowrap; text-align:left; }
+.lb-table tbody tr { border-bottom:1px solid #f5f6f8; transition:background .12s; }
+.lb-table tbody tr:last-child { border-bottom:none; }
+.lb-table tbody tr:hover { background:#fafbff; }
+.lb-table tbody td { padding:9px 12px; vertical-align:middle; }
+.rk { width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
+.rk-1{background:#fef3c7;color:#b45309;} .rk-2{background:#f1f5f9;color:#475569;} .rk-3{background:#fff0e8;color:#c2562a;} .rk-n{background:#f3f6f9;color:var(--muted);}
+.rm-nm { font-weight:700; color:#212529; }
+.rm-cd { font-size:11px; color:var(--muted); }
+.br-pill { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; display:inline-block; }
+.br-chennai   { background:rgba(64,81,137,.1);  color:var(--primary); }
+.br-madurai   { background:rgba(10,179,156,.1); color:var(--success); }
+.br-bangalore { background:rgba(41,156,219,.1); color:var(--info); }
+.chat-dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+.chat-on  { background:var(--chat-blue); box-shadow:0 0 4px var(--chat-blue); }
+.chat-off { background:#d1d5db; }
+.mini-prog { width:60px; height:5px; background:#f3f6f9; border-radius:3px; overflow:hidden; display:inline-block; vertical-align:middle; margin-right:4px; }
+.mini-prog-fill { height:100%; border-radius:3px; }
+.resp-fast{color:var(--success);font-weight:800;} .resp-mid{color:var(--warning);font-weight:800;} .resp-slow{color:var(--danger);font-weight:800;}
+.tbl-loading { text-align:center; padding:36px; color:var(--muted); }
+.tbl-loading i { font-size:28px; animation:spin 1s linear infinite; display:block; margin-bottom:8px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.status-pill { padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; }
+.st-online { background:rgba(10,179,156,.12); color:var(--success); }
+.st-offline { background:rgba(135,138,153,.12); color:var(--muted); }
+.st-waiting { background:rgba(247,184,75,.12); color:var(--warning); }
+.st-active { background:rgba(10,179,156,.12); color:var(--success); }
+.st-closed { background:rgba(135,138,153,.12); color:var(--muted); }
+.st-missed { background:rgba(240,101,72,.12); color:var(--danger); }
+.st-no_chat { background:rgba(135,138,153,.08); color:#bbb; }
+.st-quickly-left { background:rgba(135,138,153,.12); color:#888; }
+.st-night-chat { background:rgba(99,110,187,.12); color:#636ebb; }
+
+
+  /* Tab switcher */
+.section-tabs { display:flex; gap:8px; margin-bottom:18px; }
+.sec-tab { padding:8px 18px; border-radius:8px; border:1px solid var(--border); background:#fff; font-size:13px; font-weight:600; cursor:pointer; color:var(--muted); transition:all .15s; }
+.sec-tab.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+.sec-tab:not(.active):hover { background:#eef1fb; color:var(--primary); }
+.section-pane { display:none; }
+.section-pane.active { display:block; }
+</style>
 
 <!-- HEADER -->
 <div class="wa-header">
   <div>
     <h4><i class="ri-chat-3-line" style="font-size:24px;"></i> Visitor Chat Analytics</h4>
-    <p>Website visitors, live chat & RM performance — Annai Teresa Foundation</p>
+    <p>Website visitors, live chat & RM performance — Women Empowerment NGO</p>
   </div>
   <div class="hr">
     <select class="hdr-sel" id="branchFilter">
@@ -57,7 +151,7 @@ Dashboard || visitor_chat wengo
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <p class="fw-medium text-white-50 mb-0">Visitors (Today)</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
               
               <span class="counter-value" data-target="4050">0</span>
@@ -84,7 +178,7 @@ Dashboard || visitor_chat wengo
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <p class="fw-medium text-white-50 mb-0">Visitors This Week</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
               
               <span class="counter-value" data-target="4065">0</span>
@@ -111,7 +205,7 @@ Dashboard || visitor_chat wengo
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <p class="fw-medium text-white-50 mb-0">Visitors This Month</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
             
               <span class="counter-value" data-target="4110">0</span>
@@ -138,7 +232,7 @@ Dashboard || visitor_chat wengo
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <p class="fw-medium text-white-50 mb-0">Avg. Visit Duration</p>
+            <p class="fw-medium text-white-50 mb-0">Conversations (Today)</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
               
               <span class="counter-value" data-target="4540">0</span>
@@ -162,71 +256,6 @@ Dashboard || visitor_chat wengo
   </div>
 </div>
 
-<!-- CRM WIDGET ROW -->
-<div class="row">
-  <div class="col-xl-12">
-    <div class="card crm-widget">
-      <div class="card-body p-0">
-        <div class="row row-cols-md-3 row-cols-1">
-          <div class="col col-lg border-end">
-            <div class="py-4 px-3">
-              <h5 class="text-muted text-uppercase fs-13">Visitors Online Now (Live) </h5>
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0"><i class="ri-wifi-fill display-6" style="color:#28a745;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="20">0</span></h2></div>
-              </div>
-            </div>
-          </div>
-          <div class="col col-lg border-end">
-            <div class="mt-3 mt-md-0 py-4 px-3">
-              <h5 class="text-muted text-uppercase fs-13">Waiting Chats (Today) </h5>
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0"><i class=" ri-chat-history-line display-6" style="color:#f7b84b;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="481">0</span></h2></div>
-              </div>
-            </div>
-          </div>
-          <div class="col col-lg border-end">
-            <div class="mt-3 mt-md-0 py-4 px-3">
-              <h5 class="text-muted text-uppercase fs-13">Active Chats (Today)</h5>
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0"><i class="ri-chat-heart-line display-6" style="color:#299cdb;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="327">0</span></h2></div>
-              </div>
-            </div>
-          </div>
-          <div class="col col-lg border-end">
-            <div class="mt-3 mt-lg-0 py-4 px-3">
-              <h5 class="text-muted text-uppercase fs-13">Missed Chats (Today) </h5>
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0"><i class="ri-chat-delete-line display-6" style="color:#ff3b3b;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="1525">0</span></h2></div>
-              </div>
-            </div>
-          </div>
-          <div class="col col-lg border-end">
-            <div class="mt-3 mt-lg-0 py-4 px-3">
-              <h5 class="text-muted text-uppercase fs-13">Quickly Left (Today) </h5>
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0"><i class="ri-logout-circle-line display-6" style="color:#ff68eed1;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
-              </div>
-            </div>
-          </div>
-          <div class="col col-lg">
-            <div class="mt-3 mt-lg-0 py-4 px-3">
-              <h5 class="text-muted text-uppercase fs-13">Night Chat (Today)</h5>
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0"><i class=" ri-moon-clear-fill display-6 " style="color:#F6F1D5;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- INFO CARDS ROW (Blue) -->
 <div class="row">
@@ -234,7 +263,7 @@ Dashboard || visitor_chat wengo
     <div class="card card-animate bg-info">
       <div class="card-body">
         <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Visitor Messages (Today)</p></div>
           <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
         </div>
         <div class="d-flex align-items-end justify-content-between mt-4">
@@ -255,7 +284,7 @@ Dashboard || visitor_chat wengo
     <div class="card card-animate bg-info">
       <div class="card-body">
         <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Reply Rate</p></div>
           <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
         </div>
         <div class="d-flex align-items-end justify-content-between mt-4">
@@ -276,7 +305,7 @@ Dashboard || visitor_chat wengo
     <div class="card card-animate bg-info">
       <div class="card-body">
         <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Avg Response Time</p></div>
           <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
         </div>
         <div class="d-flex align-items-end justify-content-between mt-4">
@@ -297,7 +326,7 @@ Dashboard || visitor_chat wengo
     <div class="card card-animate bg-info">
       <div class="card-body">
         <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Orders</p></div>
+          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Return Visitors(Today)</p></div>
           <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
         </div>
         <div class="d-flex align-items-end justify-content-between mt-4">
@@ -317,152 +346,156 @@ Dashboard || visitor_chat wengo
   </div>
 </div>
 
-<!-- ✅ SECTION TABS — 3 tabs -->
-<div class="section-tabs">
-  <button class="sec-tab active btn btn-secondary" data-sec="birthday">Birthday</button>
-  <button class="sec-tab btn btn-secondary" data-sec="visitors">Visitor Details</button>
-  <button class="sec-tab btn btn-secondary" data-sec="overview">Overview & Charts</button>
-</div>
-<br>
-<!-- ✅ BIRTHDAY SECTION -->
-<div id="section-birthday" class="tab-section">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Birthday</h5>
-        </div>
-        <div class="card-body">
-          <table id="birthday_table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-            <thead>
-              <tr>
-                <th>SR No.</th>
-                <th>ID</th>
-                <th>Purchase ID</th>
-                <th>Title</th>
-                <th>User</th>
-                <th>Assigned To</th>
-                <th>Created By</th>
-                <th>Create Date</th>
-                <th>Status</th>
-                <th>Priority</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>01</td><td>VLZ-452</td><td>VLZ1400087402</td>
-                <td>Post launch reminder/ post list</td><td>Joseph Parker</td>
-                <td>Alexis Clarke</td><td>Joseph Parker</td><td>03 Oct, 2021</td>
-                <td><span class="badge bg-info-subtle text-info">Re-open</span></td>
-                <td><span class="badge bg-danger">High</span></td>
-              </tr>
-              <tr>
-                <td>02</td><td>VLZ-453</td><td>VLZ1400087425</td>
-                <td>Additional Calendar</td><td>Diana Kohler</td>
-                <td>Admin</td><td>Mary Rucker</td><td>05 Oct, 2021</td>
-                <td><span class="badge bg-secondary-subtle text-secondary">On-Hold</span></td>
-                <td><span class="badge bg-info">Medium</span></td>
-              </tr>
-              <tr>
-                <td>03</td><td>VLZ-454</td><td>VLZ1400087438</td>
-                <td>Make a creating an account profile</td><td>Tonya Noble</td>
-                <td>Admin</td><td>Tonya Noble</td><td>27 April, 2022</td>
-                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
-                <td><span class="badge bg-success">Low</span></td>
-              </tr>
-              <tr>
-                <td>04</td><td>VLZ-455</td><td>VLZ1400087748</td>
-                <td>Apologize for shopping Error!</td><td>Joseph Parker</td>
-                <td>Alexis Clarke</td><td>Joseph Parker</td><td>14 June, 2021</td>
-                <td><span class="badge bg-warning-subtle text-warning">Inprogress</span></td>
-                <td><span class="badge bg-info">Medium</span></td>
-              </tr>
-              <tr>
-                <td>05</td><td>VLZ-456</td><td>VLZ1400087547</td>
-                <td>Support for theme</td><td>Donald Palmer</td>
-                <td>Admin</td><td>Donald Palmer</td><td>25 June, 2021</td>
-                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
-                <td><span class="badge bg-success">Low</span></td>
-              </tr>
-            </tbody>
-          </table>
+<!-- CRM WIDGET ROW -->
+<div class="row">
+  <h5>Today</h5>
+  <div class="col-xl-12">
+    <div class="card crm-widget">
+      <div class="card-body p-0">
+        <div class="row row-cols-md-3 row-cols-1">
+          <div class="col col-lg border-end">
+            <div class="py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Visitors Online (Live) </h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-wifi-fill display-6" style="color:#28a745;"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="20">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-md-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Waiting Chats</h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class=" ri-chat-history-line display-6" style="color:#f7b84b;"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="481">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-md-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Active Chats</h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-chat-heart-line display-6" style="color:#299cdb;"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="327">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-lg-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Missed Chats</h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-chat-delete-line display-6" style="color:#ff3b3b;"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="1525">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg border-end">
+            <div class="mt-3 mt-lg-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Quickly Left</h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class="ri-logout-circle-line display-6" style="color:#ff68eed1;"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-lg">
+            <div class="mt-3 mt-lg-0 py-4 px-3">
+              <h5 class="text-muted text-uppercase fs-13">Night Chat</h5>
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0"><i class=" ri-moon-clear-fill display-6 " style="color:#F6F1D5;"></i></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ✅ VISITOR DETAILS SECTION -->
-<div id="section-visitors" class="tab-section" style="display:none;">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">Visitor Details</h5>
-        </div>
-        <div class="card-body">
-          <table id="visitor_table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-            <thead>
-              <tr>
-                <th>SR No.</th>
-                <th>ID</th>
-                <th>Purchase ID</th>
-                <th>Title</th>
-                <th>User</th>
-                <th>Assigned To</th>
-                <th>Created By</th>
-                <th>Create Date</th>
-                <th>Status</th>
-                <th>Priority</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>01</td><td>VLZ-452</td><td>VLZ1400087402</td>
-                <td>Post launch reminder/ post list</td><td>Joseph Parker</td>
-                <td>Alexis Clarke</td><td>Joseph Parker</td><td>03 Oct, 2021</td>
-                <td><span class="badge bg-info-subtle text-info">Re-open</span></td>
-                <td><span class="badge bg-danger">High</span></td>
-              </tr>
-              <tr>
-                <td>02</td><td>VLZ-453</td><td>VLZ1400087425</td>
-                <td>Additional Calendar</td><td>Diana Kohler</td>
-                <td>Admin</td><td>Mary Rucker</td><td>05 Oct, 2021</td>
-                <td><span class="badge bg-secondary-subtle text-secondary">On-Hold</span></td>
-                <td><span class="badge bg-info">Medium</span></td>
-              </tr>
-              <tr>
-                <td>03</td><td>VLZ-454</td><td>VLZ1400087438</td>
-                <td>Make a creating an account profile</td><td>Tonya Noble</td>
-                <td>Admin</td><td>Tonya Noble</td><td>27 April, 2022</td>
-                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
-                <td><span class="badge bg-success">Low</span></td>
-              </tr>
-              <tr>
-                <td>04</td><td>VLZ-455</td><td>VLZ1400087748</td>
-                <td>Apologize for shopping Error!</td><td>Joseph Parker</td>
-                <td>Alexis Clarke</td><td>Joseph Parker</td><td>14 June, 2021</td>
-                <td><span class="badge bg-warning-subtle text-warning">Inprogress</span></td>
-                <td><span class="badge bg-info">Medium</span></td>
-              </tr>
-              <tr>
-                <td>05</td><td>VLZ-456</td><td>VLZ1400087547</td>
-                <td>Support for theme</td><td>Donald Palmer</td>
-                <td>Admin</td><td>Donald Palmer</td><td>25 June, 2021</td>
-                <td><span class="badge bg-danger-subtle text-danger">Closed</span></td>
-                <td><span class="badge bg-success">Low</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+
+<!-- SECTION TABS -->
+<div class="section-tabs">
+  <button class="sec-tab active" data-sec="rmtable">RM Leaderboard</button>
+  <button class="sec-tab" data-sec="visitors">Visitor Details</button>
+  <button class="sec-tab" data-sec="overview">Overview & Charts</button>
+</div>
+
+<!-- ═══ SECTION 1: RM LEADERBOARD ═══ -->
+<div class="section-pane active" id="sec-rmtable">
+  <div class="lb-wrap mb-4">
+    <div class="lb-head">
+      <div>
+        <h5>RM Chat Performance Leaderboard</h5>
+        <small style="font-size:12px;color:var(--muted);">Ranked by conversations handled &middot; <span id="lbPeriodLabel">Today</span></small>
       </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select id="tableRmBranch" style="border:1px solid var(--border);border-radius:8px;font-size:12.5px;padding:6px 12px;outline:none;color:#495057;">
+          <option value="">All Branches</option>
+          {% for code, label in branches %}
+            <option value="{{ code }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button onclick="exportTable()" style="border:1px solid var(--border);border-radius:8px;background:#fff;font-size:12px;padding:6px 14px;cursor:pointer;font-weight:600;color:var(--primary);display:flex;align-items:center;gap:5px;">
+          <i class="bx bx-export"></i> CSV
+        </button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="lb-table" id="leaderboardTable">
+        <thead>
+          <tr>
+            <th>#</th><th>RM Details</th><th>Branch</th><th>Chat</th>
+            <th>Visitors</th><th>Convos</th><th>Visitor Msgs</th><th>RM Msgs</th>
+            <th>Reply %</th><th>Avg Resp</th>
+            <th>Waiting</th><th>Active</th><th>Closed</th><th>Missed</th><th>Quickly Left</th><th>Night Chat</th><th>Last Active</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          <tr><td colspan="17" class="tbl-loading"><i class="bx bx-loader-alt"></i>Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2: VISITOR DETAILS ═══ -->
+<div class="section-pane" id="sec-visitors">
+  <div class="lb-wrap mb-4">
+    <div class="lb-head">
+      <div>
+        <h5>Visitor Details</h5>
+        <small style="font-size:12px;color:var(--muted);">All website visitors with chat & browsing info &middot; <span id="vPeriodLabel">Today</span></small>
+      </div>
+      <button onclick="exportVisitors()" style="border:1px solid var(--border);border-radius:8px;background:#fff;font-size:12px;padding:6px 14px;cursor:pointer;font-weight:600;color:var(--primary);display:flex;align-items:center;gap:5px;">
+        <i class="bx bx-export"></i> CSV
+      </button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="lb-table" id="visitorTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>City</th>
+            <th>Device</th><th>Browser</th><th>Pages</th><th>Time</th>
+            <th>Status</th><th>Chat</th><th>Reply Time</th><th>Assigned RM</th>
+            <th>Referrer</th><th>First Seen</th><th>Last Seen</th>
+          </tr>
+        </thead>
+        <tbody id="visitorBody">
+          <tr><td colspan="16" class="tbl-loading"><i class="bx bx-loader-alt"></i>Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="visitorPagination" style="padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span id="visitorPageInfo" style="font-size:12px;color:var(--muted);"></span>
+      <div style="display:flex;gap:6px;" id="visitorPageBtns"></div>
     </div>
   </div>
 </div>
 
 <!-- ✅ OVERVIEW SECTION -->
 
-<div id="section-overview" class="tab-section" style="display:none;">
+<div id="sec-overview" class="tab-section" style="display:none;">
   <div class="row">
 
     <div class="col-lg-12">
@@ -562,29 +595,202 @@ Dashboard || visitor_chat wengo
 
 <!-- ✅ SINGLE CLEAN TAB SCRIPT -->
 <script>
-  document.querySelectorAll('.sec-tab').forEach(function(btn) {
-    btn.addEventListener('click', function() {
 
-      // 1. Remove active from all buttons
-      document.querySelectorAll('.sec-tab').forEach(function(b) {
-        b.classList.remove('active');
-      });
-      // 2. Set clicked button as active
-      this.classList.add('active');
 
-      // 3. Hide all sections
-      document.querySelectorAll('.tab-section').forEach(function(sec) {
-        sec.style.display = 'none';
-      });
-
-      // 4. Show the matching section
-      var section = this.dataset.sec;
-      var target = document.getElementById('section-' + section);
-      if (target) {
-        target.style.display = 'block';
-      }
-    });
+  /* ── SECTION TABS ── */
+document.querySelectorAll('.sec-tab').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.sec-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section-pane').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('sec-' + this.dataset.sec).classList.add('active');
   });
+});
+
+
+/* ── RM LEADERBOARD ── */
+async function loadTable() {
+  document.getElementById('leaderboardBody').innerHTML =
+    `<tr><td colspan="17" class="tbl-loading"><i class="bx bx-loader-alt"></i>Loading...</td></tr>`;
+  const d = await apiGet('table');
+  if (!d || !d.rows) return;
+
+  if (!d.rows.length) {
+    document.getElementById('leaderboardBody').innerHTML =
+      `<tr><td colspan="17" class="tbl-loading">No data for this period</td></tr>`;
+    return;
+  }
+
+  const rkCls   = r  => r===1?'rk-1':r===2?'rk-2':r===3?'rk-3':'rk-n';
+  const brCls   = bc => 'br-'+(bc||'').toLowerCase();
+  const respCls = v  => v==null?'':v<5?'resp-fast':v<15?'resp-mid':'resp-slow';
+
+  document.getElementById('leaderboardBody').innerHTML = d.rows.map(r => `
+    <tr>
+      <td><span class="rk ${rkCls(r.rank)}">${r.rank}</span></td>
+      <td>
+        <a href="/dashboard/visitor_chat/rm/${r.rm_code}/" style="text-decoration:none;">
+          <div class="rm-nm" style="color:var(--primary);display:flex;align-items:center;gap:4px;">
+            ${r.rm_name}
+            <i class="bx bx-link-external" style="font-size:10px;opacity:.5;"></i>
+          </div>
+        </a>
+        <div class="rm-cd">${r.rm_code}</div>
+      </td>
+      <td><span class="br-pill ${brCls(r.rm_branch_code)}">${r.rm_branch}</span></td>
+      <td>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;">
+          <span class="chat-dot ${r.active_chat?'chat-on':'chat-off'}"></span>
+          <span style="color:${r.active_chat?'var(--chat-blue)':'#bbb'}">${r.active_chat?'Active':'Off'}</span>
+        </span>
+      </td>
+      <td><span style="font-weight:800;color:var(--info);">${r.visitors}</span></td>
+      <td><span style="font-weight:800;color:var(--primary);">${r.conversations}</span></td>
+      <td><span style="font-weight:800;color:var(--warning);">${r.visitor_msgs}</span></td>
+      <td><span style="font-weight:800;color:var(--success);">${r.rm_msgs}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div class="mini-prog"><div class="mini-prog-fill" style="width:${r.reply_rate}%;background:var(--success);"></div></div>
+          <span style="font-size:12px;font-weight:800;color:var(--success);">${r.reply_rate}%</span>
+        </div>
+      </td>
+      <td><span class="${respCls(r.avg_resp_min)}">${r.avg_resp_min!=null?r.avg_resp_min+' min':'—'}</span></td>
+      <td><span class="status-pill st-waiting">${r.waiting}</span></td>
+      <td><span class="status-pill st-active">${r.active}</span></td>
+      <td><span class="status-pill st-closed">${r.closed}</span></td>
+      <td><span class="status-pill st-missed">${r.missed}</span></td>
+      <td><span class="status-pill st-quickly-left">${r.quickly_left || 0}</span></td>
+      <td><span class="status-pill st-night-chat">${r.night_chat || 0}</span></td>
+      <td style="font-size:11.5px;color:var(--muted);white-space:nowrap;">${r.last_active}</td>
+    </tr>`).join('');
+}
+
+
+/* ── VISITOR DETAILS ── */
+async function loadVisitors(page) {
+  if (page !== undefined) gVisitorPage = page;
+  document.getElementById('visitorBody').innerHTML =
+    `<tr><td colspan="17" class="tbl-loading"><i class="bx bx-loader-alt"></i>Loading...</td></tr>`;
+  const d = await apiGet('visitors', { page: gVisitorPage });
+  if (!d || !d.rows) return;
+
+  if (!d.rows.length) {
+    document.getElementById('visitorBody').innerHTML =
+      `<tr><td colspan="17" class="tbl-loading">No visitors for this period</td></tr>`;
+    document.getElementById('visitorPageInfo').textContent = '';
+    document.getElementById('visitorPageBtns').innerHTML = '';
+    return;
+  }
+
+  const chatCls = (s, timeSeconds, reason) => {
+    if (s === 'missed' && reason === 'night_chat') return 'st-night-chat';
+    if (s === 'missed' && (reason === 'quickly_left' || timeSeconds <= 5)) return 'st-quickly-left';
+    return s==='active'?'st-active':s==='waiting'?'st-waiting':s==='closed'?'st-closed':s==='missed'?'st-missed':'st-no_chat';
+  };
+  const missedReasonLbl = {
+    'no_rm': 'Missed — No RM',
+    'rm_no_reply': 'Missed — RM didn\u2019t reply',
+    'visitor_no_msg': 'Missed — Visitor left',
+    'stale_waiting': 'Missed — Expired',
+    'night_chat': 'Night Chat',
+    'quickly_left': 'Quickly Left',
+  };
+  const chatLbl = (s, reason, timeSeconds) => {
+    if (s === 'no_chat') return 'No Chat';
+    if (s === 'missed' && reason === 'night_chat') return 'Night Chat';
+    if (s === 'missed' && (reason === 'quickly_left' || timeSeconds <= 5)) return 'Quickly Left';
+    if (s === 'missed' && reason && missedReasonLbl[reason]) return missedReasonLbl[reason];
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+  const missedTitle = {
+    'no_rm': 'No RM was online when visitor arrived',
+    'rm_no_reply': 'Visitor messaged but RM did not reply before visitor left',
+    'visitor_no_msg': 'RM was assigned but visitor left without sending any message',
+    'stale_waiting': 'Waiting chat expired after 30 minutes of inactivity',
+    'night_chat': 'Visitor arrived during night hours (12 AM – 9:30 AM), auto WhatsApp reply sent',
+  };
+  const startNum = (d.page - 1) * d.per_page;
+
+  document.getElementById('visitorBody').innerHTML = d.rows.map((v,i) => `
+    <tr>
+      <td>${startNum + i + 1}</td>
+      <td style="font-weight:700;color:#212529;">${v.name}</td>
+      <td style="font-size:11.5px;">${v.email}</td>
+      <td style="font-size:11.5px;">${v.phone}</td>
+      <td style="font-size:11.5px;">${v.city}</td>
+      <td><span style="font-size:11px;text-transform:capitalize;">${v.device}</span></td>
+      <td style="font-size:11px;">${v.browser}</td>
+      <td style="font-weight:700;">${v.pages}</td>
+      <td style="font-size:11.5px;white-space:nowrap;">${v.time_spent}</td>
+      <td><span class="status-pill ${v.is_online?'st-online':'st-offline'}">${v.is_online?'Online':'Offline'}</span></td>
+      <td><span class="status-pill ${chatCls(v.chat_status, v.time_spent_seconds, v.missed_reason)}" title="${v.chat_status==='missed'&&v.missed_reason?missedTitle[v.missed_reason]||'':''}">${chatLbl(v.chat_status, v.missed_reason, v.time_spent_seconds)}</span></td>
+      <td style="font-size:11.5px;font-weight:600;white-space:nowrap;">${v.response_time || '—'}</td>
+      <td style="font-size:11.5px;font-weight:600;">${v.assigned_rm}</td>
+      <td style="font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${v.referrer}">${v.referrer}</td>
+      <td style="font-size:11px;white-space:nowrap;">${v.first_seen}</td>
+      <td style="font-size:11px;white-space:nowrap;">${v.last_seen}</td>
+    </tr>`).join('');
+
+  // Pagination info & buttons
+  document.getElementById('visitorPageInfo').textContent =
+    `Showing ${startNum + 1}–${startNum + d.rows.length} of ${d.total} visitors`;
+
+  let btns = '';
+  if (d.page > 1)
+    btns += `<button onclick="loadVisitors(${d.page - 1})" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;font-weight:600;color:var(--primary);">← Prev</button>`;
+  for (let p = 1; p <= d.total_pages; p++) {
+    if (d.total_pages > 7 && p > 2 && p < d.total_pages - 1 && Math.abs(p - d.page) > 1) {
+      if (p === 3 || p === d.total_pages - 2) btns += `<span style="padding:5px 4px;font-size:12px;color:var(--muted);">...</span>`;
+      continue;
+    }
+    btns += `<button onclick="loadVisitors(${p})" style="padding:5px 10px;border:1px solid ${p===d.page?'var(--primary)':'var(--border)'};border-radius:6px;background:${p===d.page?'var(--primary)':'#fff'};color:${p===d.page?'#fff':'var(--primary)'};font-size:12px;cursor:pointer;font-weight:600;">${p}</button>`;
+  }
+  if (d.page < d.total_pages)
+    btns += `<button onclick="loadVisitors(${d.page + 1})" style="padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;font-weight:600;color:var(--primary);">Next →</button>`;
+  document.getElementById('visitorPageBtns').innerHTML = btns;
+}
+
+/* ── EXPORT ── */
+function exportTable() {
+  const rows = [...document.querySelectorAll('#leaderboardTable tbody tr')]
+    .map(r => [...r.querySelectorAll('td')].map(td => '"'+td.innerText.trim().replace(/"/g,'""')+'"').join(','));
+  const head = [...document.querySelectorAll('#leaderboardTable thead th')].map(th => '"'+th.innerText.trim()+'"').join(',');
+  const a = Object.assign(document.createElement('a'),{
+    href: URL.createObjectURL(new Blob([[head,...rows].join('\n')],{type:'text/csv'})),
+    download: `visitor_chat_rm_${gPeriod}_${new Date().toISOString().slice(0,10)}.csv`
+  });
+  a.click();
+}
+
+function exportVisitors() {
+  const rows = [...document.querySelectorAll('#visitorTable tbody tr')]
+    .map(r => [...r.querySelectorAll('td')].map(td => '"'+td.innerText.trim().replace(/"/g,'""')+'"').join(','));
+  const head = [...document.querySelectorAll('#visitorTable thead th')].map(th => '"'+th.innerText.trim()+'"').join(',');
+  const a = Object.assign(document.createElement('a'),{
+    href: URL.createObjectURL(new Blob([[head,...rows].join('\n')],{type:'text/csv'})),
+    download: `visitor_details_${gPeriod}_${new Date().toISOString().slice(0,10)}.csv`
+  });
+  a.click();
+}
+
+/* ── LOAD ALL ── */
+function loadAll() {
+  const icon = document.getElementById('refreshIcon');
+  icon.style.animation = 'spin 1s linear infinite';
+  document.getElementById('lastUpdated').textContent = 'Refreshing...';
+  Promise.all([loadKPI(), loadMainChart(), loadBranchChart(), loadRespChart(), loadTable(), loadVisitors(1)])
+    .then(() => {
+      icon.style.animation = '';
+      document.getElementById('lastUpdated').textContent =
+        'Last updated: ' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadAll();
+  setInterval(loadAll, 5 * 60 * 1000);
+});
+
 </script>
 
 {% endblock %}

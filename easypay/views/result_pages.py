@@ -16,7 +16,7 @@ def payment_success(request):
 
     threading.Thread(
         target=send_donation_success_email,
-        args=(donation, "rm", request),
+        args=(donation, request, "rm"),
     ).start()
 
     return render(request, 'easypay/success.html', {
@@ -37,7 +37,7 @@ def payment_failure(request):
 
     threading.Thread(
         target=send_donation_failed_email,
-        args=(donation, "rm"),
+        args=(donation, "rm", request),
     ).start()
 
     return render(request, 'easypay/failed.html', {

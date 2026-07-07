@@ -47,7 +47,6 @@ Women Empowerment NGO
             donation,
             donation_type
         )
-    
         email.attach(
             get_donation_pdf_filename(
                 donation,
@@ -56,8 +55,7 @@ Women Empowerment NGO
             pdf_file.read(),
             "application/pdf"
         )
-    
     except Exception as e:
         print("PDF ATTACH ERROR:", e)
-    
+
     email.send()

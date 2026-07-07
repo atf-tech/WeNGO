@@ -170,6 +170,34 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 
+# WhatsApp Cloud API configuration
+WA_ACCESS_TOKEN = config('WA_ACCESS_TOKEN', default='')
+WA_PHONE_NUMBER_ID = config('WA_PHONE_NUMBER_ID', default='')
+WA_APP_SECRET = config('WA_APP_SECRET', default='')
+VERIFY_TOKEN = config('VERIFY_TOKEN', default='')
+WA_DISPLAY_PHONE = config('WA_DISPLAY_PHONE', default='+91 90876 96777')
+WA_DISPLAY_PHONE_LINK = config('WA_DISPLAY_PHONE_LINK', default='919087696777') 
+WA_NUMBERS = {
+    "madurai": {
+        "phone_number_id": config('WA_PHONE_NUMBER_ID', default=''),
+        "access_token": config('WA_ACCESS_TOKEN', default=''),
+    },
+    "chennai": {
+        "phone_number_id": config('WA_PHONE_NUMBER_ID', default=''),
+        "access_token": config('WA_ACCESS_TOKEN', default=''),
+    },
+    "bangalore": {
+        "phone_number_id": config('WA_PHONE_NUMBER_ID_BLR', default=config('WA_PHONE_NUMBER_ID', default='')),
+        "access_token": config('WA_ACCESS_TOKEN_BLR', default=config('WA_ACCESS_TOKEN', default='')),
+    },
+}
+
+WA_FALLBACK_GREETING = config('WA_FALLBACK_GREETING', default=(
+    "Hi! 👋 Welcome to WeNGO. For any support or queries, feel free to reach out. "
+    "We're happy to help! 🙏"
+))
+
+
 #Production settings
 
 EASEBUZZ_MERCHANT_KEY = config('EASEBUZZ_MERCHANT_KEY')

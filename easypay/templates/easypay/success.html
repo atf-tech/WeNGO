@@ -84,7 +84,7 @@
             Receipt has been sent to your email
           </div>
           <br>
-          {% comment %} <a href="{% url 'donation_pdf_download' %}?txnid={{ donation.txnid }}&type=rm" class="btn-download" style="display:inline-flex;"> {% endcomment %}
+          <a href="{% url 'download_donation_receipt' %}?txnid={{ donation.txnid }}&type=rm" class="btn-download" style="display:inline-flex;">
             <i class="fa-solid fa-download"></i> Download Receipt
           </a>
         </div>

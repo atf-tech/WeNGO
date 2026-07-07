@@ -6,12 +6,9 @@ from django.views.decorators.cache import never_cache
 
 from receipt.models import Manual80GSubmission
 
-from .helper import (
-    get_template_name,
-    get_pdf_filename,
-)
+from .helper import get_pdf_filename
 from .generate_pdf import (
-    generate_pdf,
+    generate_donation_pdf,
     download_pdf_response,
 )
 from .success_mail import send_donation_success_email
@@ -128,27 +125,9 @@ def manual_80g_mail(request):
 
             manual = save_manual_submission(data)
 
-            template_name = get_template_name(
-                data["donor_pan"]
-            )
-
-            context = {
-                "donor_name": manual.donor_name,
-                "donor_email": manual.donor_email,
-                "donor_mobile": manual.donor_mobile,
-                "donor_address": manual.donor_address,
-                "donor_pan": manual.donor_pan,
-                "amount": manual.donation_price,
-                "receipt_no": manual.receipt_no,
-                "date": manual.donation_date,
-                "service_date": manual.service_date,
-                "payment_mode": manual.mode_of_donation,
-                "donation_type": "Manual Donation",
-            }
-
-            pdf_file = generate_pdf(
-                template_name,
-                context,
+            pdf_file = generate_donation_pdf(
+                manual,
+                "manual",
             )
 
             pdf_filename = get_pdf_filename(
@@ -204,27 +183,9 @@ def manual_80g_download(request):
 
             manual = save_manual_submission(data)
 
-            template_name = get_template_name(
-                data["donor_pan"]
-            )
-
-            context = {
-                "donor_name": manual.donor_name,
-                "donor_email": manual.donor_email,
-                "donor_mobile": manual.donor_mobile,
-                "donor_address": manual.donor_address,
-                "donor_pan": manual.donor_pan,
-                "amount": manual.donation_price,
-                "receipt_no": manual.receipt_no,
-                "date": manual.donation_date,
-                "service_date": manual.service_date,
-                "payment_mode": manual.mode_of_donation,
-                "donation_type": "Manual Donation",
-            }
-
-            pdf_file = generate_pdf(
-                template_name,
-                context,
+            pdf_file = generate_donation_pdf(
+                manual,
+                "manual",
             )
 
             pdf_filename = get_pdf_filename(

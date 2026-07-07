@@ -2499,14 +2499,14 @@
           <div class="tm_invoice_info tm_mb30 tm_align_center">
             <div class="tm_invoice_info_left tm_mb20_md">
               <p class="tm_mb0">
-                <b class="tm_primary_color">Receipt No: </b>{{ manual.receipt_no }} <br />
-                <b class="tm_primary_color">Service Date: </b>{{ manual.service_date|date:'d-m-Y' }}
+                <b class="tm_primary_color">Receipt No: </b>{{ receipt_no }} <br />
+                <b class="tm_primary_color">Service Date: </b>{{ service_date|date:'d-m-Y' }}
               </p>
             </div>
             <div class="tm_invoice_info_right">
               <div class="tm_border tm_accent_border_20 tm_radius_0 tm_accent_bg_10 tm_curve_35 tm_text_center">
                 <div>
-                  <b class="tm_accent_color tm_f26 tm_medium tm_body_lineheight">Total: ₹ {{ manual.donation_price }}</b>
+                  <b class="tm_accent_color tm_f26 tm_medium tm_body_lineheight">Total: ₹ {{ amount }}</b>
                 </div>
               </div>
             </div>
@@ -2524,26 +2524,28 @@
                   <tbody>
                     <tr>
                       <td class="tm_width_6 tm_border_top_0">
-                        <b class="tm_primary_color tm_medium">Name: </b>{{ manual.donor_name }}
+                        <b class="tm_primary_color tm_medium">Name: </b>{{ donor_name }}
                       </td>
                       <td class="tm_width_6 tm_border_top_0 tm_border_left tm_accent_border_20">
                         <b class="tm_primary_color tm_medium">Phone: </b>
-                        {{ manual.donor_mobile }}
+                        {{ donor_mobile }}
                       </td>
                     </tr>
                     <tr>
                       <td class="tm_width_6 tm_accent_border_20">
-                        <b class="tm_primary_color tm_medium">Email: </b>{{ manual.donor_email }}
+                        <b class="tm_primary_color tm_medium">Email: </b>{{ donor_email }}
                       </td>
                       <td class="tm_width_6 tm_border_left tm_accent_border_20">
-                        <b class="tm_primary_color tm_medium">Address: </b>{{ manual.donor_address }}
+                        <b class="tm_primary_color tm_medium">Address: </b>{{ donor_address }}
                       </td>
                     </tr>
+                    {% if manual.donor_pan %}
                     <tr>
-                      <td class="tm_width_6 tm_accent_border_20" colspan="2">
-                        <b class="tm_primary_color tm_medium">Donor PAN: </b>{{ manual.donor_pan }}
-                      </td>
+                        <td class="tm_width_6 tm_accent_border_20" colspan="2">
+                            <b class="tm_primary_color tm_medium">Donor PAN: </b>{{ donor_pan }}
+                        </td>
                     </tr>
+                    {% endif %}
                   </tbody>
                 </table>
               </div>
@@ -2578,8 +2580,8 @@
                       <td class="tm_width_4 tm_accent_border_20">
                         Donation
                       </td>
-                      <td class="tm_width_2 tm_accent_border_20">₹ {{ manual.donation_price }}</td>
-                      <td class="tm_width_1 tm_accent_border_20">₹ {{ manual.donation_price }}</td>
+                      <td class="tm_width_2 tm_accent_border_20">₹ {{ amount  }}</td>
+                      <td class="tm_width_1 tm_accent_border_20">₹ {{ amount }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2591,10 +2593,10 @@
                   <b class="tm_primary_color">Payment info:</b>
                 </p>
                 <p class="tm_m0" style="line-height:2em;">
-                  <b class="tm_primary_color tm_medium">PAYMENT DATE : </b>{{ manual.donation_date|date:'d-m-Y' }} <br />
+                  <b class="tm_primary_color tm_medium">PAYMENT DATE : </b>{{ date|date:'d-m-Y' }} <br />
                   <b class="tm_primary_color tm_medium">PAYMENT STATUS : </b> <span style="border-radius: 0.25rem;background: #daf4f0;color: #0ab39c;padding: 2px 6px;
                       border-left: 2px solid;">Success</span><br />
-                  <b class="tm_primary_color tm_medium">PAYMENT MODE : </b>{{ manual.mode_of_donation }} <br />
+                  <b class="tm_primary_color tm_medium">PAYMENT MODE : </b>{{ payment_mode }} <br />
                 </p>
               </div>
               <div class="tm_right_footer">
@@ -2606,7 +2608,7 @@
                       </td>
                       <td
                         class="tm_width_3 tm_bold tm_f16 tm_border_top_0 tm_accent_color tm_text_right tm_accent_bg_10">
-                        ₹ {{ manual.donation_price }}
+                        ₹ {{ amount }}
                       </td>
                     </tr>
                   </tbody>
