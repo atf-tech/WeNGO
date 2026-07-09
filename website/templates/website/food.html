@@ -22,6 +22,12 @@
   --wg-nonveg: #8B1E1E;
   --wg-shadow: 0 4px 24px rgba(26,26,46,0.10);
   --wg-shadow2: 0 20px 60px rgba(26,26,46,0.28);
+
+  /* Light-pink theme tokens for the meal menu card */
+  --wg-menu-card-bg: linear-gradient(160deg, #FFEFF6 0%, #FFE3EF 100%);
+  --wg-menu-card-border: #FBC9DE;
+  --wg-chip-pink: #FFF5FA;
+  --wg-chip-pink-border: #FAD3E6;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -59,12 +65,24 @@
 }
 .wg-sec-title em { font-style: italic; color: var(--wg-red); }
 .wg-sec-desc {
-  font-family: 'DM Sans', sans-serif;
+
   font-size: 14px; color: var(--wg-sub);
   line-height: 1.85; font-weight: 400;
 }
 
 .wg-meals { background: var(--wg-white); }
+
+/* ===== The whole menu now lives inside one light-pink card ===== */
+.wg-menu-card {
+  background: var(--wg-menu-card-bg);
+  border: 1.5px solid var(--wg-menu-card-border);
+  border-radius: 28px;
+  padding: 28px 26px 30px;
+  box-shadow: 0 18px 46px rgba(255,110,209,0.16);
+}
+@media (max-width: 575px) {
+  .wg-menu-card { padding: 20px 16px 24px; border-radius: 22px; }
+}
 
 .wg-pkg-label {
   font-family: 'DM Sans', sans-serif;
@@ -87,7 +105,7 @@
 
 .wg-pkg {
   position: relative;
-  border: 1.5px solid var(--wg-line);
+  border: 1.5px solid var(--wg-chip-pink-border);
   border-radius: 16px;
   background: var(--wg-white);
   cursor: pointer;
@@ -111,17 +129,17 @@
 }
 .wg-pkg__body { flex: 1; min-width: 0; }
 .wg-pkg__title {
-  font-family: 'Playfair Display', serif;
+  
   font-size: 16px; font-weight: 700; color: var(--wg-text);
   margin-bottom: 2px;
 }
 .wg-pkg__meals {
-  font-family: 'DM Sans', sans-serif;
+ 
   font-size: 12px; color: var(--wg-sub);
   margin-bottom: 8px;
 }
 .wg-pkg__price {
-  font-family: 'Playfair Display', serif;
+  
   font-size: 19px; font-weight: 700; color: var(--wg-red);
   display: block;
 }
@@ -148,18 +166,20 @@
 
 .wg-mc {
   position: relative;
-  border: 1.5px solid var(--wg-line);
+  border: 1.5px solid var(--wg-chip-pink-border);
   border-radius: 16px;
   background: var(--wg-white);
   padding: 16px 18px;
   cursor: pointer;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
+  /* needed so the hover tooltip can be positioned relative to the card */
+  overflow: visible;
 }
 .wg-mc:hover { box-shadow: var(--wg-shadow); }
 .wg-mc.is-on { border-color: var(--wg-red); background: var(--wg-pink-bg); }
 
-.wg-mc__top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.wg-mc__top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
 .wg-mc__icon {
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--wg-white);
@@ -170,17 +190,17 @@
 }
 .wg-mc__info { flex: 1; min-width: 0; }
 .wg-mc__name {
-  font-family: 'Playfair Display', serif;
+ 
   font-size: 15px; font-weight: 700; color: var(--wg-text);
   margin-bottom: 2px;
 }
 .wg-mc__price {
-  font-family: 'Playfair Display', serif;
+
   font-size: 18px; font-weight: 700; color: var(--wg-red);
   display: inline-block; margin-right: 8px;
 }
 .wg-mc__badge {
-  font-family: 'DM Sans', sans-serif;
+  
   font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
   color: var(--wg-red); background: rgba(183,28,28,0.10);
   padding: 3px 8px; border-radius: 20px; text-transform: uppercase;
@@ -196,18 +216,62 @@
 }
 .wg-mc.is-on .wg-mc__check { background: var(--wg-red); border-color: var(--wg-red); color: #fff; }
 
-.wg-mc__chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0; }
-.wg-mc__chip {
+/* ===== "Hover to view menu" hint + popup tooltip ===== */
+.wg-mc__hint {
+  font-size: 11px; font-weight: 600;
+  color: var(--wg-red); display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 0 0;
+}
+.wg-mc__hint i { font-size: 10px; }
+
+.wg-mc__tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  transform: translate(-50%, 6px);
+  width: 230px;
+  max-width: 80vw;
+  background: var(--wg-deep);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 14px 34px rgba(26,26,46,0.30);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 20;
+}
+.wg-mc__tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: var(--wg-deep);
+}
+.wg-mc:hover .wg-mc__tooltip,
+.wg-mc:focus-within .wg-mc__tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+.wg-mc__tooltip-title {
+  font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--wg-amber);
+  margin-bottom: 8px;
+}
+.wg-mc__tooltip-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.wg-mc__tooltip-chip {
   font-family: 'DM Sans', sans-serif; font-size: 11px;
-  background: var(--wg-surface); color: var(--wg-sub);
-  padding: 4px 11px; border-radius: 20px; font-weight: 500;
+  background: rgba(255,255,255,0.10); color: #fff;
+  padding: 4px 10px; border-radius: 20px; font-weight: 500;
 }
 
-/* ===== Veg / Non-Veg diet toggle (used in Afternoon Lunch card) ===== */
+/* ===== Veg / Non-Veg diet toggle (used in Lunch & Dinner cards) ===== */
 .wg-diet-toggle {
   display: inline-flex;
   gap: 8px;
-  margin: 4px 0 12px;
+  margin: 4px 0 4px;
 }
 .wg-diet-btn {
   display: flex; align-items: center; gap: 6px;
@@ -238,13 +302,11 @@
   border-left: 4px solid transparent; border-right: 4px solid transparent;
   border-bottom: 7px solid currentColor;
 }
-.wg-diet-btn[data-diet="veg"] { color: var(--wg-sub); }
 .wg-diet-btn[data-diet="veg"].is-active {
   color: var(--wg-veg); border-color: var(--wg-veg); background: var(--wg-veg-bg);
 }
-.wg-diet-btn[data-diet="nonveg"] { color: var(--wg-sub); }
 .wg-diet-btn[data-diet="nonveg"].is-active {
-  color: var(--wg-veg); border-color: var(--wg-veg); background: var(--wg-veg-bg);
+  color: var(--wg-nonveg); border-color: var(--wg-nonveg); background: #FBEAEA;
 }
 
 .wg-summary-row {
@@ -258,64 +320,64 @@
 }
 
 .wg-order-box {
-  background: var(--wg-surface);
-  border: 1.5px solid var(--wg-line);
+  background: var(--wg-white);
+  border: 1.5px solid var(--wg-chip-pink-border);
   border-radius: 16px; padding: 18px 20px;
 }
 .wg-order-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 7px 0;
-  font-family: 'DM Sans', sans-serif;
+ 
   font-size: 12.5px; color: var(--wg-sub);
 }
 .wg-order-row.is-active { color: var(--wg-text); font-weight: 600; }
 .wg-order-row.is-active .wg-order-row__val { color: var(--wg-red); font-weight: 700; }
 .wg-order-sep { height: 1px; background: var(--wg-line); margin: 10px 0; }
 .wg-order-total-lbl {
-  font-family: 'DM Sans', sans-serif;
+ 
   font-size: 13px; font-weight: 700; color: var(--wg-text);
 }
 .wg-order-total-val {
-  font-family: 'Playfair Display', serif;
+  
   font-size: 26px; font-weight: 700; color: var(--wg-red);
 }
 
 .wg-impact-box {
-  background: var(--wg-pink-bg);
-  border: 1.5px solid rgba(183,28,28,0.15);
+  background: var(--wg-white);
+  border: 1.5px solid var(--wg-chip-pink-border);
   border-radius: 16px; padding: 18px 20px;
   display: flex; align-items: center; gap: 14px;
 }
 .wg-impact-box__icon {
   width: 46px; height: 46px; border-radius: 50%;
-  background: var(--wg-white);
+  background: var(--wg-pink-bg);
   display: flex; align-items: center; justify-content: center;
   font-size: 19px; color: var(--wg-red); flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(26,26,46,0.06);
 }
 .wg-impact-box__eyebrow {
-  font-family: 'DM Sans', sans-serif;
+  
   font-size: 11px; color: var(--wg-sub); margin-bottom: 2px;
 }
 .wg-impact-box__count {
-  font-family: 'Playfair Display', serif;
+  
   font-size: 19px; font-weight: 700; color: var(--wg-text);
   line-height: 1.2;
 }
 .wg-impact-box__note {
-  font-family: 'DM Sans', sans-serif;
+
   font-size: 11px; color: var(--wg-sub); margin-top: 2px;
 }
 
 .wg-pay-btn {
   width: 100%;
-  background:#ff5cbe;
+  background: var(--wg-red);
   border: none; border-radius: 14px; padding: 16px;
-  font-family: 'DM Sans', sans-serif;
+ 
   font-size: 15px; font-weight: 700; color: var(--wg-white);
   display: flex; align-items: center; justify-content: center; gap: 10px;
   cursor: pointer;
-  box-shadow: 0 8px 28px rgba(232,75,58,0.35);
+  box-shadow: 0 8px 28px rgba(255,110,209,0.35);
   transition: all 0.22s; margin-bottom: 0;
 }
 .wg-pay-btn:hover { opacity: 0.92; transform: translateY(-2px); }
@@ -328,7 +390,7 @@
 }
 .wg-modal.is-open { display: flex; justify-content: space-evenly; }
 .wg-modal__content {
-  width: 100%; max-width: 60%; max-height: calc(100vh - 40px);
+  width: 100%; max-width: 60%;
   background: var(--wg-white); border-radius: 24px;
   overflow-y: auto; box-shadow: var(--wg-shadow2); position: relative;
 }
@@ -340,17 +402,17 @@
   border: none; background: transparent; color: var(--wg-white);
   font-size: 30px; position: absolute; top: 12px; right: 16px; z-index: 3; cursor: pointer;
 }
-.wg-form-card__head { background: linear-gradient(120deg, var(--wg-red), #8f1616 75%); padding: 26px 26px 18px; position: relative; }
+.wg-form-card__head { background: linear-gradient(120deg, var(--wg-red), #c23e8f 75%); padding: 12px 18px 1px; position: relative; }
 .wg-form-card__head-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
 .wg-form-card__head-icon {
   width: 42px; height: 42px; background: rgba(255,255,255,0.18); border-radius: 12px;
   display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; color: var(--wg-white);
 }
-.wg-form-card__head-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--wg-white); margin-bottom: 3px; }
-.wg-form-card__head-sub { font-family: 'DM Sans', sans-serif; font-size: 12.5px; color: rgba(255,255,255,0.78); }
+.wg-form-card__head-title {  font-size: 20px; font-weight: 700; color: var(--wg-white); margin-bottom: 3px; }
+.wg-form-card__head-sub {  font-size: 12.5px; color: rgba(255,255,255,0.78); }
 .wg-badges { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
 .wg-badge {
-  font-family: 'DM Sans', sans-serif; font-size: 9.5px; font-weight: 700;
+  font-size: 9.5px; font-weight: 700;
   color: var(--wg-white); background: rgba(255,255,255,0.16);
   padding: 5px 10px; border-radius: 8px; text-align: right; white-space: nowrap;
 }
@@ -360,178 +422,220 @@
 .wg-donor:last-child { border-right: none; }
 .wg-donor__av {
   width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.22); color: var(--wg-white);
-  font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 800;
+   font-size: 10px; font-weight: 800;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.wg-donor__name { font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(255,255,255,0.85); white-space: nowrap; font-weight: 600; }
-.wg-donor__amt { font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--wg-amber); font-weight: 700; white-space: nowrap; }
-.wg-form-body { padding: 22px 24px 26px; }
-.wg-form-card .form-label { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--wg-sub); margin-bottom: 4px; }
-.wg-form-card .form-control { border-radius: 10px; border: 1.5px solid var(--wg-line); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 10px 12px; }
-.wg-form-card .form-control:focus { border-color: var(--wg-red) !important; box-shadow: 0 0 0 3px rgba(183,28,28,0.10); }
+.wg-donor__name {  font-size: 11px; color: rgba(255,255,255,0.85); white-space: nowrap; font-weight: 600; }
+.wg-donor__amt {  font-size: 10px; color: var(--wg-amber); font-weight: 700; white-space: nowrap; }
+.wg-form-body { padding: 14px 24px 26px; }
+.wg-form-card .form-label {  sans-serif; font-size: 12px; font-weight: 600; color: var(--wg-sub); margin-bottom: 4px; }
+.wg-form-card .form-control { border-radius: 10px; border: 1.5px solid var(--wg-line); font-size: 14px; padding: 10px 12px; }
+.wg-form-card .form-control:focus { border-color: var(--wg-red) !important; box-shadow: 0 0 0 3px rgba(255,110,209,0.15); }
 .wg-phone-input { display: flex; gap: 8px; }
 .wg-phone-code {
   display: flex; align-items: center; gap: 4px; border: 1.5px solid var(--wg-line); border-radius: 10px;
-  padding: 0 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--wg-text); flex-shrink: 0; background: var(--wg-surface);
+  padding: 0 10px;  font-size: 13px; color: var(--wg-text); flex-shrink: 0; background: var(--wg-surface);
 }
 .wg-step-actions { display: flex; gap: 10px; margin-top: 18px; }
 .wg-step-actions .wg-pay-btn, .wg-step-actions .wg-ghost-btn { flex: 1; margin-bottom: 0; }
 .wg-ghost-btn {
   background: var(--wg-white); border: 1.5px solid var(--wg-line); border-radius: 14px; padding: 15px 20px;
-  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; color: var(--wg-text);
+   font-size: 14px; font-weight: 700; color: var(--wg-text);
   display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s;
 }
 .wg-ghost-btn:hover { background: var(--wg-surface); }
 .wg-trust { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; padding-top: 16px; margin-top: 6px; border-top: 1px solid var(--wg-line); }
-.wg-trust__item { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--wg-sub); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.wg-trust__item {  font-size: 11px; color: var(--wg-sub); font-weight: 600; display: flex; align-items: center; gap: 5px; }
 .wg-trust__item i { color: var(--wg-success); }
 
-.wg-map-section { padding: 70px 0; background: linear-gradient(180deg, #fff 0%, #fff8f4 100%); }
-.wg-map-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: var(--wg-text); margin-bottom: 8px; }
+.wg-map-section {  background: linear-gradient(180deg, #fff 0%, #fff8f4 100%); }
+.wg-map-title {  font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: var(--wg-text); margin-bottom: 8px; }
 .wg-map-title em { color: var(--wg-red); font-style: italic; }
-.wg-map-sub { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--wg-sub); margin-bottom: 0; }
+.wg-map-sub {  font-size: 14px; color: var(--wg-sub); margin-bottom: 0; }
 .wg-map-wrap { display: grid; grid-template-columns: 1fr; gap: 20px; }
 @media (min-width: 992px) { .wg-map-wrap { grid-template-columns: 1fr 1fr; align-items: stretch; } }
 .wg-map-col { width: 100%; }
 .wg-map-frame { width: 100%; min-height: 320px; border: 0; border-radius: 22px; box-shadow: var(--wg-shadow2); overflow: hidden; display: block; }
 @media (min-width: 992px) { .wg-map-frame { min-height: 420px; } }
 
-#message, #message-popup { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--wg-red); }
+#message, #message-popup {  sans-serif; font-size: 0.875rem; color: var(--wg-red); }
 .wg-form-step { display: block; }
+
+
+@media (min-width: 768px) {
+    .px-md-4 {
+        padding-right: 12.5rem !important;
+        padding-left: 12.5rem !important;
+    }
+}
 </style>
 
-<div class="wg-hero" id="at-home">
-  <div class="wg-hero__img-panel">
-    <img class="wg-hero__img" src="{% static 'website/images/sample/service banner v1.jpg.jpeg' %}" alt="Banner Images">
-    <div class="wg-hero__img-overlay"></div>
-  </div>
-</div>
+ <div> <img class="rbt-radius w-100"
+    src="{% static 'website/images/banner/meenakshi banner.jpg.jpeg' %}"
+    alt="Banner Images"></div>
 
 <section class="wg-meals py-5" id="at-meals">
   <div class="container-xl px-3 px-md-4">
     <span class="wg-sec-label">Meal Sponsorship</span>
     <h2 class="wg-sec-title mb-2">Feed All Elders<br><em>with One Kind Act</em> <i class="fa-regular fa-heart" style="font-size:0.6em;"></i></h2>
-    <p class="wg-sec-desc mb-4">Select one or more meals below. Your contribution directly nourishes every resident.</p>
+    <p class="wg-sec-desc mb-4">Select one or more meals below. Hover on a meal card to preview what's on the menu.</p>
 
-    <span class="wg-pkg-label"><i class="fa-solid fa-heart"></i> Sponsor a Full Day</span>
+    <!-- ===== Everything below lives inside one light-pink menu card ===== -->
+    <div class="wg-menu-card">
 
-    <div class="wg-pkg-row">
-      <div class="wg-pkg" id="at-pkg-veg" data-at-pkg="veg">
-        <div class="wg-pkg__icon">🥗</div>
-        <div class="wg-pkg__body">
-          <div class="wg-pkg__title">Full Day Pure Veg</div>
-          <div class="wg-pkg__meals">Breakfast + Veg Lunch + Dinner</div>
-          <span class="wg-pkg__price">₹14,000</span>
-        </div>
-        <div class="wg-pkg__check"><i class="fa-solid fa-check"></i></div>
-      </div>
+      <span class="wg-pkg-label"><i class="fa-solid fa-heart"></i> Sponsor a Full Day</span>
 
-      <div class="wg-pkg" id="at-pkg-nveg" data-at-pkg="nonveg">
-        <div class="wg-pkg__icon">🍗</div>
-        <div class="wg-pkg__body">
-          <div class="wg-pkg__title">Full Day Non-Veg</div>
-          <div class="wg-pkg__meals">Breakfast + Non-Veg Lunch + Dinner</div>
-          <span class="wg-pkg__price">₹16,500</span>
-        </div>
-        <div class="wg-pkg__check"><i class="fa-solid fa-check"></i></div>
-      </div>
-    </div>
-
-    <div class="wg-mc-row">
-      <div class="wg-mc" id="at-mc-bf" data-at-meal="bf">
-        <div class="wg-mc__check" data-select-for="bf"><i class="fa-solid fa-check"></i></div>
-        <div class="wg-mc__top">
-          <div class="wg-mc__icon">🍳</div>
-          <div class="wg-mc__info">
-            <div class="wg-mc__name">Morning Breakfast</div>
-            <span class="wg-mc__price">₹4,000</span>
-            <span class="wg-mc__badge">For {{ home.members }} members</span>
+      <div class="wg-pkg-row">
+        <div class="wg-pkg" id="at-pkg-veg" data-at-pkg="veg">
+          <div class="wg-pkg__icon">🥗</div>
+          <div class="wg-pkg__body">
+            <div class="wg-pkg__title">Full Day Pure Veg</div>
+            <div class="wg-pkg__meals">Breakfast + Veg Lunch + Veg Dinner</div>
+            <span class="wg-pkg__price">₹14,000</span>
           </div>
+          <div class="wg-pkg__check"><i class="fa-solid fa-check"></i></div>
         </div>
-        <div class="wg-mc__chips">
-          <span class="wg-mc__chip">Idli</span>
-          <span class="wg-mc__chip">Pongal</span>
-          <span class="wg-mc__chip">Vada</span>
+
+        <div class="wg-pkg" id="at-pkg-nveg" data-at-pkg="nonveg">
+          <div class="wg-pkg__icon">🍗</div>
+          <div class="wg-pkg__body">
+            <div class="wg-pkg__title">Full Day Non-Veg</div>
+            <div class="wg-pkg__meals">Breakfast + Non-Veg Lunch + Non-Veg Dinner</div>
+            <span class="wg-pkg__price">₹16,500</span>
+          </div>
+          <div class="wg-pkg__check"><i class="fa-solid fa-check"></i></div>
         </div>
       </div>
 
-      <div class="wg-mc" id="at-mc-lunch" data-at-meal="lunch">
-        <div class="wg-mc__check" data-select-for="lunch"><i class="fa-solid fa-check"></i></div>
-        <div class="wg-mc__top">
-          <div class="wg-mc__icon">🍛</div>
-          <div class="wg-mc__info">
-            <div class="wg-mc__name">Afternoon Lunch</div>
-            <span class="wg-mc__price" id="at-lunch-price">₹6,000</span>
-            <span class="wg-mc__badge">For {{ home.members }} members</span>
-            <div class="wg-diet-toggle">
-          <button type="button" class="wg-diet-btn" data-diet="veg">
-            <span class="wg-diet-btn__icon"></span> Veg
-          </button>
-          <button type="button" class="wg-diet-btn" color="secondary" data-diet="nonveg">
-            <span class="wg-diet-btn__icon"></span> Non-Veg
-          </button>
-        </div>
+      <div class="wg-mc-row">
+
+        <!-- Morning Breakfast -->
+        <div class="wg-mc" id="at-mc-bf" data-at-meal="bf" tabindex="0">
+          <div class="wg-mc__check" data-select-for="bf"><i class="fa-solid fa-check"></i></div>
+          <div class="wg-mc__top">
+            <div class="wg-mc__icon">🍳</div>
+            <div class="wg-mc__info">
+              <div class="wg-mc__name">Morning Breakfast</div>
+              <span class="wg-mc__price">₹4,000</span>
+              <span class="wg-mc__badge">For {{ home.members }} members</span>
+            </div>
+          </div>
+          <span class="wg-mc__hint"><i class="fa-solid fa-circle-info"></i> Hover to view menu</span>
+
+          <div class="wg-mc__tooltip">
+            <div class="wg-mc__tooltip-title">Today's Breakfast</div>
+            <div class="wg-mc__tooltip-chips" id="at-tooltip-bf">
+              <span class="wg-mc__tooltip-chip">Idli</span>
+              <span class="wg-mc__tooltip-chip">Pongal</span>
+              <span class="wg-mc__tooltip-chip">Vada</span>
+            </div>
           </div>
         </div>
 
-        <!-- Veg / Non-Veg diet toggle -->
-        
+        <!-- Afternoon Lunch -->
+        <div class="wg-mc" id="at-mc-lunch" data-at-meal="lunch" tabindex="0">
+          <div class="wg-mc__check" data-select-for="lunch"><i class="fa-solid fa-check"></i></div>
+          <div class="wg-mc__top">
+            <div class="wg-mc__icon">🍛</div>
+            <div class="wg-mc__info">
+              <div class="wg-mc__name">Afternoon Lunch</div>
+              <span class="wg-mc__price" id="at-lunch-price">₹6,000</span>
+              <span class="wg-mc__badge">For {{ home.members }} members</span>
+            </div>
+          </div>
 
-        <div class="wg-mc__chips" id="at-lunch-chips">
-          <span class="wg-mc__chip">Rice</span>
-          <span class="wg-mc__chip">Sambar</span>
-          <span class="wg-mc__chip">Rasam</span>
-          <span class="wg-mc__chip">Poriyal</span>
-          <span class="wg-mc__chip">Payasam</span>
-        </div>
-      </div>
+          <!-- Veg / Non-Veg diet toggle for LUNCH -->
+          <div class="wg-diet-toggle">
+            <button type="button" class="wg-diet-btn" data-diet="veg" data-meal-for="lunch">
+              <span class="wg-diet-btn__icon"></span> Veg
+            </button>
+            <button type="button" class="wg-diet-btn" data-diet="nonveg" data-meal-for="lunch">
+              <span class="wg-diet-btn__icon"></span> Non-Veg
+            </button>
+          </div>
 
-      <div class="wg-mc" id="at-mc-dn" data-at-meal="dn">
-        <div class="wg-mc__check" data-select-for="dn"><i class="fa-solid fa-check"></i></div>
-        <div class="wg-mc__top">
-          <div class="wg-mc__icon">🍲</div>
-          <div class="wg-mc__info">
-            <div class="wg-mc__name">Evening Dinner</div>
-            <span class="wg-mc__price">₹4,000</span>
-            <span class="wg-mc__badge">For {{ home.members }} members</span>
+          <span class="wg-mc__hint"><i class="fa-solid fa-circle-info"></i> Hover to view menu</span>
+
+          <div class="wg-mc__tooltip">
+            <div class="wg-mc__tooltip-title">Today's Lunch</div>
+            <div class="wg-mc__tooltip-chips" id="at-tooltip-lunch">
+              <span class="wg-mc__tooltip-chip">Rice</span>
+              <span class="wg-mc__tooltip-chip">Sambar</span>
+              <span class="wg-mc__tooltip-chip">Rasam</span>
+              <span class="wg-mc__tooltip-chip">Poriyal</span>
+              <span class="wg-mc__tooltip-chip">Payasam</span>
+            </div>
           </div>
         </div>
-        <div class="wg-mc__chips">
-          <span class="wg-mc__chip">Idli</span>
-          <span class="wg-mc__chip">Veg Khichdi</span>
-          <span class="wg-mc__chip">Sambar</span>
+
+        <!-- Evening Dinner -->
+        <div class="wg-mc" id="at-mc-dn" data-at-meal="dn" tabindex="0">
+          <div class="wg-mc__check" data-select-for="dn"><i class="fa-solid fa-check"></i></div>
+          <div class="wg-mc__top">
+            <div class="wg-mc__icon">🍲</div>
+            <div class="wg-mc__info">
+              <div class="wg-mc__name">Evening Dinner</div>
+              <span class="wg-mc__price" id="at-dn-price">₹4,000</span>
+              <span class="wg-mc__badge">For {{ home.members }} members</span>
+            </div>
+          </div>
+
+          <!-- Veg / Non-Veg diet toggle for DINNER -->
+          <div class="wg-diet-toggle">
+            <button type="button" class="wg-diet-btn" data-diet="veg" data-meal-for="dn">
+              <span class="wg-diet-btn__icon"></span> Veg
+            </button>
+            <button type="button" class="wg-diet-btn" data-diet="nonveg" data-meal-for="dn">
+              <span class="wg-diet-btn__icon"></span> Non-Veg
+            </button>
+          </div>
+
+          <span class="wg-mc__hint"><i class="fa-solid fa-circle-info"></i> Hover to view menu</span>
+
+          <div class="wg-mc__tooltip">
+            <div class="wg-mc__tooltip-title">Today's Dinner</div>
+            <div class="wg-mc__tooltip-chips" id="at-tooltip-dn">
+              <span class="wg-mc__tooltip-chip">Idli</span>
+              <span class="wg-mc__tooltip-chip">Veg Khichdi</span>
+              <span class="wg-mc__tooltip-chip">Sambar</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="wg-summary-row">
+        <div class="wg-order-box">
+          <div class="wg-order-row" id="at-ob-bf"><span>Breakfast</span><span class="wg-order-row__val">Not selected</span></div>
+          <div class="wg-order-row" id="at-ob-lunch"><span>Lunch</span><span class="wg-order-row__val">Not selected</span></div>
+          <div class="wg-order-row" id="at-ob-dn"><span>Dinner</span><span class="wg-order-row__val">Not selected</span></div>
+          <div class="wg-order-sep"></div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="wg-order-total-lbl">Total Amount</span>
+            <span class="wg-order-total-val" id="at-ob-total">₹ 0</span>
+          </div>
+        </div>
+
+        <div class="wg-impact-box">
+          <div class="wg-impact-box__icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+          <div>
+            <div class="wg-impact-box__eyebrow">You are providing</div>
+            <div class="wg-impact-box__count" id="at-impact-count">0 Meals</div>
+            <div class="wg-impact-box__note">Thank you for nourishing lives <i class="fa-solid fa-heart" style="color:var(--wg-red);"></i></div>
+          </div>
         </div>
       </div>
+
+      <div id="message" class="mt-2 mb-2"></div>
+
+      <button id="donate-now-btn" class="wg-pay-btn" type="button">
+        <i class="fa-solid fa-credit-card"></i>
+        Proceed to Pay
+      </button>
+
     </div>
+    <!-- ===== /wg-menu-card ===== -->
 
-    <div class="wg-summary-row">
-      <div class="wg-order-box">
-        <div class="wg-order-row" id="at-ob-bf"><span>Breakfast</span><span class="wg-order-row__val">Not selected</span></div>
-        <div class="wg-order-row" id="at-ob-lunch"><span>Lunch</span><span class="wg-order-row__val">Not selected</span></div>
-        <div class="wg-order-row" id="at-ob-dn"><span>Dinner</span><span class="wg-order-row__val">Not selected</span></div>
-        <div class="wg-order-sep"></div>
-        <div class="d-flex justify-content-between align-items-center">
-          <span class="wg-order-total-lbl">Total Amount</span>
-          <span class="wg-order-total-val" id="at-ob-total">₹ 0</span>
-        </div>
-      </div>
-
-      <div class="wg-impact-box">
-        <div class="wg-impact-box__icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
-        <div>
-          <div class="wg-impact-box__eyebrow">You are providing</div>
-          <div class="wg-impact-box__count" id="at-impact-count">0 Meals</div>
-          <div class="wg-impact-box__note">Thank you for nourishing lives <i class="fa-solid fa-heart" style="color:var(--wg-red);"></i></div>
-        </div>
-      </div>
-    </div>
-
-    <div id="message" class="mt-2 mb-2"></div>
-
-    <button id="donate-now-btn" class="wg-pay-btn" type="button">
-      <i class="fa-solid fa-credit-card"></i>
-      Proceed to Pay
-    </button>
   </div>
 </section>
 
@@ -550,8 +654,7 @@
             </div>
           </div>
           <div class="wg-badges">
-            <span class="wg-badge">100% Transparency</span>
-            <span class="wg-badge">80G Tag Available</span>
+            
           </div>
         </div>
 
@@ -594,21 +697,25 @@
                   <input type="tel" class="form-control" id="donor_mobile_popup" placeholder="9876543210" required />
                 </div>
               </div>
+              
               <div class="col-12 col-sm-6">
                 <label for="service_date_popup" class="form-label">Service Date</label>
                 <input type="date" class="form-control" id="service_date_popup" required />
               </div>
             </div>
 
-            <div class="mb-3">
-              <label for="address_popup" class="form-label">Address</label>
-              <input type="text" class="form-control" id="address_popup" placeholder="e.g. Chennai, Tamil Nadu – 600028" required />
+
+            <div class="row g-2 mb-2">
+              <div class="col-12 col-sm-6">
+                <label for="address_popup" class="form-label">Address</label>
+                <input type="text" class="form-control" id="address_popup" placeholder="e.g. Chennai, Tamil Nadu – 600028" required />
+              </div>
+              <div class="col-12 col-sm-6">
+              <label for="pan_number_popup" class="form-label">PAN Number <span class="text-muted fw-normal">(optional)</span></label>
+                 <input type="text" class="form-control text-uppercase" id="pan_number_popup" maxlength="10" placeholder="ABCDE1234F" />
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label for="pan_number_popup" class="form-label">PAN Number <span class="text-muted fw-normal">(optional)</span></label>
-              <input type="text" class="form-control text-uppercase" id="pan_number_popup" maxlength="10" placeholder="ABCDE1234F" />
-            </div>
 
             <div class="wg-order-box">
               <div class="wg-order-row" id="at-ob-bf-popup"><span>Breakfast</span><span class="wg-order-row__val">Not selected</span></div>
@@ -642,7 +749,7 @@
   </div>
 </div>
 
-<section class="wg-map-section">
+<section class="wg-map-section" style="padding-bottom: 32px;">
   <div class="container-xl px-3 px-md-4">
     <div class="text-center mb-4 position-relative" style="z-index:1;">
       <span class="wg-sec-label" style="color: var(--wg-amber);">Our Location</span>
@@ -660,11 +767,10 @@
       </div>
 
       <div class="wg-map-col">
-        <iframe
-          class="wg-map-frame"
-          src="https://www.youtube.com/embed/CnkcciCsK1w"
-          allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
-        </iframe>
+       <iframe 
+       class="wg-map-frame"
+        src="https://www.youtube.com/embed/KJmrDRUx7gc?si=77akrMgLtc3HCx1F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+         allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
       </div>
     </div>
   </div>
@@ -702,22 +808,37 @@
 
 <script src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/v2.0.0/easebuzz-checkout-v2.min.js"></script>
 <script>
-const PRICES = { bf: 4000, lunch_veg: 6000, lunch_nonveg: 8500, dn: 4000 };
+// Base prices per meal + diet type
+const PRICES = {
+  bf: 4000,
+  lunch_veg: 6000,
+  lunch_nonveg: 8500,
+  dn_veg: 4000,
+  dn_nonveg: 6000
+};
 
-const LUNCH_CHIPS = {
-  veg: ["Rice", "Sambar", "Rasam", "Poriyal", "Payasam"],
-  nonveg: ["Chicken Curry", "Rice", "Rasam", "Poriyal"]
+// Menu items shown in the hover tooltip for each meal / diet combination
+const MENU = {
+  bf: ["Idli", "Pongal", "Vada"],
+  lunch: {
+    veg: ["Rice", "Sambar", "Rasam", "Poriyal", "Payasam"],
+    nonveg: ["Chicken Curry", "Rice", "Rasam", "Poriyal"]
+  },
+  dn: {
+    veg: ["Idli", "Veg Khichdi", "Sambar"],
+    nonveg: ["Chicken Gravy", "Chapati", "Sambar"]
+  }
 };
 
 const state = {
-  bf: { on: false, type: "veg" },
+  bf: { on: false },
   lunch: { on: false, type: "veg" },
   dn: { on: false, type: "veg" }
 };
 
 function mealPrice(meal) {
-  if (meal === "lunch") return state.lunch.type === "nonveg" ? PRICES.lunch_nonveg : PRICES.lunch_veg;
-  return PRICES[meal];
+  if (meal === "bf") return PRICES.bf;
+  return state[meal].type === "nonveg" ? PRICES[`${meal}_nonveg`] : PRICES[`${meal}_veg`];
 }
 
 function calcTotal() {
@@ -728,6 +849,13 @@ function calcTotal() {
 
 function calcMealsCount() {
   return ["bf", "lunch", "dn"].reduce((n, m) => n + (state[m].on ? 1 : 0), 0);
+}
+
+function renderTooltip(meal) {
+  const el = document.getElementById(`at-tooltip-${meal}`);
+  if (!el) return;
+  const items = meal === "bf" ? MENU.bf : MENU[meal][state[meal].type];
+  el.innerHTML = items.map((c) => `<span class="wg-mc__tooltip-chip">${c}</span>`).join("");
 }
 
 function updateUI() {
@@ -742,24 +870,25 @@ function updateUI() {
     const row = document.getElementById(`at-ob-${meal}${suffix}`);
     const val = row ? row.querySelector(".wg-order-row__val") : null;
     if (row) row.classList.toggle("is-active", state[meal].on);
-    if (val) val.textContent = state[meal].on ? `${state[meal].type === "nonveg" ? "Non-Veg" : "Pure Veg"} ₹${mealPrice(meal).toLocaleString("en-IN")} ✓` : "Not selected";
+    if (val) {
+      const dietLabel = meal === "bf" ? "" : (state[meal].type === "nonveg" ? "Non-Veg " : "Pure Veg ");
+      val.textContent = state[meal].on ? `${dietLabel}₹${mealPrice(meal).toLocaleString("en-IN")} ✓` : "Not selected";
+    }
+
+    renderTooltip(meal);
   });
 
   const lunchPrice = document.getElementById("at-lunch-price");
   if (lunchPrice) lunchPrice.textContent = "₹" + mealPrice("lunch").toLocaleString("en-IN");
 
-  // sync the Veg / Non-Veg toggle buttons on the lunch card
-  document.querySelectorAll(".wg-diet-btn").forEach((btn) => {
-    btn.classList.toggle("is-active", btn.dataset.diet === state.lunch.type);
-  });
+  const dnPrice = document.getElementById("at-dn-price");
+  if (dnPrice) dnPrice.textContent = "₹" + mealPrice("dn").toLocaleString("en-IN");
 
-  // sync the lunch chip list to match selected diet
-  const lunchChipsEl = document.getElementById("at-lunch-chips");
-  if (lunchChipsEl) {
-    lunchChipsEl.innerHTML = LUNCH_CHIPS[state.lunch.type]
-      .map((c) => `<span class="wg-mc__chip">${c}</span>`)
-      .join("");
-  }
+  // sync the Veg / Non-Veg toggle buttons on lunch + dinner cards
+  document.querySelectorAll(".wg-diet-btn").forEach((btn) => {
+    const meal = btn.dataset.mealFor;
+    btn.classList.toggle("is-active", btn.dataset.diet === state[meal].type);
+  });
 
   const totalEl = document.getElementById(`at-ob-total${suffix}`);
   const hiddenEl = document.querySelector(".home-total-price-int-popup");
@@ -770,8 +899,8 @@ function updateUI() {
   const impactEl = document.getElementById("at-impact-count");
   if (impactEl) impactEl.textContent = `${mealsCount} Meal${mealsCount === 1 ? "" : "s"}`;
 
-  const allVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "veg";
-  const allNonVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "nonveg";
+  const allVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "veg" && state.dn.type === "veg";
+  const allNonVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "nonveg" && state.dn.type === "nonveg";
   const pkgVeg = document.getElementById("at-pkg-veg");
   const pkgNveg = document.getElementById("at-pkg-nveg");
   if (pkgVeg) pkgVeg.classList.toggle("is-on", allVeg);
@@ -803,14 +932,15 @@ document.querySelectorAll("[data-select-for]").forEach((el) => {
   });
 });
 
-// Veg / Non-Veg toggle buttons on the lunch card — click sets the diet type
-// (and turns lunch on so the choice is reflected immediately), without
-// toggling lunch off if it's already selected.
+// Veg / Non-Veg toggle buttons on the lunch & dinner cards — click sets the
+// diet type for that specific meal (and turns the meal on so the choice is
+// reflected immediately), without toggling it off if already selected.
 document.querySelectorAll(".wg-diet-btn").forEach((btn) => {
   btn.addEventListener("click", function (e) {
     e.stopPropagation();
-    state.lunch.type = this.dataset.diet;
-    state.lunch.on = true;
+    const meal = this.dataset.mealFor;
+    state[meal].type = this.dataset.diet;
+    state[meal].on = true;
     updateUI();
   });
 });
@@ -826,13 +956,13 @@ document.querySelectorAll(".wg-mc").forEach((card) => {
 });
 
 document.getElementById("at-pkg-veg").addEventListener("click", function () {
-  state.bf = { on: true, type: "veg" };
+  state.bf = { on: true };
   state.lunch = { on: true, type: "veg" };
   state.dn = { on: true, type: "veg" };
   updateUI();
 });
 document.getElementById("at-pkg-nveg").addEventListener("click", function () {
-  state.bf = { on: true, type: "nonveg" };
+  state.bf = { on: true };
   state.lunch = { on: true, type: "nonveg" };
   state.dn = { on: true, type: "nonveg" };
   updateUI();

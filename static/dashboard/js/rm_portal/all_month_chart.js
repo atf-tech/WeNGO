@@ -1,80 +1,129 @@
 var options = {
-    series: [
-      {
-        name: "Chennai",
-        data: [28000, 29000, 33000, 36000, 32000, 32000, 33000]
-      },
-      {
-        name: "Bangalore",
-        data: [14000, 11000, 14000, 18000, 17000, 13000, 13000]
-      },
-      {
-        name: "Madurai",
-        data: [7000, 11000, 14000, 18000, 17000, 13000, 13000]
-      }
-    ],
-    chart: {
-      height: 550,
-      type: 'line',
-      dropShadow: {
-        enabled: true,
-        color: '#000',
-        top: 18,
-        left: 7,
-        blur: 10,
-        opacity: 0.5
-      },
-      zoom: {
-        enabled: false
-      },
-      toolbar: {
-        show: false
-      }
+  series: [{
+    name: "This Month Revenue",
+    data: [480, 620, 350]
+  }],
+
+  chart: {
+    type: "bar",
+    height: 420,
+    toolbar: {
+      show: false
     },
-    dataLabels: {
+    background: "transparent",
+    dropShadow: {
       enabled: true,
-    },
-    stroke: {
-      curve: 'straight',
+      top: 8,
+      left: 0,
+      blur: 10,
+      opacity: 0.15
+    }
+  },
 
+  colors: [
+    "#4F46E5",
+    "#06B6D4",
+    "#F97316"
+  ],
+
+  plotOptions: {
+    bar: {
+      horizontal: false,
+      distributed: true,
+      columnWidth: "45%",
+      borderRadius: 15,
+      borderRadiusApplication: "end",
+      borderRadiusWhenStacked: "last",
+      dataLabels: {
+        position: "top"
+      }
+    }
+  },
+
+  dataLabels: {
+    enabled: true,
+    offsetY: -20,
+    style: {
+      fontSize: "14px",
+      fontWeight: "700",
+      colors: ["#374151"]
     },
-    grid: {
-      borderColor: '#e7e7e7',
-      row: {
-        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-        opacity: 0.5
-      },
-    },
-    markers: {
-      size: 1
-    },
-    xaxis: {
-      categories: [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'
-      ],
-      title: {
-        text: 'Monthly Based'
+    formatter: function (val) {
+      return "₹" + val;
+    }
+  },
+
+  xaxis: {
+    categories: [
+      "Chennai",
+      "Bangalore",
+      "Madurai"
+    ],
+    labels: {
+      style: {
+        fontSize: "14px",
+        fontWeight: 600
       }
     },
-    yaxis: {
-      title: {
-        text: 'Collections'
-      },
+    axisBorder: {
+      show: false
     },
-    legend: {
-      show: true,
-      position: 'bottom',
-      horizontalAlign: 'center',
-      markers: { radius: 12 },
-      fontSize: '14px',
-      itemMargin: {
-        horizontal: 10,
-        vertical: 8
+    axisTicks: {
+      show: false
+    }
+  },
+
+  yaxis: {
+    labels: {
+      formatter: function (val) {
+        return "₹" + val.toLocaleString("en-IN");
       }
-    },
-  };
+    }
+  },
 
-  
+  grid: {
+    borderColor: "#E5E7EB",
+    strokeDashArray: 5,
+    padding: {
+      left: 20,
+      right: 20
+    }
+  },
 
-  var chart = new ApexCharts(document.querySelector("#rmPortalBranchChart"), options);
-  chart.render();
+  legend: {
+    show: false
+  },
+
+  title: {
+    text: "Branch Revenue - This Month",
+    align: "left",
+    style: {
+      fontSize: "20px",
+      fontWeight: "700"
+    }
+  },
+
+  subtitle: {
+    text: "Monthly Revenue Performance",
+    style: {
+      fontSize: "13px",
+      color: "#6B7280"
+    }
+  },
+
+  tooltip: {
+    theme: "light",
+    y: {
+      formatter: function (val) {
+        return "₹ " + val + "K";
+      }
+    }
+  }
+};
+
+var chart = new ApexCharts(
+  document.querySelector("#rmPortalBranchChart"),
+  options
+);
+
+chart.render();
