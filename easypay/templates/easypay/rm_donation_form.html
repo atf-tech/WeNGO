@@ -2,214 +2,293 @@
 {% load static %}
 
 {% block title %}
-  RM Donation || Indian Public Foundation
+  RM Donation || WeNGO
 {% endblock %}
 
 {% block content %}
 <style>
+  :root {
+    --navy: #17233D;
+    --cream: #FBF3EF;
+    --coral: #F0932B;
+    --coral-dark: #D97706;
+    --pink: #EC5F8B;
+    --ink: #1A1A2E;
+    --gray: #6B7280;
+    --line: #E7E1DA;
+    --white: #FFFFFF;
+  }
+
+  /* Hide chat widget on this page (adjust selector to match your provider) */
+  #chat-widget-container,
+  .chat-widget,
+  #tawkchat-container,
+  #crisp-chatbox,
+  .intercom-lightweight-app,
+  .intercom-launcher,
+  #whatsapp-chat-button,
+  iframe[title="chat widget"] {
+    display: none !important;
+  }
+
   .donation-page {
-    min-height: 80vh;
-    background: linear-gradient(135deg, #fff8f2 0%, #f4f5f8 100%);
-  }
-  .donation-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(248,153,58,0.10);
-    padding: 40px 36px;
+    padding: 40px 20px 80px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
     position: relative;
-    z-index: 1;
   }
-  .donation-card .form-title {
-    font-size: 1.5rem;
+
+  .donation-wrapper {
+    width: 100%;
+    max-width: 600px;
+    animation: fade 0.25s ease;
+  }
+
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .donation-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  }
+
+  .rm-info-card {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    background: linear-gradient(135deg, #fff, #ffffff);
+    border: 1px solid #f1ddd0;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    min-width: 200px;
+  }
+
+
+  .rm-info-card h3 {
+    margin: 5px 0 8px;
+    font-size: 16px;
+    color: var(--navy);
+  }
+
+  
+  .rm-info-card p {
+    margin: 5px 0;
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  .form-field {
+    margin-bottom: 18px;
+  }
+
+  label {
+    font-size: 13px;
     font-weight: 700;
-    color: #040210;
-    border-left: 4px solid #f8993a;
-    padding-left: 12px;
+    color: var(--ink);
+    display: block;
     margin-bottom: 6px;
   }
-  .donation-card .form-subtitle {
-    color: #727272;
-    font-size: 0.95rem;
-    margin-bottom: 28px;
-    padding-left: 16px;
+
+  label .req {
+    color: var(--pink);
   }
-  .donation-card .form-label {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #444;
-    margin-bottom: 5px;
+
+  input,
+  select {
+    width: 100% !important;
+    padding: 14px !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    background: #FAFAFA !important;
+    color: var(--ink) !important;
+    transition: 0.2s ease !important;
+    box-sizing: border-box !important;
+  
   }
-  .donation-card .form-control,
-  .donation-card .form-select {
-    border: 1.5px solid #e5e7ed;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 0.95rem;
-    background: #fafafa;
-    transition: border-color 0.2s, box-shadow 0.2s;
+
+  input:focus,
+  select:focus {
+    outline: none !important;
+    border-color: var(--coral) !important;
+    box-shadow: 0 0 0 3px rgba(240, 147, 43, 0.15) !important;
+    background: #fff !important;
   }
-  .donation-card .form-control:focus,
-  .donation-card .form-select:focus {
-    border-color: #f8993a;
-    box-shadow: 0 0 0 3px rgba(248,153,58,0.15);
-    background: #fff;
+
+  .package-field {
+    position: relative;
   }
-  .btn-pay-now {
-    background: #f8993a;
+
+  .package-dropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--gray) 50%),
+                      linear-gradient(135deg, var(--gray) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 19px, calc(100% - 12px) 19px;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  .package-note {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 6px;
+  }
+
+  .field-error {
+    color: #D93025;
+    font-size: 12px;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .pay-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--coral);
     color: #fff;
     border: none;
     border-radius: 10px;
-    padding: 13px 20px;
+    font-size: 15px;
     font-weight: 700;
-    font-size: 1rem;
-    width: 100%;
-    transition: background 0.2s, transform 0.1s;
+    cursor: pointer;
+    letter-spacing: 0.3px;
   }
-  .btn-pay-now:hover {
-    background: #e07f20;
-    color: #fff;
-    transform: translateY(-1px);
+
+  .pay-btn:hover {
+    background: var(--coral-dark);
   }
-  .btn-pay-now:disabled {
+
+  .pay-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
-    transform: none;
   }
-  .field-icon { color: #f8993a; margin-right: 6px; }
-  .section-divider {
-    border: none;
-    border-top: 1.5px dashed #e5e7ed;
-    margin: 8px 0 16px;
-  }
-  .rm-info-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(23,138,67,0.08);
-    padding: 28px 24px;
-    text-align: center;
-  }
-  .rm-info-card .rm-avatar {
-    width: 60px; height: 60px;
-    background: #178a43;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 14px;
-    font-size: 1.5rem;
-    color: #fff;
-  }
-  .rm-info-card h6 {
-    font-weight: 700;
-    color: #040210;
-    margin-bottom: 12px;
-  }
-  .rm-info-card .rm-detail {
-    font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 6px;
-  }
-  .rm-info-card .rm-detail i { color: #f8993a; margin-right: 6px; }
 </style>
 
-<section class="donation-page py-5 mt-5">
-  <div class="container">
+<section class="donation-page">
+  <div class="donation-wrapper">
+    <div class="donation-card">
+      <form id="donation-form" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="rm_code" value="{{ rm.rm_code }}" />
+        <input type="hidden" name="rm_name" value="{{ rm.rm_name }}" />
+        <input type="hidden" name="virtual_label" value="{{ rm.virtual_label }}" />
 
-    <div class="text-center mb-4">
-      <h2 style="font-weight:700;color:#040210;">Make Them Happy With Your Support</h2>
-      <p style="color:#727272;">Contribute and make a difference today.</p>
-    </div>
-
-    <div class="row justify-content-center g-4">
-
-      <!-- Donation Form -->
-      <div class="col-lg-7">
-        <div class="donation-card">
-          <div class="form-title"><i class="fa-solid fa-hand-holding-heart field-icon"></i>Donation Details</div>
-          <div class="form-subtitle">Fill in your details to proceed with the donation.</div>
-
-          <div id="donationFormStatus"></div>
-
-          <form id="donation-form" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="rm_code" value="{{ rm.rm_code }}" />
-            <input type="hidden" name="rm_name" value="{{ rm.rm_name }}" />
-            <input type="hidden" name="virtual_label" value="{{ rm.virtual_label }}" />
-
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label"><i class="fa-solid fa-user field-icon"></i>Full Name <span class="text-danger">*</span></label>
-                <input required class="form-control" type="text" id="donor_name" name="donor_name" placeholder="Enter Full Name" />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label"><i class="fa-solid fa-phone field-icon"></i>Mobile Number <span class="text-danger">*</span></label>
-                <input required class="form-control" type="number" id="donor_mobile" name="donor_mobile" placeholder="Enter Mobile Number" />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label"><i class="fa-solid fa-envelope field-icon"></i>Email Address <span class="text-danger">*</span></label>
-                <input required class="form-control" type="email" id="donor_email" name="donor_email" placeholder="Enter Email Address" />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label"><i class="fa-solid fa-indian-rupee-sign field-icon"></i>Donation Amount <span class="text-danger">*</span></label>
-                <input required class="form-control" type="number" id="donor_amount" name="donor_amount" placeholder="Enter Amount" />
-              </div>
-              <div class="col-md-12">
-                <label class="form-label"><i class="fa-solid fa-box-open field-icon"></i>Package Type <span class="text-danger">*</span></label>
-                <select class="form-select" id="package_type" name="package_type" required>
-                  <option value="" disabled selected>-- Select Package --</option>
-                  <option value="birthday">Birthday Package</option>
-                  <option value="food">Food Package</option>
-                </select>
-              </div>
-              <div class="col-md-12">
-                <label class="form-label"><i class="fa-solid fa-location-dot field-icon"></i>Address <span class="text-danger">*</span></label>
-                <input required class="form-control" type="text" id="donor_address" name="donor_address" placeholder="Enter your Address" />
-              </div>
-              <div class="col-12 mt-2">
-                <button type="submit" class="btn-pay-now">
-                  <i class="fa-solid fa-lock me-2"></i>Pay Now Securely
-                </button>
-              </div>
-            </div>
-          </form>
+        <div class="form-field">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="donor_name" name="donor_name" placeholder="Enter Full Name" required>
         </div>
-      </div>
 
-      <!-- RM Info Card -->
-      <div class="col-lg-3 col-md-6">
-        <div class="rm-info-card">
-          <div class="rm-avatar"><i class="fa-solid fa-user"></i></div>
-          <h6>Your Relationship Manager</h6>
-          <hr class="section-divider">
-          <div class="rm-detail"><i class="fa-solid fa-user"></i> {{ rm.rm_name }}</div>
-          <div class="rm-detail"><i class="fa-solid fa-phone"></i> {{ rm.rm_mob_no }}</div>
-          <div class="rm-detail"><i class="fa-solid fa-envelope"></i> {{ rm.rm_email }}</div>
+        <div class="form-field">
+          <label>Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="donor_mobile" name="donor_mobile" placeholder="Enter Mobile Number" inputmode="numeric" pattern="[0-9]*" maxlength="10" required>
+          <div class="field-error" id="mobileError">Please enter a valid 10-digit mobile number.</div>
         </div>
-      </div>
 
+        <div class="form-field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="donor_email" name="donor_email" placeholder="Enter Email Address" required>
+          <div class="field-error" id="emailError">Please enter a valid email address.</div>
+        </div>
+
+        <div class="form-field">
+          <label>Donation Amount <span class="req">*</span></label>
+          <input type="number" id="donor_amount" name="donor_amount" placeholder="Enter Amount" required>
+        </div>
+
+        <div class="form-field">
+
+        <label for="package_type">Package Type <span class="req">*</span></label>
+          <select id="package_type" name="package_type" class="package-dropdown no-selectpicker" required>
+            <option value="" selected disabled>🎁 Choose your package</option>
+            <option value="Food Packages">🍛 Food Packages</option>
+            <option value="Birthday Package">🎂 Birthday Package</option>
+          </select>
+          <div class="package-note">Select one package type from the list</div>
+        </div>
+
+        <div class="form-field">
+          <label>Address <span class="req">*</span></label>
+          <input type="text" id="donor_address" name="donor_address" placeholder="Enter your Address" required>
+        </div>
+
+        <button class="pay-btn" type="submit">Pay Now →</button>
+      </form>
     </div>
+  </div>
+
+  <div class="rm-info-card">
+    <h3>RM Detail</h3>
+    <p>Name: <strong>{{ rm.rm_name }}</strong></p>
+    <p>Number: <strong>{{ rm.rm_mob_no }}</strong></p>
+    <p>Email: <strong>{{ rm.rm_email }}</strong></p>
   </div>
 </section>
 
-<!-- Scripts -->
 <script src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/v2.0.0/easebuzz-checkout-v2.min.js"></script>
-
 <script>
   const easebuzzCheckout = new EasebuzzCheckout("{{ easebuzz.merchant_key }}", "{{ easebuzz.env }}");
+  const mobile = document.getElementById('donor_mobile');
+  const email = document.getElementById('donor_email');
+  const mobileError = document.getElementById('mobileError');
+  const emailError = document.getElementById('emailError');
+  const form = document.getElementById('donation-form');
 
-  document.getElementById('donation-form').addEventListener('submit', async function (e) {
-    e.preventDefault()
-    console.log("RM Donation form submitted");
+  mobile.addEventListener('input', function () {
+    this.value = this.value.replace(/[^0-9]/g, '');
+    if (this.value.length > 10) this.value = this.value.slice(0, 10);
+  });
 
-  const donor_name = document.getElementById('donor_name').value.trim()
-  const donor_email = document.getElementById('donor_email').value.trim()
-  const donor_mobile = document.getElementById('donor_mobile').value.trim()
-  const donor_amount = document.getElementById('donor_amount').value
-  const donor_address = document.getElementById('donor_address').value
-  const package_type = document.getElementById('package_type').value
-    const rm_code = '{{ rm.rm_code }}'
-    const rm_name = '{{ rm.rm_name }}'
+  email.addEventListener('input', function () {
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value);
+    emailError.style.display = this.value && !valid ? 'block' : 'none';
+  });
 
-    const donateBtn = e.target.querySelector('button[type="submit"]')
-    donateBtn.disabled = true
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    let ok = true;
+
+    if (!/^[0-9]{10}$/.test(mobile.value)) {
+      mobileError.style.display = 'block';
+      ok = false;
+    } else {
+      mobileError.style.display = 'none';
+    }
+
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value);
+    if (!validEmail) {
+      emailError.style.display = 'block';
+      ok = false;
+    } else {
+      emailError.style.display = 'none';
+    }
+
+    if (!ok) return;
+
+    const donor_name = document.getElementById('donor_name').value.trim();
+    const donor_email = email.value.trim();
+    const donor_mobile = mobile.value.trim();
+    const donor_amount = document.getElementById('donor_amount').value;
+    const donor_address = document.getElementById('donor_address').value.trim();
+    const package_type = document.getElementById('package_type').value;
+    const rm_code = '{{ rm.rm_code }}';
+    const rm_name = '{{ rm.rm_name }}';
+
+    const donateBtn = e.target.querySelector('button[type="submit"]');
+    donateBtn.disabled = true;
 
     try {
       const response = await fetch("{% url 'create_rm_payment' %}", {
@@ -236,13 +315,11 @@
         const options = {
           access_key: result.key,
           onResponse: async (response) => {
-            const res = await fetch("{% url 'rm_payment_callback' %}", {
+            await fetch("{% url 'rm_payment_callback' %}", {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(response)
             });
-
-            const data = await res.json();
 
             if (response.status === 'success') {
               window.location.href = "{% url 'payment_success' %}";
@@ -266,7 +343,6 @@
 </script>
 
 <script>
-  // Handle back-forward navigation reload
   window.addEventListener('pageshow', function (event) {
     const navEntries = performance.getEntriesByType('navigation');
     const navType = navEntries.length > 0 ? navEntries[0].type : performance.navigation.type;
@@ -275,7 +351,6 @@
     }
   });
 
-  // Prevent forward navigation after going back
   history.pushState(null, null, location.href);
   window.addEventListener('popstate', function () {
     history.pushState(null, null, location.href);
@@ -283,3 +358,17 @@
 </script>
 
 {% endblock %}
+
+<script>
+  // Ensure bootstrap-select does not replace this select on this page.
+  document.addEventListener('DOMContentLoaded', function () {
+    try {
+      var sel = $('#package_type');
+      if (sel.length && sel.hasClass('no-selectpicker') && typeof sel.selectpicker === 'function') {
+        sel.selectpicker('destroy');
+      }
+    } catch (e) {
+      console.warn('selectpicker destroy skipped:', e);
+    }
+  });
+</script>

@@ -1336,7 +1336,7 @@
     },
 
     selectPicker: function () {
-      $("select").selectpicker();
+      $("select:not(.no-selectpicker)").selectpicker();
     },
 
     filterClickButton: function () {
