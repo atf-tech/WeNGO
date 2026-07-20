@@ -31,14 +31,7 @@ Dashboard ||RM Portal WeNgo
                           Today's RM Collection
                         </p>
                       </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
+                      
                     </div>
                     <div
                       class="d-flex align-items-end justify-content-between mt-4"
@@ -76,14 +69,7 @@ Dashboard ||RM Portal WeNgo
                           Yesterday's RM Collection
                         </p>
                       </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
+                      
                     </div>
                     <div
                       class="d-flex align-items-end justify-content-between mt-4"
@@ -121,14 +107,7 @@ Dashboard ||RM Portal WeNgo
                           This Month Collection
                         </p>
                       </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
+                      
                     </div>
                     <div
                       class="d-flex align-items-end justify-content-between mt-4"
@@ -166,14 +145,7 @@ Dashboard ||RM Portal WeNgo
                           Last Month Collection
                         </p>
                       </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
+                      
                     </div>
                     <div
                       class="d-flex align-items-end justify-content-between mt-4"
@@ -214,14 +186,7 @@ Dashboard ||RM Portal WeNgo
                           RM Link Collection 
                         </p>
                       </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
+                      
                     </div>
                     <div
                       class="d-flex align-items-end justify-content-between mt-4"
@@ -261,14 +226,7 @@ Dashboard ||RM Portal WeNgo
                           GPay Collection
                         </p>
                       </div>
-                      <div class="flex-shrink-0">
-                        <h5 class="text-warning fs-14 mb-0">
-                          <i
-                            class="ri-arrow-right-down-line fs-13 align-middle"
-                          ></i>
-                          -3.57 %
-                        </h5>
-                      </div>
+                      
                     </div>
                     <div
                       class="d-flex align-items-end justify-content-between mt-4"
@@ -346,8 +304,16 @@ Dashboard ||RM Portal WeNgo
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h4 class="card-title mb-0">All RM - This Month</h4>
-          <form id="dateForm" class="d-flex align-items-center gap-2">
-            <input type="text" id="allcat-date" class="form-control" placeholder="08 Nov, 2025 or 01 Nov, 2025 to 10 Nov, 2025" autocomplete="off">
+          <form id="dateForm" method="get" class="d-flex align-items-center gap-2">
+            <input
+               type="text"
+               id="allcat-date"
+               name="selected_date"
+               class="form-control"
+               placeholder="08 Nov, 2025 or 01 Nov, 2025 to 10 Nov, 2025"
+               autocomplete="off"
+               value="{{ request.GET.selected_date }}">
+
             <button type="submit" class="btn btn-primary btn-sm">Filter</button>
             <button type="button" id="clearBtn" class="btn btn-light btn-sm">Clear</button>
           </form>
@@ -469,440 +435,556 @@ Dashboard ||RM Portal WeNgo
 </div>
 
 
-<div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Donation</h5>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Donation</h5>
 
-        <form id="searchform" method="get" class="row">
-          <div class="col-lg-3 mt-3">
-            <label class="form-label mb-0">Select Date</label>
-            <div class="date-picker-wrapper">
-              <input
-                id="date_range_display"
-                type="text"
-                class="date-picker"
-                placeholder="Select Date"
-                readonly
-              >
-              <button type="button" id="clear_date" class="clear-btn">
-                ✕
+          <form id="searchform" method="get" class="row">
+            <div class="col-lg-3 mt-3">
+              <label class="form-label mb-0">Select Date</label>
+              <div class="date-picker-wrapper">
+                <input
+                  id="date_range_display"
+                  type="text"
+                  class="date-picker"
+                  placeholder="Select Date"
+                  readonly
+                >
+                <button type="button" id="clear_date" class="clear-btn">
+                  ✕
+                </button>
+              </div>
+              <input type="hidden" id="date_from" name="date_from">
+              <input type="hidden" id="date_to" name="date_to">
+            </div>
+
+            <div class="col-lg-3 mt-3">
+              <label class="form-label mb-0">Select RM</label>
+              <select name="rm_code" class="form-select">
+                <option value="all" {% if not selected_rm_code or selected_rm_code == "all" %}selected{% endif %}>-- All RM Names --</option>
+                {% for name in rm_list %}
+                <option value="{{ name.rm_code }}" {% if selected_rm_code == name.rm_code %}selected{% endif %}>{{ name.virtual_label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-lg-3 mt-3">
+              <label class="form-label mb-0"></label> <br>
+              <button type="submit" id="searchBtn"
+                      class="btn btn-outline-secondary waves-effect waves-light material-shadow-none">
+                Search
               </button>
             </div>
-            <input type="hidden" id="date_from">
-            <input type="hidden" id="date_to">
-          </div>
+          </form>
 
-          <div class="col-lg-3 mt-3">
-            <label class="form-label mb-0">Select RM</label>
-            <select name="rm_code" class="form-select">
-              <option value="all" {% if not selected_rm_code or selected_rm_code == "all" %}selected{% endif %}>-- All RM Names --</option>
-              {% for name in rm_list %}
-              <option value="{{ name.rm_code }}" {% if selected_rm_code == name.rm_code %}selected{% endif %}>{{ name.virtual_label }}</option>
+        </div>
+          
+      <br>
+              
+      <div>
+        <div class="row">
+        
+                <div class="col-xl-3 col-md-6">
+                  <div class="card card-animate"style="background-color: #5ec2dd;">
+                    <div class="card-body" >
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <p class="fw-medium text-muted mb-0">Today RM's Collection</p>
+                          <h2 class="mt-4 ff-secondary fw-semibold">
+                            <span class="counter-value" id="today_collection" data-target="{{ today_collection|floatformat:2|default:0 }}">{{ today_collection|floatformat:2|default:0 }}</span>
+
+                          </h2>
+                        
+                        </div>
+                        <div>
+                          <div class="avatar-sm flex-shrink-0">
+                            <span
+                              class="avatar-title bg-info-subtle rounded-circle fs-2"
+                            >
+                              <i
+                                data-feather="users"
+                                class="text-info material-shadow"
+                              ></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card body -->
+                  </div>
+                  <!-- end card-->
+                </div>
+                <!-- end col-->
+
+                <div class="col-xl-3 col-md-6">
+                  <div class="card card-animate"style="background-color: #5ec2dd;">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <p class="fw-medium text-muted mb-0">Yesterday RM's Collection</p>
+                          <h2 class="mt-4 ff-secondary fw-semibold">
+                            <span class="counter-value" id="yesterday_collection" data-target="{{ yesterday_collection|floatformat:2|default:0 }}">{{ yesterday_collection|floatformat:2|default:0 }}</span>
+
+                          </h2>
+                        
+                        </div>
+                        <div>
+                          <div class="avatar-sm flex-shrink-0">
+                            <span
+                              class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
+                            >
+                              <i data-feather="activity" class="text-info"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card body -->
+                  </div>
+                  <!-- end card-->
+                </div>
+                <!-- end col-->
+
+                <div class="col-xl-3 col-md-6">
+                  <div class="card card-animate "style="background-color: #5ec2dd;">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <p class="fw-medium text-white-50 mb-0">
+                            This Month Collection
+                          </p>
+                          <h2 class="mt-4 ff-secondary fw-semibold text-white">
+                            <span class="counter-value" id="this_month_collection" data-target="{{ this_month_collection|floatformat:0|default:0 }}">{{ this_month_collection|floatformat:0|default:0 }}</span>
+
+                          </h2>
+                        
+                        </div>
+                        <div>
+                          <div class="avatar-sm flex-shrink-0">
+                            <span
+                              class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
+                            >
+                              <i data-feather="clock" class="text-white"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card body -->
+                  </div>
+                  <!-- end card-->
+                </div>
+                <!-- end col-->
+
+                <div class="col-xl-3 col-md-6">
+                  <div class="card card-animate" style="background-color: #5ec2dd;">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <p class="fw-medium text-muted mb-0">Last Month Collection<p>
+                          <h2 class="mt-4 ff-secondary fw-semibold">
+                            <span class="counter-value" id="last_month_collection" data-target="{{ last_month_collection|floatformat:2|default:0 }}">{{ last_month_collection|floatformat:2|default:0 }}</span>
+
+                          </h2>
+                        
+                        </div>
+                        <div>
+                          <div class="avatar-sm flex-shrink-0">
+                            <span
+                              class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
+                            >
+                              <i
+                                data-feather="external-link"
+                                class="text-info"
+                              ></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card body -->
+                  </div>
+                  <!-- end card-->
+                </div>
+                <!-- end col-->
+              </div>
+            <!--end-->
+
+                <div class="row">
+        
+                <div class="col-xl-3 col-md-6">
+                  <div class="card card-animate"style="background-color: #5ec2dd;">
+                    <div class="card-body" >
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <p class="fw-medium text-muted mb-0">RM link Collection</p>
+                          <h2 class="mt-4 ff-secondary fw-semibold">
+                            <span class="counter-value" id="rm_link_collection" data-target="{{ filtered_link_total|floatformat:2|default:0 }}">{{ filtered_link_total|floatformat:2|default:0 }}</span>
+
+                          </h2>
+                        
+                        </div>
+                        <div>
+                          <div class="avatar-sm flex-shrink-0">
+                            <span
+                              class="avatar-title bg-info-subtle rounded-circle fs-2"
+                            >
+                              <i
+                                data-feather="users"
+                                class="text-info material-shadow"
+                              ></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card body -->
+                  </div>
+                  <!-- end card-->
+                </div>
+                <!-- end col-->
+
+                <div class="col-xl-3 col-md-6">
+                  <div class="card card-animate"style="background-color: #5ec2dd;">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <p class="fw-medium text-muted mb-0">GPay Collection</p>
+                          <h2 class="mt-4 ff-secondary fw-semibold">
+                            <span class="counter-value" id="gpay_collection" data-target="{{ filtered_gpay_total|floatformat:2|default:0 }}">{{ filtered_gpay_total|floatformat:2|default:0 }}</span>
+
+                          </h2>
+                        
+                        </div>
+                        <div>
+                          <div class="avatar-sm flex-shrink-0">
+                            <span
+                              class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
+                            >
+                              <i data-feather="activity" class="text-info"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card body -->
+                  </div>
+                  <!-- end card-->
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                  <div class="card card-animate"style="background-color: #5ec2dd;">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <p class="fw-medium text-muted mb-0">Total Collection(GPay ,  Link)</p>
+                          <h2 class="mt-4 ff-secondary fw-semibold">
+                            <span class="counter-value"
+                                  id="total_collection"
+                                  data-target="{{ filtered_total|floatformat:2|default:0 }}">
+                                {{ filtered_total|floatformat:2|default:0 }}
+                            </span>
+
+                          </h2>
+                        
+                        </div>
+                        <div>
+                          <div class="avatar-sm flex-shrink-0">
+                            <span
+                              class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow">
+                              <i data-feather="activity" class="text-info"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card body -->
+                  </div>
+                  <!-- end card-->
+                </div>
+                <!-- end col-->
+              </div>
+          
+
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">RM's </h5>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+          <table
+            id="website_donation_table_student"
+            class="table table-bordered  table-striped align-middle nowrap mb-0"
+            style="width: 100%">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Virtual Label</th>
+                <th>Source</th>
+                <th>Amount</th>
+                <th>Donated Date & Time</th>
+                <th>Status</th>
+                <th>Mode of Payment</th>
+                <th>P.T.ID</th> 
+                <th>Donor Name</th>
+                <th>Donor No</th>
+                <th>Donor Email</th>
+                <th>Donor Address</th>
+                <th>UQ.T.ID</th>
+                <th>Receipt No</th>
+              </tr>
+            </thead>
+
+            <tbody id="donationTableBody">
+            {% for donation in donations %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ donation.virtual_label|default_if_none:"-" }}</td>
+                <td>{{ donation.source|default_if_none:"-" }}</td>
+                <td>{{ donation.amount|floatformat:'0'|default_if_none:"-" }}</td>
+                <td>{{ donation.submitted_at|default:"-" }}</td>
+
+                <td>
+                  {% if donation.status == 'unsettled' %}
+                    <span class="badge rounded-pill bg-success-subtle text-success">Success</span>
+                    {% else %}
+                    <span class="badge rounded-pill bg-success-subtle text-success">{{ donation.status }}</span>
+                  {% endif %}
+                </td>
+                <td>{{ donation.mode|default_if_none:"-" }}</td>
+                <td>{{ donation.ptid|default_if_none:"-" }}</td>
+                <td>{{ donation.donor_name|default_if_none:"-" }}</td>
+                <td>{{ donation.donor_mobile|default_if_none:"-" }}</td>
+                <td>{{ donation.donor_email|default_if_none:"-" }}</td>
+                <td>{{ donation.donor_address|default_if_none:"-" }}</td>
+                <td>{{ donation.uqid|default_if_none:"-" }}</td>
+                <td>{{ donation.receipt_no|default_if_none:"-" }}</td>
+              </tr>
               {% endfor %}
-            </select>
+              
+            </tbody>
+          </table>
+          
+          {# Month donation chart data used by static/dashboard/js/rm_portal/dashed_line.js #}
+          {{ month_labels|json_script:"month-labels" }}
+          {{ chennai_month|json_script:"chennai-month" }}
+          {{ madurai_month|json_script:"madurai-month" }}
+          {{ bangalore_month|json_script:"bangalore-month" }}
           </div>
-
-          <!-- Submit Button -->
-          <div class="col-lg-3 mt-3">
-            <label class="form-label mb-0"></label> <br>
-            <button type="submit" id="searchBtn"
-                    class="btn btn-outline-secondary waves-effect waves-light material-shadow-none">
-              Search
-            </button>
-          </div>
-        </form>
-
-      </div>
-        
-     <br>
-             
-     <div>
-       <div class="row">
-       
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #5ec2dd;">
-                  <div class="card-body" >
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Today RM's Collection</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="{{ today_collection|floatformat:2|default:0 }}">{{ today_collection|floatformat:2|default:0 }}</span>k
-
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2"
-                          >
-                            <i
-                              data-feather="users"
-                              class="text-info material-shadow"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #5ec2dd;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Yesterday RM's Collection</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="{{ yesterday_collection|floatformat:2|default:0 }}">{{ yesterday_collection|floatformat:2|default:0 }}</span>k
-
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="activity" class="text-info"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate "style="background-color: #5ec2dd;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-white-50 mb-0">
-                          This Month Collection
-                        </p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white">
-                          <span class="counter-value" data-target="{{ this_month_collection|floatformat:0|default:0 }}">{{ this_month_collection|floatformat:0|default:0 }}</span>m
-                          <span class="counter-value" data-target="0">0</span>sec
-
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="clock" class="text-white"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate" style="background-color: #5ec2dd;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Last Month Collection<p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="{{ last_month_collection|floatformat:2|default:0 }}">{{ last_month_collection|floatformat:2|default:0 }}</span>%
-
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
-                          >
-                            <i
-                              data-feather="external-link"
-                              class="text-info"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-            </div>
-          <!--end-->
-
-               <div class="row">
-       
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #5ec2dd;">
-                  <div class="card-body" >
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">RM link Collection</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="{{ rm_link_collection|floatformat:2|default:0 }}">{{ rm_link_collection|floatformat:2|default:0 }}</span>k
-
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2"
-                          >
-                            <i
-                              data-feather="users"
-                              class="text-info material-shadow"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #5ec2dd;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">GPay Collection</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="{{ gpay_collection|floatformat:2|default:0 }}">{{ gpay_collection|floatformat:2|default:0 }}</span>
-
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="activity" class="text-info"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-            </div>
-         
-
-
-<div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">RM's </h5>
-      </div>
-
-      <div class="card-body">
-        <div class="table-responsive">
-        <table
-          id="website_donation_table_student"
-          class="table table-bordered  table-striped align-middle nowrap mb-0"
-          style="width: 100%">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Virtual Label</th>
-              <th>Source</th>
-              <th>Amount</th>
-              <th>Donated Date & Time</th>
-              <th>Status</th>
-              <th>Mode of Payment</th>
-              <th>P.T.ID</th> 
-              <th>Donor Name</th>
-              <th>Donor No</th>
-              <th>Donor Email</th>
-              <th>Donor Address</th>
-              <th>UQ.T.ID</th>
-              <th>Receipt No</th>
-            </tr>
-          </thead>
-
-          <tbody>
-           {% for donation in donations %}
-             <tr>
-               <td>{{ donation.date|default_if_none:"-" }}</td>
-               <td>{{ donation.virtual_label|default_if_none:"-" }}</td>
-               <td>{{ donation.source|default_if_none:"-" }}</td>
-               <td>{{ donation.amount|floatformat:'0'|default_if_none:"-" }}</td>
-               <td>
-                 {% if donation.submitted_at %}
-                 {{ donation.submitted_at|localtime|date:"d-m-Y h:i A" }}
-                 {% else %}
-                 -
-                 {% endif %}
-               </td>
-
-               <td>
-                 {% if donation.status == 'unsettled' %}
-                   <span class="badge rounded-pill bg-success-subtle text-success">Success</span>
-                   {% else %}
-                   <span class="badge rounded-pill bg-success-subtle text-success">{{ donation.status }}</span>
-                 {% endif %}
-               </td>
-               <td>{{ donation.mode|default_if_none:"-" }}</td>
-               <td>{{ donation.ptid|default_if_none:"-" }}</td>
-               <td>{{ donation.donor_name|default_if_none:"-" }}</td>
-               <td>{{ donation.donor_mobile|default_if_none:"-" }}</td>
-               <td>{{ donation.donor_email|default_if_none:"-" }}</td>
-               <td>{{ donation.donor_address|default_if_none:"-" }}</td>
-               <td>{{ donation.uqid|default_if_none:"-" }}</td>
-               <td>{{ donation.receipt_no|default_if_none:"-" }}</td>
-             </tr>
-             {% endfor %}
-             
-          </tbody>
-        </table>
-        
-        {# Month donation chart data used by static/dashboard/js/rm_portal/dashed_line.js #}
-        {{ month_labels|json_script:"month-labels" }}
-        {{ chennai_month|json_script:"chennai-month" }}
-        {{ madurai_month|json_script:"madurai-month" }}
-        {{ bangalore_month|json_script:"bangalore-month" }}
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!--end-->
-              
-</div>
-</div>
+  <!--end-->
+                
+  </div>
+  </div>
+  {{ branch_names|json_script:"branch-categories" }}
+  {{ branch_values|json_script:"branch-values" }}
+
+  {{ rm_categories|json_script:"rm-categories" }}
+  {{ rm_values|json_script:"rm-values" }}
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="{% static 'dashboard/libs/flatpickr/flatpickr.min.js' %}"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+      if (typeof flatpickr === "undefined") {
+          console.warn("Flatpickr is not available.");
+          return;
+      }
+
+      /* ---------------------------------------------------------
+        Date picker #1: "All RM - This Month" filter (top chart)
+      --------------------------------------------------------- */
+      const allcatDateInput = document.getElementById("allcat-date");
+      const dateForm        = document.getElementById("dateForm");
+      const dateRangeLabel  = document.getElementById("dateRangeLabel");
+      const allcatClearBtn  = document.getElementById("clearBtn");
+
+      if (allcatDateInput && dateForm && dateRangeLabel && allcatClearBtn) {
+          const allcatFp = flatpickr(allcatDateInput, {
+              mode: "range",
+              dateFormat: "d M, Y",
+              allowInput: true,
+              onChange: function (selectedDates) {
+                  if (selectedDates.length === 0) {
+                      dateRangeLabel.textContent = "";
+                  }
+              }
+          });
+
+          dateForm.addEventListener("submit", function (e) {
+              // Hard stop navigation (no full page reload)
+              if (e && typeof e.preventDefault === "function") e.preventDefault();
+              if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+
+              const selectedDates = (allcatFp && allcatFp.selectedDates) ? allcatFp.selectedDates : [];
+              if (!selectedDates.length) {
+                  if (typeof window.updateRmPortalCharts === "function") {
+                      window.updateRmPortalCharts("");
+                  }
+                  return false;
+              }
+
+              const fromDate = allcatFp.formatDate(selectedDates[0], "d M, Y");
+              const toDate = selectedDates.length > 1 ? allcatFp.formatDate(selectedDates[1], "d M, Y") : fromDate;
+              const selected = fromDate === toDate ? fromDate : fromDate + " to " + toDate;
+
+              allcatDateInput.value = selected;
+              if (typeof window.updateRmPortalCharts === "function") {
+                  window.updateRmPortalCharts(selected);
+              }
+
+              return false;
+          });
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="{% static 'dashboard/libs/flatpickr/flatpickr.min.js' %}"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    if (typeof flatpickr === "undefined") {
-        console.warn("Flatpickr is not available.");
-        return;
-    }
 
-    /* ---------------------------------------------------------
-       Date picker #1: "All RM - This Month" filter (top chart)
-    --------------------------------------------------------- */
-    const allcatDateInput = document.getElementById("allcat-date");
-    const dateForm        = document.getElementById("dateForm");
-    const dateRangeLabel  = document.getElementById("dateRangeLabel");
-    const allcatClearBtn  = document.getElementById("clearBtn");
+          allcatClearBtn.addEventListener("click", function () {
+              allcatFp.clear();
+              dateRangeLabel.textContent = "";
+          });
+      }
 
-    if (allcatDateInput && dateForm && dateRangeLabel && allcatClearBtn) {
-        const allcatFp = flatpickr(allcatDateInput, {
-            mode: "range",
-            dateFormat: "d M, Y",
-            allowInput: true,
-            onChange: function (selectedDates) {
-                if (selectedDates.length === 0) {
-                    dateRangeLabel.textContent = "";
-                }
-            }
-        });
+      /* ---------------------------------------------------------
+        Date picker #2: "Donation" search form
+      --------------------------------------------------------- */
+      const dateInput = document.getElementById("date_range_display");
+      const dateFrom = document.getElementById("date_from");
+      const dateTo = document.getElementById("date_to");
+      const clearBtn = document.getElementById("clear_date");
 
-        dateForm.addEventListener("submit", function (e) {
-            e.preventDefault();
+      if (dateInput && dateFrom && dateTo && clearBtn) {
+          const fp = flatpickr(dateInput, {
+              mode: "range",
+              dateFormat: "d/m/Y",
+              allowInput: false,
+              clickOpens: true,
+              onChange: function (selectedDates) {
+                  if (selectedDates.length === 1) {
+                      dateFrom.value = fp.formatDate(selectedDates[0], "Y-m-d");
+                      dateTo.value   = fp.formatDate(selectedDates[0], "Y-m-d");
+                      dateInput.value = fp.formatDate(selectedDates[0], "d/m/Y");
+                  }
+                  else if (selectedDates.length === 2) {
+                      dateFrom.value = fp.formatDate(selectedDates[0], "Y-m-d");
+                      dateTo.value   = fp.formatDate(selectedDates[1], "Y-m-d");
+                      dateInput.value = fp.formatDate(selectedDates[0], "d/m/Y") + " to " + fp.formatDate(selectedDates[1], "d/m/Y");
+                  }
 
-            const selectedDates = allcatFp.selectedDates;
+                  clearBtn.classList.toggle("show", selectedDates.length > 0);
+              }
+          });
 
-            if (!selectedDates.length) {
-                dateRangeLabel.textContent = "";
-                return;
-            }
+          clearBtn.addEventListener("click", function () {
+              fp.clear();
+              dateFrom.value = "";
+              dateTo.value = "";
+              dateInput.value = "";
+              clearBtn.classList.remove("show");
+          });
+      }
+  });
 
-            let fromDate = allcatFp.formatDate(selectedDates[0], "d M, Y");
-            let toDate   = selectedDates.length > 1
-                ? allcatFp.formatDate(selectedDates[1], "d M, Y")
-                : fromDate;
+  document.getElementById("searchform").addEventListener("submit", function (e) {
 
-            dateRangeLabel.textContent = "Showing: " + fromDate + " to " + toDate;
-        });
+      e.preventDefault();
 
-        allcatClearBtn.addEventListener("click", function () {
-            allcatFp.clear();
-            dateRangeLabel.textContent = "";
-        });
-    }
+      const params = new URLSearchParams(new FormData(this));
 
-    /* ---------------------------------------------------------
-       Date picker #2: "Donation" search form
-    --------------------------------------------------------- */
-    const dateInput = document.getElementById("date_range_display");
-    const dateFrom = document.getElementById("date_from");
-    const dateTo = document.getElementById("date_to");
-    const clearBtn = document.getElementById("clear_date");
+      fetch(window.location.pathname + "?ajax=1&" + params.toString(), {
+          headers: {
+              "X-Requested-With": "XMLHttpRequest"
+          }
+      })
+      .then(res => res.json())
+      .then(function(payload){
 
-    if (dateInput && dateFrom && dateTo && clearBtn) {
-        const fp = flatpickr(dateInput, {
-            mode: "range",
-            dateFormat: "d/m/Y",
-            allowInput: false,
-            clickOpens: true,
-            onChange: function (selectedDates) {
-                if (selectedDates.length === 1) {
-                    dateFrom.value = fp.formatDate(selectedDates[0], "Y-m-d");
-                    dateTo.value   = fp.formatDate(selectedDates[0], "Y-m-d");
-                    dateInput.value = fp.formatDate(selectedDates[0], "d/m/Y");
-                }
-                else if (selectedDates.length === 2) {
-                    dateFrom.value = fp.formatDate(selectedDates[0], "Y-m-d");
-                    dateTo.value   = fp.formatDate(selectedDates[1], "Y-m-d");
-                    dateInput.value = fp.formatDate(selectedDates[0], "d/m/Y") + " to " + fp.formatDate(selectedDates[1], "d/m/Y");
-                }
+          // --------------------
+          // Cards
+          // --------------------
 
-                clearBtn.classList.toggle("show", selectedDates.length > 0);
-            }
-        });
+          document.getElementById("today_collection").innerHTML =
+              Number(payload.today_collection).toLocaleString("en-IN");
 
-        clearBtn.addEventListener("click", function () {
-            fp.clear();
-            dateFrom.value = "";
-            dateTo.value = "";
-            dateInput.value = "";
-            clearBtn.classList.remove("show");
-        });
-    }
-});
-</script>
-{# Day donation chart data used by static/dashboard/js/rm_portal/irregular_timeseries_chart.js #}
-{{ day_labels|json_script:"day-labels" }}
-{{ chennai_day|json_script:"chennai-day" }}
-{{ madurai_day|json_script:"madurai-day" }}
-{{ bangalore_day|json_script:"bangalore-day" }}
+          document.getElementById("yesterday_collection").innerHTML =
+              Number(payload.yesterday_collection).toLocaleString("en-IN");
 
-{% endblock %}
+          document.getElementById("this_month_collection").innerHTML =
+              Number(payload.this_month_collection).toLocaleString("en-IN");
 
-{% block extra_js %}
-<script src="{% static 'dashboard/js/rm_portal/irregular_timeseries_chart.js' %}"></script>
-<script src="{% static 'dashboard/js/rm_portal/dashed_line.js' %}"></script>
-<script src="{% static 'dashboard/js/rm_portal/all_month_chart.js' %}"></script>
-<script src="{% static 'dashboard/js/rm_portal/rm_all_month.js' %}"></script>
-{% endblock %}
+          document.getElementById("last_month_collection").innerHTML =
+              Number(payload.last_month_collection).toLocaleString("en-IN");
+
+          document.getElementById("rm_link_collection").innerHTML =
+              Number(payload.rm_link_collection).toLocaleString("en-IN");
+
+          document.getElementById("gpay_collection").innerHTML =
+              Number(payload.gpay_collection).toLocaleString("en-IN");
+            
+          document.getElementById("total_collection").innerHTML =
+              Number(payload.filtered_total).toLocaleString("en-IN");
+
+
+          // --------------------
+          // Table
+          // --------------------
+
+          const tbody = document.getElementById("donationTableBody");
+
+          tbody.innerHTML = "";
+
+          payload.donations.forEach(function(d,index){
+
+              tbody.innerHTML += `
+              <tr>
+                  <td>${index + 1}</td>
+                  <td>${d.virtual_label ?? "-"}</td>
+                  <td>${d.source ?? "-"}</td>
+                  <td>${Number(d.amount || 0).toLocaleString("en-IN")}</td>
+                  <td>${d.submitted_at ?? "-"}</td>
+                  <td>${d.status ?? "-"}</td>
+                  <td>${d.mode ?? "-"}</td>
+                  <td>${d.ptid ?? "-"}</td>
+                  <td>${d.donor_name ?? "-"}</td>
+                  <td>${d.donor_mobile ?? "-"}</td>
+                  <td>${d.donor_email ?? "-"}</td>
+                  <td>${d.donor_address ?? "-"}</td>
+                  <td>${d.uqid ?? "-"}</td>
+                  <td>${d.receipt_no ?? "-"}</td>
+              </tr>
+              `;
+
+          });
+
+      })
+      .catch(function(err){
+          console.error(err);
+      });
+
+  });
+
+  </script>
+  {# Day donation chart data used by static/dashboard/js/rm_portal/irregular_timeseries_chart.js #}
+  {{ day_labels|json_script:"day-labels" }}
+  {{ chennai_day|json_script:"chennai-day" }}
+  {{ madurai_day|json_script:"madurai-day" }}
+  {{ bangalore_day|json_script:"bangalore-day" }}
+
+  {% endblock %}
+
+  {% block extra_js %}
+  <script src="{% static 'dashboard/js/rm_portal/irregular_timeseries_chart.js' %}"></script>
+  <script src="{% static 'dashboard/js/rm_portal/dashed_line.js' %}"></script>
+  <script src="{% static 'dashboard/js/rm_portal/all_month_chart.js' %}"></script>
+  <script src="{% static 'dashboard/js/rm_portal/rm_all_month.js' %}"></script>
+  {% endblock %}

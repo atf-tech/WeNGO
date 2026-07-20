@@ -4,3 +4,6 @@ from .rm_all_pages import inbox, whatsapp_chat, all_transaction
 from .gpay import rm_gpay_payments
 from .whatsapp_chat import *
 from .visitor_chat import *
+from .rm_dashboard import rmportal_index
+
+

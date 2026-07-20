@@ -23,7 +23,6 @@
   --wg-shadow: 0 4px 24px rgba(26,26,46,0.10);
   --wg-shadow2: 0 20px 60px rgba(26,26,46,0.28);
 
-  /* Light-pink theme tokens for the meal menu card */
   --wg-menu-card-bg: linear-gradient(160deg, #FFEFF6 0%, #FFE3EF 100%);
   --wg-menu-card-border: #FBC9DE;
   --wg-chip-pink: #FFF5FA;
@@ -65,14 +64,12 @@
 }
 .wg-sec-title em { font-style: italic; color: var(--wg-red); }
 .wg-sec-desc {
-
   font-size: 14px; color: var(--wg-sub);
   line-height: 1.85; font-weight: 400;
 }
 
 .wg-meals { background: var(--wg-white); }
 
-/* ===== The whole menu now lives inside one light-pink card ===== */
 .wg-menu-card {
   background: var(--wg-menu-card-bg);
   border: 1.5px solid var(--wg-menu-card-border);
@@ -129,17 +126,14 @@
 }
 .wg-pkg__body { flex: 1; min-width: 0; }
 .wg-pkg__title {
-  
   font-size: 16px; font-weight: 700; color: var(--wg-text);
   margin-bottom: 2px;
 }
 .wg-pkg__meals {
- 
   font-size: 12px; color: var(--wg-sub);
   margin-bottom: 8px;
 }
 .wg-pkg__price {
-  
   font-size: 19px; font-weight: 700; color: var(--wg-red);
   display: block;
 }
@@ -173,7 +167,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
-  /* needed so the hover tooltip can be positioned relative to the card */
   overflow: visible;
 }
 .wg-mc:hover { box-shadow: var(--wg-shadow); }
@@ -190,17 +183,14 @@
 }
 .wg-mc__info { flex: 1; min-width: 0; }
 .wg-mc__name {
- 
   font-size: 15px; font-weight: 700; color: var(--wg-text);
   margin-bottom: 2px;
 }
 .wg-mc__price {
-
   font-size: 18px; font-weight: 700; color: var(--wg-red);
   display: inline-block; margin-right: 8px;
 }
 .wg-mc__badge {
-  
   font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
   color: var(--wg-red); background: rgba(183,28,28,0.10);
   padding: 3px 8px; border-radius: 20px; text-transform: uppercase;
@@ -216,7 +206,6 @@
 }
 .wg-mc.is-on .wg-mc__check { background: var(--wg-red); border-color: var(--wg-red); color: #fff; }
 
-/* ===== "Hover to view menu" hint + popup tooltip ===== */
 .wg-mc__hint {
   font-size: 11px; font-weight: 600;
   color: var(--wg-red); display: inline-flex; align-items: center; gap: 5px;
@@ -267,7 +256,6 @@
   padding: 4px 10px; border-radius: 20px; font-weight: 500;
 }
 
-/* ===== Veg / Non-Veg diet toggle (used in Lunch & Dinner cards) ===== */
 .wg-diet-toggle {
   display: inline-flex;
   gap: 8px;
@@ -327,18 +315,15 @@
 .wg-order-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 7px 0;
- 
   font-size: 12.5px; color: var(--wg-sub);
 }
 .wg-order-row.is-active { color: var(--wg-text); font-weight: 600; }
 .wg-order-row.is-active .wg-order-row__val { color: var(--wg-red); font-weight: 700; }
 .wg-order-sep { height: 1px; background: var(--wg-line); margin: 10px 0; }
 .wg-order-total-lbl {
- 
   font-size: 13px; font-weight: 700; color: var(--wg-text);
 }
 .wg-order-total-val {
-  
   font-size: 26px; font-weight: 700; color: var(--wg-red);
 }
 
@@ -356,16 +341,13 @@
   box-shadow: 0 2px 8px rgba(26,26,46,0.06);
 }
 .wg-impact-box__eyebrow {
-  
   font-size: 11px; color: var(--wg-sub); margin-bottom: 2px;
 }
 .wg-impact-box__count {
-  
   font-size: 19px; font-weight: 700; color: var(--wg-text);
   line-height: 1.2;
 }
 .wg-impact-box__note {
-
   font-size: 11px; color: var(--wg-sub); margin-top: 2px;
 }
 
@@ -373,7 +355,6 @@
   width: 100%;
   background: var(--wg-red);
   border: none; border-radius: 14px; padding: 16px;
- 
   font-size: 15px; font-weight: 700; color: var(--wg-white);
   display: flex; align-items: center; justify-content: center; gap: 10px;
   cursor: pointer;
@@ -422,7 +403,7 @@
 .wg-donor:last-child { border-right: none; }
 .wg-donor__av {
   width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.22); color: var(--wg-white);
-   font-size: 10px; font-weight: 800;
+  font-size: 10px; font-weight: 800;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .wg-donor__name {  font-size: 11px; color: rgba(255,255,255,0.85); white-space: nowrap; font-weight: 600; }
@@ -434,13 +415,13 @@
 .wg-phone-input { display: flex; gap: 8px; }
 .wg-phone-code {
   display: flex; align-items: center; gap: 4px; border: 1.5px solid var(--wg-line); border-radius: 10px;
-  padding: 0 10px;  font-size: 13px; color: var(--wg-text); flex-shrink: 0; background: var(--wg-surface);
+  padding: 0 10px; font-size: 13px; color: var(--wg-text); flex-shrink: 0; background: var(--wg-surface);
 }
 .wg-step-actions { display: flex; gap: 10px; margin-top: 18px; }
 .wg-step-actions .wg-pay-btn, .wg-step-actions .wg-ghost-btn { flex: 1; margin-bottom: 0; }
 .wg-ghost-btn {
   background: var(--wg-white); border: 1.5px solid var(--wg-line); border-radius: 14px; padding: 15px 20px;
-   font-size: 14px; font-weight: 700; color: var(--wg-text);
+  font-size: 14px; font-weight: 700; color: var(--wg-text);
   display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s;
 }
 .wg-ghost-btn:hover { background: var(--wg-surface); }
@@ -461,7 +442,6 @@
 #message, #message-popup {  sans-serif; font-size: 0.875rem; color: var(--wg-red); }
 .wg-form-step { display: block; }
 
-
 @media (min-width: 768px) {
     .px-md-4 {
         padding-right: 12.5rem !important;
@@ -470,9 +450,11 @@
 }
 </style>
 
- <div> <img class="rbt-radius w-100"
+<div>
+   <img class="rbt-radius w-100"
     src="{% static 'website/images/banner/meenakshi banner.jpg.jpeg' %}"
-    alt="Banner Images"></div>
+    alt="Banner Images">
+</div>
 
 <section class="wg-meals py-5" id="at-meals">
   <div class="container-xl px-3 px-md-4">
@@ -480,9 +462,7 @@
     <h2 class="wg-sec-title mb-2">Feed All Elders<br><em>with One Kind Act</em> <i class="fa-regular fa-heart" style="font-size:0.6em;"></i></h2>
     <p class="wg-sec-desc mb-4">Select one or more meals below. Hover on a meal card to preview what's on the menu.</p>
 
-    <!-- ===== Everything below lives inside one light-pink menu card ===== -->
     <div class="wg-menu-card">
-
       <span class="wg-pkg-label"><i class="fa-solid fa-heart"></i> Sponsor a Full Day</span>
 
       <div class="wg-pkg-row">
@@ -508,8 +488,6 @@
       </div>
 
       <div class="wg-mc-row">
-
-        <!-- Morning Breakfast -->
         <div class="wg-mc" id="at-mc-bf" data-at-meal="bf" tabindex="0">
           <div class="wg-mc__check" data-select-for="bf"><i class="fa-solid fa-check"></i></div>
           <div class="wg-mc__top">
@@ -532,7 +510,6 @@
           </div>
         </div>
 
-        <!-- Afternoon Lunch -->
         <div class="wg-mc" id="at-mc-lunch" data-at-meal="lunch" tabindex="0">
           <div class="wg-mc__check" data-select-for="lunch"><i class="fa-solid fa-check"></i></div>
           <div class="wg-mc__top">
@@ -544,7 +521,6 @@
             </div>
           </div>
 
-          <!-- Veg / Non-Veg diet toggle for LUNCH -->
           <div class="wg-diet-toggle">
             <button type="button" class="wg-diet-btn" data-diet="veg" data-meal-for="lunch">
               <span class="wg-diet-btn__icon"></span> Veg
@@ -568,7 +544,6 @@
           </div>
         </div>
 
-        <!-- Evening Dinner -->
         <div class="wg-mc" id="at-mc-dn" data-at-meal="dn" tabindex="0">
           <div class="wg-mc__check" data-select-for="dn"><i class="fa-solid fa-check"></i></div>
           <div class="wg-mc__top">
@@ -578,16 +553,6 @@
               <span class="wg-mc__price" id="at-dn-price">₹4,000</span>
               <span class="wg-mc__badge">For {{ home.members }} members</span>
             </div>
-          </div>
-
-          <!-- Veg / Non-Veg diet toggle for DINNER -->
-          <div class="wg-diet-toggle">
-            <button type="button" class="wg-diet-btn" data-diet="veg" data-meal-for="dn">
-              <span class="wg-diet-btn__icon"></span> Veg
-            </button>
-            <button type="button" class="wg-diet-btn" data-diet="nonveg" data-meal-for="dn">
-              <span class="wg-diet-btn__icon"></span> Non-Veg
-            </button>
           </div>
 
           <span class="wg-mc__hint"><i class="fa-solid fa-circle-info"></i> Hover to view menu</span>
@@ -601,7 +566,6 @@
             </div>
           </div>
         </div>
-
       </div>
 
       <div class="wg-summary-row">
@@ -632,10 +596,7 @@
         <i class="fa-solid fa-credit-card"></i>
         Proceed to Pay
       </button>
-
     </div>
-    <!-- ===== /wg-menu-card ===== -->
-
   </div>
 </section>
 
@@ -653,9 +614,7 @@
               <div class="wg-form-card__head-sub">Your generosity changes lives. Every rupee counts.</div>
             </div>
           </div>
-          <div class="wg-badges">
-            
-          </div>
+          <div class="wg-badges"></div>
         </div>
 
         <div class="wg-donors">
@@ -681,11 +640,11 @@
             <div class="row g-2 mb-2">
               <div class="col-12 col-sm-6">
                 <label for="donor_name_popup" class="form-label">Donor Name</label>
-                <input type="text" class="form-control" id="donor_name_popup" placeholder="e.g. John Joe" required />
+                <input type="text" class="form-control" name="donor_name" id="donor_name_popup" placeholder="e.g. John Joe" required />
               </div>
               <div class="col-12 col-sm-6">
                 <label for="donor_email_popup" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="donor_email_popup" placeholder="e.g. john@gmail.com" required />
+                <input type="email" class="form-control" name = "donor_email" id="donor_email_popup" placeholder="e.g. john@gmail.com" required />
               </div>
             </div>
 
@@ -694,31 +653,29 @@
                 <label for="donor_mobile_popup" class="form-label">WhatsApp Number</label>
                 <div class="wg-phone-input">
                   <span class="wg-phone-code">🇮🇳 +91</span>
-                  <input type="tel" class="form-control" id="donor_mobile_popup" placeholder="9876543210" required />
+                  <input type="tel" class="form-control" name="donor_mobile" id="donor_mobile_popup" placeholder="9876543210" required />
                 </div>
               </div>
-              
+
               <div class="col-12 col-sm-6">
                 <label for="service_date_popup" class="form-label">Service Date</label>
-                <input type="date" class="form-control" id="service_date_popup" required />
+                <input type="date" class="form-control" name="service_date" id="service_date_popup" required />
               </div>
             </div>
-
 
             <div class="row g-2 mb-2">
               <div class="col-12 col-sm-6">
                 <label for="address_popup" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address_popup" placeholder="e.g. Chennai, Tamil Nadu – 600028" required />
+                <input type="text" class="form-control" name="address" id="address_popup" placeholder="e.g. Chennai, Tamil Nadu – 600028" required />
               </div>
               <div class="col-12 col-sm-6">
-              <label for="pan_number_popup" class="form-label">PAN Number <span class="text-muted fw-normal">(optional)</span></label>
-                 <input type="text" class="form-control text-uppercase" id="pan_number_popup" maxlength="10" placeholder="ABCDE1234F" />
+                <label for="pan_number_popup" class="form-label">PAN Number <span class="text-muted fw-normal">(optional)</span></label>
+                <input type="text" class="form-control text-uppercase" name="pan_number" id="pan_number_popup" maxlength="10" placeholder="ABCDE1234F" />
               </div>
             </div>
 
-
             <div class="wg-order-box">
-              <div class="wg-order-row" id="at-ob-bf-popup"><span>Breakfast</span><span class="wg-order-row__val">Not selected</span></div>
+              <div class="wg-order-row"  id="at-ob-bf-popup"><span>Breakfast</span><span class="wg-order-row__val">Not selected</span></div>
               <div class="wg-order-row" id="at-ob-lunch-popup"><span>Lunch</span><span class="wg-order-row__val">Not selected</span></div>
               <div class="wg-order-row" id="at-ob-dn-popup"><span>Dinner</span><span class="wg-order-row__val">Not selected</span></div>
               <div class="wg-order-sep"></div>
@@ -759,18 +716,18 @@
 
     <div class="wg-map-wrap position-relative" style="z-index:1;">
       <div class="wg-map-col">
-        <iframe
-          class="wg-map-frame"
+        <iframe class="wg-map-frame"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1964.7444124997235!2d78.08742251807253!3d9.976419028573064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c962daffc4b9%3A0xc9a6c7f34d545494!2sMadurai%20Meenakshi%20Old%20Age%20Home!5e0!3m2!1sen!2sin!4v1782553539155!5m2!1sen!2sin"
           allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
         </iframe>
       </div>
 
       <div class="wg-map-col">
-       <iframe 
-       class="wg-map-frame"
-        src="https://www.youtube.com/embed/KJmrDRUx7gc?si=77akrMgLtc3HCx1F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
-         allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <iframe class="wg-map-frame"
+          src="https://www.youtube.com/embed/KJmrDRUx7gc?si=77akrMgLtc3HCx1F"
+          title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
       </div>
     </div>
   </div>
@@ -808,7 +765,6 @@
 
 <script src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/v2.0.0/easebuzz-checkout-v2.min.js"></script>
 <script>
-// Base prices per meal + diet type
 const PRICES = {
   bf: 4000,
   lunch_veg: 6000,
@@ -817,7 +773,6 @@ const PRICES = {
   dn_nonveg: 6000
 };
 
-// Menu items shown in the hover tooltip for each meal / diet combination
 const MENU = {
   bf: ["Idli", "Pongal", "Vada"],
   lunch: {
@@ -826,7 +781,7 @@ const MENU = {
   },
   dn: {
     veg: ["Idli", "Veg Khichdi", "Sambar"],
-    nonveg: ["Chicken Gravy", "Chapati", "Sambar"]
+    nonveg: ["Idli", "Veg Khichdi", "Sambar"]
   }
 };
 
@@ -838,7 +793,7 @@ const state = {
 
 function mealPrice(meal) {
   if (meal === "bf") return PRICES.bf;
-  return state[meal].type === "nonveg" ? PRICES[`${meal}_nonveg`] : PRICES[`${meal}_veg`];
+  return state[meal].type === "nonveg" && meal === "lunch" ? PRICES.lunch_nonveg : PRICES[`${meal}_veg`];
 }
 
 function calcTotal() {
@@ -871,8 +826,14 @@ function updateUI() {
     const val = row ? row.querySelector(".wg-order-row__val") : null;
     if (row) row.classList.toggle("is-active", state[meal].on);
     if (val) {
-      const dietLabel = meal === "bf" ? "" : (state[meal].type === "nonveg" ? "Non-Veg " : "Pure Veg ");
-      val.textContent = state[meal].on ? `${dietLabel}₹${mealPrice(meal).toLocaleString("en-IN")} ✓` : "Not selected";
+      if (meal === "bf") {
+        val.textContent = state[meal].on ? `₹${mealPrice(meal).toLocaleString("en-IN")} ✓` : "Not selected";
+      } else if (meal === "dn") {
+        val.textContent = state[meal].on ? `Pure Veg ₹${mealPrice(meal).toLocaleString("en-IN")} ✓` : "Not selected";
+      } else {
+        const dietLabel = state[meal].type === "nonveg" ? "Non-Veg " : "Pure Veg ";
+        val.textContent = state[meal].on ? `${dietLabel}₹${mealPrice(meal).toLocaleString("en-IN")} ✓` : "Not selected";
+      }
     }
 
     renderTooltip(meal);
@@ -884,9 +845,18 @@ function updateUI() {
   const dnPrice = document.getElementById("at-dn-price");
   if (dnPrice) dnPrice.textContent = "₹" + mealPrice("dn").toLocaleString("en-IN");
 
-  // sync the Veg / Non-Veg toggle buttons on lunch + dinner cards
   document.querySelectorAll(".wg-diet-btn").forEach((btn) => {
     const meal = btn.dataset.mealFor;
+    if (meal === "dn") {
+      btn.classList.remove("is-active");
+      btn.disabled = true;
+      btn.style.opacity = "0.45";
+      btn.style.cursor = "not-allowed";
+      return;
+    }
+    btn.disabled = false;
+    btn.style.opacity = "";
+    btn.style.cursor = "";
     btn.classList.toggle("is-active", btn.dataset.diet === state[meal].type);
   });
 
@@ -899,8 +869,8 @@ function updateUI() {
   const impactEl = document.getElementById("at-impact-count");
   if (impactEl) impactEl.textContent = `${mealsCount} Meal${mealsCount === 1 ? "" : "s"}`;
 
-  const allVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "veg" && state.dn.type === "veg";
-  const allNonVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "nonveg" && state.dn.type === "nonveg";
+  const allVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "veg";
+  const allNonVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "nonveg";
   const pkgVeg = document.getElementById("at-pkg-veg");
   const pkgNveg = document.getElementById("at-pkg-nveg");
   if (pkgVeg) pkgVeg.classList.toggle("is-on", allVeg);
@@ -932,20 +902,17 @@ document.querySelectorAll("[data-select-for]").forEach((el) => {
   });
 });
 
-// Veg / Non-Veg toggle buttons on the lunch & dinner cards — click sets the
-// diet type for that specific meal (and turns the meal on so the choice is
-// reflected immediately), without toggling it off if already selected.
 document.querySelectorAll(".wg-diet-btn").forEach((btn) => {
   btn.addEventListener("click", function (e) {
     e.stopPropagation();
     const meal = this.dataset.mealFor;
+    if (meal === "dn") return;
     state[meal].type = this.dataset.diet;
     state[meal].on = true;
     updateUI();
   });
 });
 
-// clicking anywhere else on a meal card toggles it on/off
 document.querySelectorAll(".wg-mc").forEach((card) => {
   card.addEventListener("click", function (e) {
     if (e.target.closest(".wg-diet-btn") || e.target.closest("[data-select-for]")) return;
@@ -964,7 +931,7 @@ document.getElementById("at-pkg-veg").addEventListener("click", function () {
 document.getElementById("at-pkg-nveg").addEventListener("click", function () {
   state.bf = { on: true };
   state.lunch = { on: true, type: "nonveg" };
-  state.dn = { on: true, type: "nonveg" };
+  state.dn = { on: true, type: "veg" };
   updateUI();
 });
 
@@ -986,9 +953,92 @@ document.addEventListener("keydown", function (e) {
   if (e.key === "Escape") closeModal();
 });
 
-document.getElementById("donation-form-popup").addEventListener("submit", function (e) {
-  e.preventDefault();
-  document.getElementById("message-popup").innerText = "Popup form is working. Connect payment flow here.";
+const easebuzzCheckout = new EasebuzzCheckout(
+    "{{ easebuzz.merchant_key }}",
+    "{{ easebuzz.env }}"
+);
+
+document.getElementById("donation-form-popup").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const messageEl = document.getElementById("message-popup");
+    messageEl.innerText = "";
+
+    const donorName = document.getElementById("donor_name_popup").value.trim();
+    const donorEmail = document.getElementById("donor_email_popup").value.trim();
+    const donorMobile = document.getElementById("donor_mobile_popup").value.trim();
+    const serviceDate = document.getElementById("service_date_popup").value;
+    const address = document.getElementById("address_popup").value.trim();
+    const panNumber = document.getElementById("pan_number_popup").value.trim();
+    const homeName = document.querySelector('[name="home_name"]') ? document.querySelector('[name="home_name"]').value : "";
+
+    const totalPriceEl = document.querySelector(".home-total-price-int-popup");
+    const totalPrice = totalPriceEl && totalPriceEl.value ? totalPriceEl.value : calcTotal();
+
+    if (!donorName || !donorEmail || !donorMobile) {
+        messageEl.innerText = "Please fill in your name, email and mobile number.";
+        return;
+    }
+
+    if (calcTotal() === 0) {
+        messageEl.innerText = "Please select at least one meal to continue.";
+        return;
+    }
+
+    try {
+        const payload = {
+            home_name: homeName,
+            donor_name: donorName,
+            donor_mobile: donorMobile,
+            donor_email: donorEmail,
+            service_date: serviceDate,
+            pan_number: panNumber,
+            address: address,
+            breakfast_selected: state.bf.on,
+            lunch_selected: state.lunch.on,
+            dinner_selected: state.dn.on,
+            lunch_type: state.lunch.on ? state.lunch.type : null,
+            total_price: totalPrice
+        };
+
+        const response = await fetch("/food/payment/initiate/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!result.key) {
+            alert(result.error || "Payment initiation failed");
+            return;
+        }
+
+        easebuzzCheckout.initiatePayment(
+            { access_key: result.key },
+            {
+                onResponse: async function (res) {
+                    console.log("Easebuzz response:", res);
+
+                    await fetch("/food/payment/callback/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(res)
+                    });
+
+                    if (res.status === "success") {
+                        window.location.href = "/food/payment/success/";
+                    } else {
+                        window.location.href = "/food/payment/failed/";
+                    }
+                }
+            }
+        );
+
+    } catch (err) {
+        console.error(err);
+        alert("Payment error occurred");
+    }
 });
 
 updateUI();

@@ -94,9 +94,9 @@
                                 <a href="/">Home</a>
                             </li>
                             
-                              <li class="{% if request.resolver_match.url_name == 'food' %}current{% endif %}">
-                                <a href="{% url 'food' %}">Food</a>
-                            </li>
+                              {% comment %} <li class="{% if request.resolver_match.url_name == 'home' %}current{% endif %}">
+                                <a href="{% url 'home' %}">Homes</a>
+                            </li> {% endcomment %}
                             <li
                                 class="with-megamenu has-menu-child-item position-static {% if request.resolver_match.url_name == 'service' %}current{% endif %}">
                                 <a href="{% url 'service' %}">Service <i class="feather-chevron-down"></i></a>

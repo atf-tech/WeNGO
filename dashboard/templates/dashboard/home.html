@@ -1,23 +1,20 @@
-{% extends 'dashboard/base.html' %} {% load static %}
-
-{% block title %}
-Dashboard || Home wengo
-{% endblock %}
-
+{% extends 'dashboard/base.html' %} 
+{% load static %} 
+{% block title %} Dashboard || Home wengo {% endblock %}
 {% block extra_js %}
 <script src="{% static 'dashboard/js/home/gradient_charts.js' %}"></script>
 <script src="{% static 'dashboard/js/home/pie_chart.js' %}"></script>
 <script src="{% static 'dashboard/js/home/home_bar_chart.js' %}"></script>
-{% endblock %}
+{% endblock %} {% block content %}
+<link rel="stylesheet"
+      href="{% static 'dashboard/libs/flatpickr/flatpickr.min.css' %}">
 
-{% block content %}
+<script src="{% static 'dashboard/libs/flatpickr/flatpickr.min.js' %}"></script>
 
 <h4 class="fs-26 mb-1">Good Morning, Admin!</h4>
 <p class="text-muted mb-0">Here's an overview of your donation activity.</p>
 
-<br>
-  
-    
+<br />
 
 <div class="row">
   <div class="col-xl-3 col-md-6">
@@ -26,24 +23,26 @@ Dashboard || Home wengo
         <div class="d-flex align-items-center">
           <div class="flex-grow-1">
             <p class="text-uppercase fw-medium text-muted mb-0">
-              Total Earnings
+              Today's collection
             </p>
           </div>
           <div class="flex-shrink-0">
             <h5 class="text-success fs-14 mb-0">
               <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
-              900
+              {{ today_overall }}
             </h5>
           </div>
         </div>
         <div class="d-flex align-items-end justify-content-between mt-4">
           <div>
             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-              ₹<span class="counter-value" data-target="55925">0</span>
+              ₹{{ today_overall }}
             </h4>
           </div>
           <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-success-subtle rounded fs-3 material-shadow">
+            <span
+              class="avatar-title bg-success-subtle rounded fs-3 material-shadow"
+            >
               <i class="bx bx-rupee text-success"></i>
             </span>
           </div>
@@ -58,7 +57,7 @@ Dashboard || Home wengo
         <div class="d-flex align-items-center">
           <div class="flex-grow-1">
             <p class="text-uppercase fw-medium text-white-50 mb-0">
-              Orders
+              Yesterday's collection
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -71,11 +70,13 @@ Dashboard || Home wengo
         <div class="d-flex align-items-end justify-content-between mt-4">
           <div>
             <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white">
-              <span class="counter-value" data-target="36894">0</span>
+              ₹{{ yesterday_overall }}
             </h4>
           </div>
           <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
+            <span
+              class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow"
+            >
               <i class="bx bx-shopping-bag text-white"></i>
             </span>
           </div>
@@ -90,7 +91,7 @@ Dashboard || Home wengo
         <div class="d-flex align-items-center">
           <div class="flex-grow-1">
             <p class="text-uppercase fw-medium text-muted mb-0">
-              Customers
+              This Month's Collection
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -103,11 +104,13 @@ Dashboard || Home wengo
         <div class="d-flex align-items-end justify-content-between mt-4">
           <div>
             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-              <span class="counter-value" data-target="18335">0</span>
+              ₹{{this_month_overall}}
             </h4>
           </div>
           <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-warning-subtle rounded fs-3 material-shadow">
+            <span
+              class="avatar-title bg-warning-subtle rounded fs-3 material-shadow"
+            >
               <i class="bx bx-user-circle text-warning"></i>
             </span>
           </div>
@@ -122,7 +125,7 @@ Dashboard || Home wengo
         <div class="d-flex align-items-center">
           <div class="flex-grow-1">
             <p class="text-uppercase fw-medium text-muted mb-0">
-              My Balance
+              Last Month's Collection
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -132,11 +135,13 @@ Dashboard || Home wengo
         <div class="d-flex align-items-end justify-content-between mt-4">
           <div>
             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-              ₹<span class="counter-value" data-target="16589">0</span>
+              ₹{{last_month_overall}}
             </h4>
           </div>
           <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-primary-subtle rounded fs-3 material-shadow">
+            <span
+              class="avatar-title bg-primary-subtle rounded fs-3 material-shadow"
+            >
               <i class="bx bx-rupee text-primary"></i>
             </span>
           </div>
@@ -145,7 +150,6 @@ Dashboard || Home wengo
     </div>
   </div>
 </div>
-
 
 <div class="row">
   <div class="col-xl-4 col-md-6">
@@ -154,7 +158,7 @@ Dashboard || Home wengo
         <div class="d-flex align-items-center">
           <div class="flex-grow-1">
             <p class="text-uppercase fw-medium text-muted mb-0">
-              My Balance
+              RM Collection (today)
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -164,11 +168,13 @@ Dashboard || Home wengo
         <div class="d-flex align-items-end justify-content-between mt-4">
           <div>
             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-              ₹<span class="counter-value" data-target="16578">0</span>
+              ₹{{rm_collection_today}}
             </h4>
           </div>
           <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-primary-subtle rounded fs-3 material-shadow">
+            <span
+              class="avatar-title bg-primary-subtle rounded fs-3 material-shadow"
+            >
               <i class="bx bx-rupee text-primary"></i>
             </span>
           </div>
@@ -183,7 +189,7 @@ Dashboard || Home wengo
         <div class="d-flex align-items-center">
           <div class="flex-grow-1">
             <p class="text-uppercase fw-medium text-muted mb-0">
-              My Balance
+              Website collections (today)
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -193,11 +199,13 @@ Dashboard || Home wengo
         <div class="d-flex align-items-end justify-content-between mt-4">
           <div>
             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-              ₹<span class="counter-value" data-target="165">0</span>
+              ₹{{website_collection_today}}
             </h4>
           </div>
           <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-primary-subtle rounded fs-3 material-shadow">
+            <span
+              class="avatar-title bg-primary-subtle rounded fs-3 material-shadow"
+            >
               <i class="bx bx-rupee text-primary"></i>
             </span>
           </div>
@@ -212,7 +220,7 @@ Dashboard || Home wengo
         <div class="d-flex align-items-center">
           <div class="flex-grow-1">
             <p class="text-uppercase fw-medium text-muted mb-0">
-              My Balance
+              Active RM's (today)
             </p>
           </div>
           <div class="flex-shrink-0">
@@ -222,11 +230,13 @@ Dashboard || Home wengo
         <div class="d-flex align-items-end justify-content-between mt-4">
           <div>
             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-              ₹<span class="counter-value" data-target="1650">0</span>
+              ₹{{active_rm_today_count}}
             </h4>
           </div>
           <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-primary-subtle rounded fs-3 material-shadow">
+            <span
+              class="avatar-title bg-primary-subtle rounded fs-3 material-shadow"
+            >
               <i class="bx bx-rupee text-primary"></i>
             </span>
           </div>
@@ -235,303 +245,248 @@ Dashboard || Home wengo
     </div>
   </div>
 </div>
-       <!--Gradient charts Line-->
+<!--Gradient charts Line-->
 
-       <div class="col-x10-7">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title mb-0">Gradient Charts</h4>
-            
-          </div>
-          <!-- end card header -->
-
-          <div class="card-body">
-            <div
-              id="gradient-chat"
-              data-colors='["--vz-success"]'
-              class="apex-charts"
-              dir="ltr"
-            ></div>
-          </div>
-          <!-- end card-body -->
-        </div>
-        <!-- end card -->
-      </div>
-      <!-- end col -->
+<div class="col-x10-7">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title mb-0">Gradient Charts</h4>
     </div>
-    <!-- end row -->
+    <!-- end card header -->
 
+    <div class="card-body">
+      <div
+        id="gradient-chat"
+        data-colors='["--vz-success"]'
+        class="apex-charts"
+        dir="ltr"
+      ></div>
+    </div>
+    <!-- end card-body -->
+  </div>
+  <!-- end card -->
+</div>
+<!-- end col -->
+
+<div class="row">
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title mb-0">This Week Based Chart</h4>
+      </div>
+      <div class="card-body">
+        <div
+          id="pie-color"
+          data-colors='["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
+          class="e-charts"
+        ></div>
+      </div>
+    </div>
+    <!-- end card -->
   </div>
 
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header align-items-center d-flex">
+        <h5 class="card-title mb-0 flex-grow-1">This Month Based Chart</h5>
+        <div class="flex-shrink-0">
+          <div class="dropdown card-header-dropdown"></div>
+        </div>
+      </div>
+      <!-- end card header -->
+      <div class="card-body">
+        <div
+          id="mont-chart"
+          data-colors='["--vz-primary"]'
+          class="apex-charts"
+          dir="ltr"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <!--end col-->
+</div>
 
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <h5 class="card-title mb-0">All Donation's</h5>
+        </div>
+      </div>
+      <div class="card-body">
+        <form method="get" action="" class="d-flex align-items-center gap-3 flex-wrap mb-3" id="idxDateForm" data-ajax="donations">
 
-      <div class="row">
-              <div class="col-xl-6">
-                <div class="card">
-                  <div class="card-header">
-                    <h4 class="card-title mb-0">This Week Based Chart</h4>
-                  </div>
-                  <div class="card-body">
-                    <div
-                      id="pie-color"
-                      data-colors='["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
-                      class="e-charts"
-                    ></div>
-                  </div>
+          <div class="input-group" style="width: 260px">
+            <span class="input-group-text"><i class="bx bx-calendar"></i></span>
+            <input
+               type="text"
+               id="idx-date"
+               name="selected_date"
+               class="form-control"
+               readonly
+               value="{% if selected_date_str %}{{ selected_date_str }}{% else %}{{ filter_start_date|date:'d M, Y' }} - {{ filter_end_date|date:'d M, Y' }}{% endif %}">
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="bx bx-search me-1"></i> Search
+          </button>
+        </form>
+
+        <!-- end col -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive" id="donation-table-container">
+                  <table
+                    id="donation_table"
+                    class="table table-bordered table-striped table-hover align-middle nowrap w-100">
+                    <thead class="table-light">
+                      <tr>
+                        <th>SR No.</th>
+                        <th>Receipt No</th>
+                        <th>Date & Time</th>
+                        <th>Source</th>
+                        <th>Donor Name</th>
+                        <th>Donor Mobile</th>
+                        <th>Donor Email</th>
+                        <th>Amount</th>
+                        <th>Payment Status</th>
+                        <th>Mode of Payment</th>
+                        <th>Payment Transaction ID</th>
+                        <th>Transaction ID</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for row in recent_success_donations %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ row.receipt_no }}</td>
+                        <td>{{ row.date|date:"d M Y h:i A" }}</td>
+                        <td>{{ row.source }}</td>
+                        <td>{{ row.donor_name }}</td>
+                        <td>{{ row.donor_mobile }}</td>
+                        <td>{{ row.donor_email }}</td>
+                        <td>₹{{ row.amount }}</td>
+                        <td>{{ row.payment_status }}</td>
+                        <td>{{ row.payment_mode }}</td>
+                        <td>{{ row.payment_transaction_id }}</td>
+                        <td>{{ row.transaction_id }}</td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="12" class="text-center">
+                          No donations found.
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
                 </div>
-                <!-- end card -->
               </div>
-               
-                 <div class="col-xl-6">
-                    <div class="card">
-                      <div class="card-header align-items-center d-flex">
-                        <h5 class="card-title mb-0 flex-grow-1">
-                         This Month Based Chart
-                        </h5>
-                        <div class="flex-shrink-0">
-                          <div class="dropdown card-header-dropdown">
-                           
-                            
-                          </div>
-                        </div>
-                      </div>
-                      <!-- end card header -->
-                      <div class="card-body">
-                        <div
-                          id="mont-chart"
-                          data-colors='["--vz-primary"]'
-                          class="apex-charts"
-                          dir="ltr"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  <!--end col-->
-                </div>
-
-
-
-    <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-header">
-          <div class="row">
-            <h5 class="card-title mb-0">Recent Success Donation</h5>
+            </div>
           </div>
         </div>
-        <div class="card-body">
-          <form method="get" class="d-flex align-items-center gap-3 flex-wrap mb-3" id="idxDateForm">
-            <div class="input-group" style="width: 260px;">
-              <span class="input-group-text"><i class="bx bx-calendar"></i></span>
-              <input type="text" id="idx-date" name="selected_date" class="form-control" readonly
-                placeholder="Select Date Range"
-                value="{% if selected_date_str %}{{ selected_date_str }}{% else %}{{ filter_start_date|date:'d M, Y' }}{% endif %}">
-            </div>
-            <button type="submit" class="btn btn-primary"><i class="bx bx-search me-1"></i> Search</button>
-          </form>
-        
-    <!-- end col -->
-    <div class="row">
-    <div class="col-lg-12">
-   <div class="card">
-   
-
-   <div class="card-body">
-     <table
-       id="website_donation_table"
-       class="table table-bordered dt-responsive nowrap table-striped align-middle"
-       style="width: 100%"
-     >
-       <thead>
-         <tr>
-           <th data-ordering="false">SR No.</th>
-           <th data-ordering="false">ID</th>
-           <th data-ordering="false">Purchase ID</th>
-           <th data-ordering="false">Title</th>
-           <th data-ordering="false">User</th>
-           <th>Assigned To</th>
-           <th>Created By</th>
-           <th>Create Date</th>
-           <th>Status</th>
-           <th>Priority</th>
-         </tr>
-       </thead>
-
-       <tbody>
-         <tr>
-           <td>01</td>
-           <td>VLZ-452</td>
-           <td>VLZ1400087402</td>
-           <td>Post launch reminder/ post list</td>
-           <td>Joseph Parker</td>
-           <td>Alexis Clarke</td>
-           <td>Joseph Parker</td>
-           <td>03 Oct, 2021</td>
-           <td>
-             
-           </td>
-           
-         </tr>
-
-         <tr>
-           <td>02</td>
-           <td>VLZ-453</td>
-           <td>VLZ1400087425</td>
-           <td>Additional Calendar</td>
-           <td>Diana Kohler</td>
-           <td>Admin</td>
-           <td>Mary Rucker</td>
-           <td>05 Oct, 2021</td>
-           <td>
-             <span class="badge bg-secondary-subtle text-secondary">
-               On-Hold
-             </span>
-           </td>
-           <td><span class="badge bg-info">Medium</span></td>
-         </tr>
-
-         <tr>
-           <td>03</td>
-           <td>VLZ-454</td>
-           <td>VLZ1400087438</td>
-           <td>Make a creating an account profile</td>
-           <td>Tonya Noble</td>
-           <td>Admin</td>
-           <td>Tonya Noble</td>
-           <td>27 April, 2022</td>
-           <td>
-             <span class="badge bg-danger-subtle text-danger">
-               Closed
-             </span>
-           </td>
-           <td><span class="badge bg-success">Low</span></td>
-         </tr>
-
-         <tr>
-           <td>04</td>
-           <td>VLZ-455</td>
-           <td>VLZ1400087748</td>
-           <td>Apologize for shopping Error!</td>
-           <td>Joseph Parker</td>
-           <td>Alexis Clarke</td>
-           <td>Joseph Parker</td>
-           <td>14 June, 2021</td>
-           <td>
-             <span class="badge bg-warning-subtle text-warning">
-               Inprogress
-             </span>
-           </td>
-           <td><span class="badge bg-info">Medium</span></td>
-         </tr>
-
-         <tr>
-           <td>05</td>
-           <td>VLZ-456</td>
-           <td>VLZ1400087547</td>
-           <td>Support for theme</td>
-           <td>Donald Palmer</td>
-           <td>Admin</td>
-           <td>Donald Palmer</td>
-           <td>25 June, 2021</td>
-           <td>
-             <span class="badge bg-danger-subtle text-danger">
-               Closed
-             </span>
-           </td>
-           <td><span class="badge bg-success">Low</span></td>
-         </tr>
-
-         <tr>
-           <td>06</td>
-           <td>VLZ-457</td>
-           <td>VLZ1400087245</td>
-           <td>Benner design for FB & Twitter</td>
-           <td>Mary Rucker</td>
-           <td>Jennifer Carter</td>
-           <td>Mary Rucker</td>
-           <td>14 Aug, 2021</td>
-           <td>
-             <span class="badge bg-warning-subtle text-warning">
-               Inprogress
-             </span>
-           </td>
-           <td><span class="badge bg-info">Medium</span></td>
-         </tr>
-
-         <tr>
-           <td>07</td>
-           <td>VLZ-458</td>
-           <td>VLZ1400087785</td>
-           <td>Change email option process</td>
-           <td>James Morris</td>
-           <td>Admin</td>
-           <td>James Morris</td>
-           <td>12 March, 2022</td>
-           <td>
-             <span class="badge bg-primary-subtle text-primary">
-               Open
-             </span>
-           </td>
-           <td><span class="badge bg-danger">High</span></td>
-         </tr>
-
-         <tr>
-           <td>08</td>
-           <td>VLZ-460</td>
-           <td>VLZ1400087745</td>
-           <td>Support for theme</td>
-           <td>Nathan Cole</td>
-           <td>Nancy Martino</td>
-           <td>Nathan Cole</td>
-           <td>28 Feb, 2022</td>
-           <td>
-             <span class="badge bg-secondary-subtle text-secondary">
-               On-Hold
-             </span>
-           </td>
-           <td><span class="badge bg-success">Low</span></td>
-         </tr>
-
-         <tr>
-           <td>09</td>
-           <td>VLZ-461</td>
-           <td>VLZ1400087179</td>
-           <td>Form submit issue</td>
-           <td>Grace Coles</td>
-           <td>Admin</td>
-           <td>Grace Coles</td>
-           <td>07 Jan, 2022</td>
-           <td>
-             <span class="badge bg-success-subtle text-success">
-               New
-             </span>
-           </td>
-           <td><span class="badge bg-danger">High</span></td>
-         </tr>
-
-         <tr>
-           <td>10</td>
-           <td>VLZ-462</td>
-           <td>VLZ140008856</td>
-           <td>Edit customer testimonial</td>
-           <td>Freda</td>
-           <td>Alexis Clarke</td>
-           <td>Freda</td>
-           <td>16 Aug, 2021</td>
-           <td>
-             <span class="badge bg-danger-subtle text-danger">
-               Closed
-             </span>
-           </td>
-           <td><span class="badge bg-info">Medium</span></td>
-         </tr>
-       </tbody>
-     </table>
-   </div>
- </div>
+        {{ month_categories|json_script:"month-categories"}}
+        {{ month_values|json_script:"month-values" }}
+        {{ pie_labels|json_script:"pie-labels" }}
+        {{ pie_values|json_script:"pie-values" }}
+        {{ gradient_categories|json_script:"gradient-categories" }}
+        {{ gradient_values|json_script:"gradient-values" }}
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-               
-     
 
+
+
+<script>
+  flatpickr("#idx-date", {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [
+          "{{ filter_start_date|date:'d M, Y' }}",
+          "{{ filter_end_date|date:'d M, Y' }}"
+      ]
+  });
+
+  function destroyDataTableIfExists(selector) {
+    const $table = $(selector);
+    if (!$table.length) return;
+    if ($.fn.DataTable.isDataTable($table)) {
+      $table.DataTable().destroy();
+    }
+  }
+
+  function initDataTable() {
+    // Always re-init after DOM changes
+    if ($.fn.DataTable.isDataTable('#donation_table')) {
+      try {
+        $('#donation_table').DataTable().destroy();
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    $('#donation_table').DataTable({
+      responsive: false,
+      paging: true,
+      searching: true,
+      ordering: true,
+      lengthChange: false
+    });
+  }
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('idxDateForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const selectedDateValue = document.getElementById('idx-date')?.value || '';
+
+      // Build URL with query param (Flatpickr range -> "start - end")
+      const url = new URL(window.location.href);
+      if (selectedDateValue) {
+        url.searchParams.set('selected_date', selectedDateValue);
+      } else {
+        url.searchParams.delete('selected_date');
+      }
+
+      try {
+        // Destroy table before replacing rows
+        destroyDataTableIfExists('#donation_table');
+
+        const response = await fetch(url.toString(), {
+          method: 'GET',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const tbodyHtml = data.tbody || '';
+
+        // Replace only the DataTable body (tbody) to keep cards/charts and layout intact
+        const tbodyEl = document.querySelector('#donation_table tbody');
+        if (tbodyEl) {
+          tbodyEl.innerHTML = tbodyHtml;
+        }
+
+        // Re-init DataTable after replacement
+        initDataTable();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  });
+</script>
 {% endblock %}

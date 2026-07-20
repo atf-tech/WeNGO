@@ -13,14 +13,30 @@ function generate24Hours() {
   }
 
   return hours;
-}
+} 
+
+
+const allValues = [
+    ...window.hourlyLinkValues,
+    ...window.hourlyGpayValues
+];
+
+const maxValue = Math.max(...allValues, 0);
+const yMax =
+    maxValue <= 1000 ? 1000 :
+    Math.ceil(maxValue / 1000) * 1000;
 
 var options = {
+  
   series: [
     {
-      name: 'Sales',
-      data: [4, 3, 10, 9, 29, 19, 22, 9, 12, 7, 19, 5, 13, 9, 17, 2, 7, 5, 8, 11, 6, 14, 9, 12],
+      name: 'Link',
+      data: window.hourlyLinkValues
     },
+    {
+      name: 'GPay',
+      data: window.hourlyGpayValues
+    }
   ],
 
   chart: {
@@ -36,6 +52,12 @@ var options = {
   stroke: {
     width: 5,
     curve: 'smooth',
+  },
+
+  yaxis: {
+      min: 0,
+      max: yMax,
+      tickAmount: 5
   },
 
   xaxis: {

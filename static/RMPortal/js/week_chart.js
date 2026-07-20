@@ -1,114 +1,107 @@
+
+const weekValues = window.weekValues || [];
+const weekCategories = window.weekCategories || [];
+
+
 var options = {
-  series: [25000, 15000, 44000, 55000, 41000, 17000],
 
-  chart: {
-    width: 520,
-    type: 'donut', // pie → donut
-    toolbar: {
-      show: false,
-    },
-  },
+    series: weekValues,
 
-  labels: [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ],
-
-  // Cute soft colors
-  colors: [
-    '#6C63FF',
-    '#FF6B81',
-    '#FFC75F',
-    '#00C9A7',
-    '#4D96FF',
-    '#B983FF',
-  ],
-
-  plotOptions: {
-    pie: {
-      expandOnClick: true,
-      donut: {
-        size: '68%', // center space
-        labels: {
-          show: true,
-
-          total: {
-            show: true,
-            label: 'Total',
-            formatter: function (w) {
-              const total = w.globals.seriesTotals.reduce(
-                (a, b) => a + b,
-                0
-              );
-              return '₹' + total.toLocaleString('en-IN');
-            },
-          },
-        },
-      },
-    },
-  },
-
-  dataLabels: {
-    enabled: true,
-    style: {
-      fontSize: '12px',
-      fontWeight: '600',
+    chart: {
+        width: 520,
+        type: 'donut',
+        toolbar: {
+            show: false
+        }
     },
 
-    formatter: function (val, opts) {
-      const amount =
-        opts.w.config.series[opts.seriesIndex];
+    labels: weekCategories,
 
-      return '₹' + amount.toLocaleString('en-IN');
+    colors: [
+        '#6C63FF',
+        '#FF6B81',
+        '#FFC75F',
+        '#00C9A7',
+        '#4D96FF',
+        '#B983FF',
+        '#FF9671'
+    ],
+
+    plotOptions: {
+        pie: {
+            expandOnClick: true,
+            donut: {
+                size: '68%',
+                labels: {
+                    show: true,
+
+                    total: {
+                        show: true,
+                        label: 'Total',
+
+                        formatter: function (w) {
+                            const total = w.globals.seriesTotals.reduce(
+                                (a, b) => a + b,
+                                0
+                            );
+
+                            return '₹' + total.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            }
+        }
     },
-  },
 
-  stroke: {
-    width: 4,
-    colors: ['#fff'], // clean separation
-  },
+    dataLabels: {
 
-  legend: {
-    show: true,
-    position: 'right',
-    fontSize: '14px',
+        enabled: true,
 
-    markers: {
-      radius: 12,
+        formatter: function (val, opts) {
+
+            const amount = opts.w.config.series[opts.seriesIndex];
+
+            return '₹' + Number(amount).toLocaleString('en-IN');
+        }
     },
 
-    itemMargin: {
-      vertical: 8,
+    stroke: {
+        width: 4,
+        colors: ['#fff']
     },
 
-    formatter: function (seriesName, opts) {
-      const amount =
-        opts.w.globals.series[opts.seriesIndex];
+    legend: {
 
-      return (
-        seriesName +
-        ' - ₹' +
-        amount.toLocaleString('en-IN')
-      );
-    },
-  },
+        show: true,
 
-  tooltip: {
-    y: {
-      formatter: function (val) {
-        return '₹' + val.toLocaleString('en-IN');
-      },
+        position: 'right',
+
+        fontSize: '14px',
+
+        formatter: function (seriesName, opts) {
+
+            const amount = opts.w.globals.series[opts.seriesIndex];
+
+            return seriesName + ' - ₹' + Number(amount).toLocaleString('en-IN');
+        }
     },
-  },
+
+    tooltip: {
+
+        y: {
+
+            formatter: function (val) {
+
+                return '₹' + Number(val).toLocaleString('en-IN');
+            }
+        }
+    }
 };
 
 var chart = new ApexCharts(
-  document.querySelector('#month_pike'),
-  options
+    document.querySelector("#month_pike"),
+    options
 );
 
 chart.render();
+

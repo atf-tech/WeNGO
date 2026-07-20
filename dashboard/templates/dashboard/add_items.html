@@ -21,6 +21,112 @@
         {% endif %}
   </div>
 
+  <!-- ═══ Home's ═══════════════════════════════════════════════════════════ -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title mb-0">Home's</h5>
+          <div id="django-messages">
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show mb-0">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="list-grid-nav hstack gap-1">
+            <button class="btn btn-success" data-bs-toggle="modal" onclick="resetForm()" data-bs-target="#addHome">
+              <i class="ri-add-fill me-1 align-bottom"></i> Add Home
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table id="add-home-table" class="table nowrap align-middle" style="width:100%">
+            <thead>
+              <tr>
+                <th>Home Name</th>
+                <th style="display:none;">Home Desc</th>
+                <th>Home Image</th>
+                <th>Home Members</th>
+                {% comment %} <th>Service Images <small class="text-muted">(last 5)</small></th> {% endcomment %}
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for home in homes %}
+                <tr>
+                  <td>{{ home.name }}</td>
+                  <td tabindex="0" style="display:none;" class="truncate-td">{{ home.description|safe|truncatewords:20 }}</td>
+
+                  <td>
+                    {% if home.home_image %}
+                      <img src="{{ home.home_image.url }}" width="80" height="60" alt="Home Image" style="object-fit:cover; border-radius:6px;" />
+                    {% else %}
+                      <span class="text-muted">No image</span>
+                    {% endif %}
+                  </td>
+
+                  <td>{{ home.members }}</td>
+
+                  {% comment %} <td>
+                    <div class="d-flex flex-wrap gap-1 align-items-center">
+                      {% for img in home.get_service_images %}
+                        <img src="{{ img.url }}" width="48" height="48"
+                             style="object-fit:cover; border-radius:5px; border:1px solid #ddd;" alt="svc img">
+                      {% empty %}
+                        <span class="text-muted small">No images yet</span>
+                      {% endfor %}
+                      <button type="button" class="btn btn-outline-primary btn-sm"
+                        title="Manage service images"
+                        data-bs-toggle="modal" data-bs-target="#manageServiceImgModal"
+                        data-home-id="{{ home.id }}"
+                        data-home-name="{{ home.name }}"
+                        data-count="{{ home.get_service_images|length }}">
+                        <i class="ri-image-add-line"></i>
+                      </button>
+                    </div>
+                  </td> {% endcomment %}
+
+                  <td>
+                    <div class="hstack gap-2">
+                      <button type="button"
+                        class="btn btn-primary btn-icon waves-effect waves-light edit-home-btn"
+                        data-id="{{ home.id }}"
+                        data-name="{{ home.name }}"
+                        data-members="{{ home.members|default:'' }}"
+                        data-target-desc="home-desc-{{ home.id }}"
+                        data-image="{% if home.home_image %}{{ home.home_image.url }}{% else %}{% static 'dashboard/images/no-image.png' %}{% endif %}"
+                        data-bs-toggle="modal" data-bs-target="#addHome">
+                        <i class="ri-edit-box-line"></i>
+                      </button>
+                      <form method="POST" action="{% url 'add_items' %}" style="display:inline;"
+                            onsubmit="return confirm('Do you want to delete {{ home.name }}?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="home_id" value="{{ home.id }}">
+                        <input type="hidden" name="action" value="delete">
+                        <button type="submit" class="btn btn-danger btn-icon waves-effect waves-light">
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <div class="home-description" id="home-desc-{{ home.id }}" style="display:none;">{{ home.description|safe }}</div>
+                {% comment %} <div class="home-map-embed" id="home-map-{{ home.id }}" style="display:none;">{{ home.map_embed }}</div> {% endcomment %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+
 <div class="card mt-4">
     <div class="card-header d-flex justify-content-between">
         <h5>Services</h5>
@@ -102,11 +208,70 @@
 </div>
 
 
- 
+
+
+
+
+   <!-- Service model popup -->
+
+
+<div class="modal fade" id="addHome" tabindex="-1" aria-labelledby="addHomeLabel">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addHomeLabel">Add Home</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="{% url 'add_items' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="home_id" id="home-id" />
+            <div class="row g-3">
+              <div class="col-xxl-6">
+                <label for="home-name" class="form-label">Home Name</label>
+                <input type="text" class="form-control" id="home-name" name="name" placeholder="Enter Name" />
+              </div>
+              <div class="col-xxl-6">
+                <label for="home-member" class="form-label">Home Member</label>
+                <input type="number" class="form-control" id="home-member" name="member" placeholder="Enter Member Count" />
+              </div>
+              <div class="col-xxl-12">
+                <div class="mb-2">
+                  <img id="home-image-preview" src="{% static 'dashboard/images/new-document.png' %}" alt="Home Image" class="img-fluid" style="max-height:150px;" />
+                </div>
+                <label for="home-image" class="form-label">Home Image</label>
+                <input type="file" class="form-control" id="home-image" name="image" />
+              </div>
+              <div class="col-xxl-12">
+                <label class="form-label">Home Desc</label>
+                <div id="home-quill-editor" style="height:150px;"></div>
+                <input type="hidden" name="description" id="home-desc" />
+              </div>
+              {% comment %} <div class="col-xxl-12">
+                <label for="home-map-embed" class="form-label">Google Map Location</label>
+                <textarea class="form-control" id="home-map-embed" name="map_embed" rows="3"
+                  placeholder='Google Maps → Share → "Embed a map" → Copy HTML, then paste it here'></textarea>
+                <small class="text-muted">
+                  In Google Maps open the location → <b>Share</b> → <b>Embed a map</b> → <b>COPY HTML</b>, then paste it above. Leave blank to hide the map.
+                </small>
+              </div> {% endcomment %}
+              <div class="col-lg-12">
+                <div class="hstack gap-2 justify-content-end">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
 
 
 
   <!-- Service model popup -->
+
 <div class="modal fade" id="addService" tabindex="-1" aria-labelledby="addServiceLabel">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -340,8 +505,6 @@ function resetForm(type) {
 }
 </script>
 
-
-
 <script>
   // Hide after 5 seconds
   setTimeout(function() {
@@ -351,6 +514,155 @@ function resetForm(type) {
       setTimeout(() => el.remove(), 500); // remove from DOM after fade
     });
   }, 5000); // 5000 ms = 5 sec
+</script>
+
+
+
+ 
+<script>            //   Home 
+
+    
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ===============================
+    // Quill
+    // ===============================
+    window.homeQuill = new Quill("#home-quill-editor", {
+        theme: "snow",
+        placeholder: "Write Home Description..."
+    });
+
+    // ===============================
+    // Image Preview
+    // ===============================
+    const imageInput = document.getElementById("home-image");
+
+    if (imageInput) {
+
+        imageInput.addEventListener("change", function (e) {
+
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                document.getElementById("home-image-preview").src =
+                    event.target.result;
+
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+    }
+
+    // ===============================
+    // Form Submit
+    // ===============================
+    const form = document.querySelector("#addHome form");
+
+    if (form) {
+
+        form.addEventListener("submit", function () {
+
+            document.getElementById("home-desc").value =
+                window.homeQuill.root.innerHTML;
+
+        });
+
+    }
+
+    // ===============================
+    // Edit Home
+    // ===============================
+    document.querySelectorAll(".edit-home-btn").forEach(function (btn) {
+
+        btn.addEventListener("click", function () {
+
+            document.getElementById("home-id").value =
+                this.dataset.id;
+
+            document.getElementById("home-name").value =
+                this.dataset.name;
+
+            document.getElementById("home-member").value =
+                this.dataset.members;
+
+            document.getElementById("home-image-preview").src =
+                this.dataset.image;
+
+            const desc = document.getElementById(this.dataset.targetDesc);
+
+            window.homeQuill.setContents([]);
+
+            if (desc) {
+
+                window.homeQuill.clipboard.dangerouslyPasteHTML(
+                    desc.innerHTML
+                );
+
+            }
+
+            document.querySelector("#addHome .modal-title").innerText =
+                "Update Home";
+
+            document.querySelector("#addHome button[type='submit']").innerText =
+                "Update";
+
+        });
+
+    });
+
+    // ===============================
+    // Modal Close
+    // ===============================
+    const modal = document.getElementById("addHome");
+
+    if (modal) {
+
+        modal.addEventListener("hidden.bs.modal", function () {
+
+            resetHomeForm();
+
+        });
+
+    }
+
+});
+
+
+function resetHomeForm() {
+
+    document.getElementById("home-id").value = "";
+
+    document.getElementById("home-name").value = "";
+
+    document.getElementById("home-member").value = "";
+
+    document.getElementById("home-image").value = "";
+
+    document.getElementById("home-desc").value = "";
+
+    document.getElementById("home-image-preview").src =
+        "/static/dashboard/images/new-document.png";
+
+    if (window.homeQuill) {
+
+        window.homeQuill.setContents([]);
+
+    }
+
+    document.querySelector("#addHome .modal-title").innerText =
+        "Add Home";
+
+    document.querySelector("#addHome button[type='submit']").innerText =
+        "Submit";
+
+}
 </script>
 
 {% endblock %}

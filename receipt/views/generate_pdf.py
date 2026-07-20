@@ -6,9 +6,14 @@ from weasyprint import HTML
 
 from easypay.models import RMPayment
 from receipt.models import Manual80GSubmission
-from website.models import ServiceDonation
+from website.models import ServiceDonation, HomeDonation
 
-from .helper import get_template_name, get_pdf_filename
+from .helper import (
+    get_template_name,
+    get_pdf_filename,
+    get_donor_pan,
+    get_donation_name,
+)
 
 
 def generate_pdf(template_name, context):
@@ -37,11 +42,7 @@ def download_pdf_response(pdf_file, filename):
 
 
 def build_donation_context(donation, donation_type):
-    donor_pan = (
-        getattr(donation, "donor_pan", None)
-        or getattr(donation, "pan_number", None)
-        or getattr(donation, "pan_no", None)
-    )
+    donor_pan = get_donor_pan(donation)
 
     return {
         "donor_name": getattr(donation, "donor_name", ""),
@@ -52,6 +53,7 @@ def build_donation_context(donation, donation_type):
             or getattr(donation, "address", "")
         ),
         "donor_pan": donor_pan,
+        "donation_name": get_donation_name(donation, donation_type),
         "amount": (
             getattr(donation, "donation_price", None)
             or getattr(donation, "donation_amount", None)
@@ -77,11 +79,7 @@ def build_donation_context(donation, donation_type):
 
 
 def generate_donation_pdf(donation, donation_type):
-    donor_pan = (
-        getattr(donation, "donor_pan", None)
-        or getattr(donation, "pan_number", None)
-        or getattr(donation, "pan_no", None)
-    )
+    donor_pan = get_donor_pan(donation)
 
     template_name = get_template_name(donor_pan, donation_type)
     context = build_donation_context(donation, donation_type)
@@ -90,11 +88,7 @@ def generate_donation_pdf(donation, donation_type):
 
 
 def get_donation_pdf_filename(donation, donation_type):
-    donor_pan = (
-        getattr(donation, "donor_pan", None)
-        or getattr(donation, "pan_number", None)
-        or getattr(donation, "pan_no", None)
-    )
+    donor_pan = get_donor_pan(donation)
 
     return get_pdf_filename(
         getattr(donation, "donor_name", "donor"),
@@ -121,6 +115,8 @@ def download_donation_receipt(request):
     donation = None
     if donation_type == "service":
         donation = ServiceDonation.objects.filter(txnid=receipt_reference).first()
+    elif donation_type == "home":
+        donation = HomeDonation.objects.filter(txnid=receipt_reference).first()
     elif donation_type == "rm":
         donation = RMPayment.objects.filter(txnid=receipt_reference).first()
     elif donation_type == "manual":

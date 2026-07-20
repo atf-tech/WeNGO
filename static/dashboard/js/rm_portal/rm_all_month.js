@@ -1,3 +1,17 @@
+console.log(document.getElementById("rm-categories"));
+const rmCategories = JSON.parse(
+    document.getElementById("rm-categories").textContent
+);
+
+const rmValues = JSON.parse(
+    document.getElementById("rm-values").textContent
+);
+const maxValue = Math.max(...rmValues);
+console.log("Categories:", rmCategories);
+console.log("Values:", rmValues);
+console.log("Is Categories Array:", Array.isArray(rmCategories));
+console.log("Is Values Array:", Array.isArray(rmValues));
+
 var options = {
     chart: {
       type: 'bar',
@@ -6,22 +20,28 @@ var options = {
     },
     series: [{
       name: "collection",
-      data: [
-        12000, 15000, 8000, 20000, 18000, 22000, 17000, 25000, 30000, 27000,
-        23000, 26000, 29000, 31000, 34000, 33000, 36000, 40000, 38000, 42000, 45000
-      ]
+      data: rmValues
     }],
     xaxis: {
-      categories: [
-        "Deepika", "Hema", "Harini", "Rajashalini", "Krishnapriya",
-        "Abinaya", "Thameena", "Jennifer", "Pavithra", "Kamalaveni",
-        "Durgadevi", "Yamini", "Niranjani", "Pinki", "Pooja",
-        "Joy", "Lakshmi", "Hema", "Jothi", "Jayasudha", "Kaviya"
-      ],
-      title: { text: "All RM's" }
+        categories: rmCategories,
+        title: {
+            text: "Collection (₹)"
+        },
+        min: 0,
+      
+        // Dynamic max (10% extra space)
+        max: Math.ceil(maxValue * 1.1),
+      
+        tickAmount: 5,
+      
+        labels: {
+            formatter: function (val) {
+                return "₹ " + Number(val).toLocaleString("en-IN");
+            }
+        }
     },
     yaxis: {
-      title: { text: "collection (in ₹)" }
+      title: { text: "collection (in all RM's)" }
     },
     colors: ["#00E396"],
     plotOptions: {
@@ -55,5 +75,51 @@ var options = {
 
   
 
-  var chart = new ApexCharts(document.querySelector("#rmPortalChart"), options);
+var chart = new ApexCharts(document.querySelector("#rmPortalChart"), options);
   chart.render();
+
+  // Exposed for the date filter form (RM_Portal.html inline script)
+  window.updateRmPortalCharts = function updateRmPortalCharts(selectedDate) {
+    const url = window.location.pathname + '?ajax=1&selected_date=' + encodeURIComponent(selectedDate || '');
+
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (payload) {
+        const rmCategories = Array.isArray(payload.rm_categories) ? payload.rm_categories : [];
+        const rmValues = Array.isArray(payload.rm_values) ? payload.rm_values : [];
+
+        // If no data, show an empty chart with a single label.
+        const nextCategories = rmCategories.length ? rmCategories : ['No Data'];
+        const nextValues = rmValues.length ? rmValues : [0];
+
+        const maxValue = Math.max.apply(null, nextValues);
+
+        chart.updateOptions({
+          xaxis: {
+            categories: nextCategories,
+            min: 0,
+            max: Math.ceil((maxValue || 0) * 1.1),
+            tickAmount: 5,
+            labels: {
+              formatter: function (val) {
+                return "₹ " + Number(val).toLocaleString("en-IN");
+              }
+            }
+          }
+        });
+
+        chart.updateSeries([{ name: 'collection', data: nextValues }], true);
+      })
+      .catch(function (err) {
+        console.error('updateRmPortalCharts failed:', err);
+      });
+  };
+

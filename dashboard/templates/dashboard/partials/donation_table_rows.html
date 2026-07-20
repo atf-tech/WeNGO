@@ -1,0 +1,21 @@
+{% for row in recent_success_donations %}
+<tr>
+  <td>{{ forloop.counter }}</td>
+  <td>{{ row.receipt_no }}</td>
+  <td>{{ row.date|date:"d M Y h:i A" }}</td>
+  <td>{{ row.source }}</td>
+  <td>{{ row.donor_name }}</td>
+  <td>{{ row.donor_mobile }}</td>
+  <td>{{ row.donor_email }}</td>
+  <td>₹{{ row.amount }}</td>
+  <td>{{ row.payment_status }}</td>
+  <td>{{ row.payment_mode }}</td>
+  <td>{{ row.payment_transaction_id }}</td>
+  <td>{{ row.transaction_id }}</td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="12" class="text-center">No donations found.</td>
+</tr>
+{% endfor %}
+

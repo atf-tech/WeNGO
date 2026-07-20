@@ -144,11 +144,17 @@ class RMPaymentCallbackView(View):
             payment.easebuzz_transaction_id = easebuzz_transaction_id
             payment.easebuzz_payment_mode = payment_mode
             payment.easebuzz_payment_status = payment_status
+            payment.payment_status = payment_status
 
-            if payment_status == "success":
+            if str(payment_status).lower() == "success":
                 payment.is_paid = True
+            else:
+                payment.is_paid = False
 
             payment.save()
+            
+            print("Payment Status:", payment.easebuzz_payment_status)
+            print("Is Paid:", payment.is_paid)
 
             request.session['txnid'] = payment.txnid
             request.session['donor_name'] = payment.donor_name

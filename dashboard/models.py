@@ -4,7 +4,82 @@ import random
 import string
 from django.utils import timezone
 from datetime import timedelta
+import re
 
+class Home(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    members = models.PositiveIntegerField()
+    description = models.TextField()
+    home_image = models.ImageField(upload_to='home_images/')
+
+    # ── Google Maps location (paste the "Embed a map" code from Google Maps) ──
+    map_embed = models.TextField(
+        blank=True, null=True,
+        help_text="Paste the Google Maps 'Embed a map' iframe code (or just its src URL) for this home's location."
+    )
+
+    # ── Last 5 Service Images (oldest auto-replaced when uploading via dashboard) ──
+    service_img1 = models.ImageField(upload_to='home_service_images/', blank=True, null=True)
+    service_img2 = models.ImageField(upload_to='home_service_images/', blank=True, null=True)
+    service_img3 = models.ImageField(upload_to='home_service_images/', blank=True, null=True)
+    service_img4 = models.ImageField(upload_to='home_service_images/', blank=True, null=True)
+    service_img5 = models.ImageField(upload_to='home_service_images/', blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while self.__class__.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    @property
+    def map_embed_src(self):
+        """Return a safe Google Maps embed URL from `map_embed`.
+
+        Staff may paste either the full <iframe ... src="..."></iframe> code or
+        just the src URL. We extract the URL and only allow Google Maps embed
+        links so nothing arbitrary can be framed on the site.
+        """
+        value = (self.map_embed or "").strip()
+        if not value:
+            return ""
+        match = re.search(r'src\s*=\s*["\']([^"\']+)["\']', value)
+        url = match.group(1) if match else value
+        if url.startswith("https://www.google.com/maps/embed") or \
+           url.startswith("https://maps.google.com/maps"):
+            return url
+        return ""
+
+    def get_service_images(self):
+        return [
+            img for img in [
+                self.service_img1, self.service_img2, self.service_img3,
+                self.service_img4, self.service_img5,
+            ] if img
+        ]
+
+    def add_service_image(self, new_image):
+        
+        # Delete the oldest file from storage before overwriting
+        if self.service_img1:
+            self.service_img1.delete(save=False)
+
+        # Shift left
+        self.service_img1 = self.service_img2
+        self.service_img2 = self.service_img3
+        self.service_img3 = self.service_img4
+        self.service_img4 = self.service_img5
+        self.service_img5 = new_image
+        self.save()
+
+    def __str__(self):
+        return self.name
+    
 
 class Services(models.Model):
 

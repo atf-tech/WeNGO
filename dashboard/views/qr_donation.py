@@ -102,21 +102,23 @@ def qr_donation(request):
         _start_of_day(today + timedelta(days=1)),
     )
 
-    link_qs = RMPayment.objects.all()
-    gpay_qs = RMGPayPayment.objects.all()
+    link_base_qs = RMPayment.objects.all()
+    gpay_base_qs = RMGPayPayment.objects.all()
 
     if selected_rm_code:
-        link_qs = link_qs.filter(rm_code=selected_rm_code)
-        gpay_qs = gpay_qs.filter(rm_code=selected_rm_code)
+        link_base_qs = link_base_qs.filter(rm_code=selected_rm_code)
+        gpay_base_qs = gpay_base_qs.filter(rm_code=selected_rm_code)
 
 
 
     active_start_dt, active_end_exclusive_dt = active_date_range
-    link_qs = link_qs.filter(
+
+    link_qs = link_base_qs.filter(
         submitted_at__gte=active_start_dt,
         submitted_at__lt=active_end_exclusive_dt,
     )
-    gpay_qs = gpay_qs.filter(
+
+    gpay_qs = gpay_base_qs.filter(
         payment_date__gte=active_start_dt,
         payment_date__lt=active_end_exclusive_dt,
     )
@@ -124,13 +126,80 @@ def qr_donation(request):
 
     rm_by_code = {rm.rm_code: rm for rm in RM.objects.all()}
 
-    link_today = link_qs.aggregate(total=Sum("donor_amount"))["total"] or 0
-    gpay_today = gpay_qs.aggregate(total=Sum("amount"))["total"] or 0
+    # ---------------- TODAY ----------------
 
+    link_today = (
+        link_base_qs.filter(
+            submitted_at__gte=start_today,
+            submitted_at__lt=start_tomorrow,
+        ).aggregate(total=Sum("donor_amount"))["total"] or 0
+    )
+    
+    gpay_today = (
+        gpay_base_qs.filter(
+            payment_date__gte=start_today,
+            payment_date__lt=start_tomorrow,
+        ).aggregate(total=Sum("amount"))["total"] or 0
+    )
+    
     today_collection = link_today + gpay_today
-    yesterday_collection = today_collection
-    this_month_collection = today_collection
-    last_month_collection = today_collection
+    
+    
+    # ---------------- YESTERDAY ----------------
+    
+    link_yesterday = (
+        link_base_qs.filter(
+            submitted_at__gte=start_yesterday,
+            submitted_at__lt=start_today,
+        ).aggregate(total=Sum("donor_amount"))["total"] or 0
+    )
+    
+    gpay_yesterday = (
+        gpay_base_qs.filter(
+            payment_date__gte=start_yesterday,
+            payment_date__lt=start_today,
+        ).aggregate(total=Sum("amount"))["total"] or 0
+    )
+    
+    yesterday_collection = link_yesterday + gpay_yesterday
+    
+    
+    # ---------------- THIS MONTH ----------------
+    
+    link_this_month = (
+        link_base_qs.filter(
+            submitted_at__gte=start_this_month,
+            submitted_at__lt=start_next_month,
+        ).aggregate(total=Sum("donor_amount"))["total"] or 0
+    )
+    
+    gpay_this_month = (
+        gpay_base_qs.filter(
+            payment_date__gte=start_this_month,
+            payment_date__lt=start_next_month,
+        ).aggregate(total=Sum("amount"))["total"] or 0
+    )
+    
+    this_month_collection = link_this_month + gpay_this_month
+    
+    
+    # ---------------- LAST MONTH ----------------
+    
+    link_last_month = (
+        link_base_qs.filter(
+            submitted_at__gte=last_month_start,
+            submitted_at__lt=start_this_month,
+        ).aggregate(total=Sum("donor_amount"))["total"] or 0
+    )
+    
+    gpay_last_month = (
+        gpay_base_qs.filter(
+            payment_date__gte=last_month_start,
+            payment_date__lt=start_this_month,
+        ).aggregate(total=Sum("amount"))["total"] or 0
+    )
+    
+    last_month_collection = link_last_month + gpay_last_month
 
 
 

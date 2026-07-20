@@ -1,1513 +1,429 @@
-{% extends 'dashboard/base.html' %} {% load static %}
+{% extends 'dashboard/base.html' %} {% load static %} {% block title %}
+Dashboard || Website Donations wengo {% endblock %} {% block content %}
+<style>
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
 
-{% block title %}
-Dashboard || Website Donations wengo
-{% endblock %}
+table.dataTable {
+    width: 100% !important;
+}
 
-{% block content %}
+.dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+</style>
 
-              
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="d-flex justify-content-end">
+
+            <form method="GET" class="d-flex align-items-center gap-2">
+
+                <label class="fw-semibold mb-0">
+                    Filter Date
+                </label>
+
+                <input
+                    type="date"
+                    class="form-control"
+                    style="width:200px"
+                    name="selected_date"
+                    value="{{ selected_date }}"
+                    max="{% now 'Y-m-d' %}"
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    <i class="ri-filter-3-line"></i>
+                    Filter
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
 <div class="row">
+  <div class="row">
+    <div class="col-12">
+      <h5 class="text-decoration-underline mb-1 mt-2 pb-3">Home's</h5>
+    </div>
+  </div>
+  <!--other widgets-->
 
   <div class="row">
-              <div class="col-12">
-                <h5 class="text-decoration-underline mb-1 mt-2 pb-3">
-                 Birthday
-                </h5>
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #69ffcb9c">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">Today Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">₹{{ home_today }}</h2>
+            </div>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
               </div>
             </div>
-            <!--other widgets-->
-                
-     <div class="row">
-       
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #82cfebd3;">
-                  <div class="card-body" >
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Users</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="28.05"
-                            >0</span
-                          >k
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2"
-                          >
-                            <i
-                              data-feather="users"
-                              class="text-info material-shadow"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
 
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #82cfebd3;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Sessions</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="97.66"
-                            >0</span
-                          >k
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="activity" class="text-info"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate "style="background-color: #82cfebd3;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-white-50 mb-0">
-                          Avg. Visit Duration
-                        </p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white">
-                          <span class="counter-value" data-target="3">0</span>m
-                          <span class="counter-value" data-target="40">0</span
-                          >sec
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="clock" class="text-white"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate" style="background-color: #82cfebd3;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Bounce Rate</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="33.48"
-                            >0</span
-                          >%
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
-                          >
-                            <i
-                              data-feather="external-link"
-                              class="text-info"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #69ffcb9c">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">Yesterday Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">₹{{ home_yesterday }}</h2>
             </div>
-<!--end-->
-
-           
-           
-                
-          <div class="row">
-                <div class="row">
-              <div class="col-12">
-                <h5 class="text-decoration-underline mb-1 mt-2 pb-3">
-                 Home's
-                </h5>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
               </div>
             </div>
-       <!--other widgets-->
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Users</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="28.05"
-                            >0</span
-                          >k
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2"
-                          >
-                            <i
-                              data-feather="users"
-                              class="text-info material-shadow"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
 
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate" style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Sessions</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="97.66"
-                            >0</span
-                          >k
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="activity" class="text-info"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate "style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-white-50 mb-0">
-                          Avg. Visit Duration
-                        </p>
-                        <h2 class="mt-4 ff-secondary fw-semibold text-white">
-                          <span class="counter-value" data-target="3">0</span>m
-                          <span class="counter-value" data-target="40">0</span
-                          >sec
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow"
-                          >
-                            <i data-feather="clock" class="text-white"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate"style="background-color: #ff69b47e;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Bounce Rate</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="33.48"
-                            >0</span
-                          >%
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2 material-shadow"
-                          >
-                            <i
-                              data-feather="external-link"
-                              class="text-info"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #69ffcb9c">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">This Month Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">
+                ₹{{ home_this_month }}
+              </h2>
             </div>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #69ffcb9c">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">Last Month Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">
+                ₹{{ home_last_month }}
+              </h2>
+            </div>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
+  </div>
+  <!--end-->
+
+  <div class="row">
+    <div class="col-12">
+      <h5 class="text-decoration-underline mb-1 mt-2 pb-3">Service's</h5>
+    </div>
+  </div>
+  <!--other widgets-->
+
+  <div class="row">
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #2cfff8a3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">Today Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">₹{{service_today}}</h2>
+            </div>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
+    <!-- end col-->
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #69ffcb9c">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">Yesterday Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">₹{{ service_yesterday }}</h2>
+            </div>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #2cfff8a3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">This Month Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">
+                ₹{{service_this_month}}
+              </h2>
+            </div>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card card-animate" style="background-color: #2cfff8a3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="fw-medium text-muted mb-0">Last Month Collection</p>
+              <h2 class="mt-4 ff-secondary fw-semibold">
+                {{service_last_month}}
+              </h2>
+            </div>
+            <div>
+              <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-info-subtle rounded-circle fs-2">
+                  <i data-feather="users" class="text-info material-shadow"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end card body -->
+      </div>
+      <!-- end card-->
+    </div>
+  </div>
+  <!--end-->
+
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-header border-0 align-items-center d-flex">
+          <h4 class="card-title mb-0 flex-grow-1">Performance Analytics</h4>
+        </div>
+        <div class="card-body">
+          <div id="stacked_line" class="apex-charts" dir="ltr"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Home's</h5>
+          </div>
+
+          <div class="card-body">
+            <table
+              id="website_donation_table_home"
+              class="table table-bordered table-striped align-middle w-100"
+              style="width: 100%">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Date & Time</th>
+                  <th>Payment Status</th>
+                  <th>Amount</th>
+                  <th>Mode of Payment</th>
+                  <th>Payment Transaction ID</th>
+                  <th>Donor Name</th>
+                  <th>Donor Mobile</th>
+                  <th>Donor Email</th>
+                  <th>Donor Address</th>
+                  <th>UQ.T.ID</th>
+                  <th>Receipt No</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for donation in home_donations %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+
+                  <td>{{ donation.submitted_at|date:"d M Y h:i A" }}</td>
+
+                  <td>
+                    {% if donation.is_paid %}
+                    <span class="badge bg-success">Success</span>
+                    {% else %}
+                    <span class="badge bg-danger">Failed</span>
+                    {% endif %}
+                  </td>
+
+                  <td>₹{{ donation.total_price }}</td>
+
+                  <td>{{ donation.easebuzz_payment_mode|default:"-" }}</td>
+
+                  <td>{{ donation.easebuzz_transaction_id|default:"-" }}</td>
+
+                  <td>{{ donation.donor_name }}</td>
+
+                  <td>{{ donation.donor_mobile }}</td>
+
+                  <td>{{ donation.donor_email }}</td>
+
+                  <td>{{ donation.address }}</td>
+
+                  <td>{{ donation.txnid }}</td>
+
+                  <td>{{ donation.receipt_no }}</td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                  <td colspan="12" class="text-center">
+                    No Home Donations Found
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!--end-->
 
-
-
-           <div class="row">
-              <div class="col-12">
-                <h5 class="text-decoration-underline mb-1 mt-2 pb-3">
-                Service's
-                </h5>
-              </div>
-            </div>
-            <!--other widgets-->
-                
-         <div class="row">
-       
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate" style="background-color: #f5ff3ad9;" >
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Users</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="28.05"
-                            >0</span
-                          >k
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2"
-                          >
-                            <i
-                              data-feather="users"
-                              class="text-info material-shadow"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-            </div>
-            <!--end-->
-
-              <div class="row">
-              <div class="col-12">
-                <h5 class="text-decoration-underline mb-1 mt-2 pb-3">
-               Student's
-                </h5>
-              </div>
-            </div>
-            <!--other widgets-->
-
-                <div class="row">
-       
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate" style="background-color: #69ffcb9c;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Users</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="28.05"
-                            >0</span
-                          >k
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2"
-                          >
-                            <i
-                              data-feather="users"
-                              class="text-info material-shadow"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-            </div>
-            <!--end-->
-          
-           
-            <div class="row">
-              <div class="col-12">
-                <h5 class="text-decoration-underline mb-1 mt-2 pb-3">
-                Service's
-                </h5>
-              </div>
-            </div>
-            <!--other widgets-->
-
-            <div class="row">
-       
-              <div class="col-xl-3 col-md-6">
-                <div class="card card-animate" style="background-color: #2cfff8a3;">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <p class="fw-medium text-muted mb-0">Users</p>
-                        <h2 class="mt-4 ff-secondary fw-semibold">
-                          <span class="counter-value" data-target="28.05"
-                            >0</span
-                          >k
-                        </h2>
-                       
-                      </div>
-                      <div>
-                        <div class="avatar-sm flex-shrink-0">
-                          <span
-                            class="avatar-title bg-info-subtle rounded-circle fs-2"
-                          >
-                            <i
-                              data-feather="users"
-                              class="text-info material-shadow"
-                            ></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end card body -->
-                </div>
-                <!-- end card-->
-              </div>
-              <!-- end col-->
-            </div>
-            <!--end-->
-
-           <div class="row">
-             <div class="col-xl-12">
+    <div class="row">
+      <div class="col-lg-12">
         <div class="card">
-          <div class="card-header border-0 align-items-center d-flex">
-            <h4 class="card-title mb-0 flex-grow-1"> Performance Analytics</h4>
-           </div>
-           <div class="card-body">
-             <div
-               id="stacked_line"
-               class="apex-charts"
-               dir="ltr"
-             ></div>
-           </div>
-                
+          <div class="card-header">
+            <h5 class="card-title mb-0">Service's</h5>
+          </div>
 
-    
+          <div class="card-body">
+            <table
+              id="website_donation_table_service"
+              class="table table-bordered  table-striped align-middle"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Date & Time</th>
+                  <th>Payment Status</th>
+                  <th>Amount</th>
+                  <th>Mode of Payment</th>
+                  <th>Payment Transaction ID</th>
+                  <th>Donor Name</th>
+                  <th>Donor Mobile</th>
+                  <th>Donor Email</th>
+                  <th>Donor Address</th>
+                  <th>UQ.T.ID</th>
+                  <th>Receipt No</th>
+                </tr>
+              </thead>
 
+              <tbody>
+                {% for donation in service_donations %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ donation.created_at }} </td>
+                  <td>
+                    {% if donation.easebuzz_payment_status == 'success' %}
+                    <span class="badge bg-success">Success</span>
+                    {% else %}
+                    <span class="badge bg-danger">Failed</span>
+                    {% endif %}
+                  <td> {{ donation.donation_amount }} </td>
+                  <td>{{donation.easebuzz_payment_mode }} </td>
+                  <td> {{ donation.easebuzz_transaction_id }}</td>
+                  <td>{{ donation.donor_name }}</td>
+                  <td>{{ donation.donor_mobile }}</td>
+                  <td>{{ donation.donor_email }}</td>
+                  <td>{{ donation.address }}</td>
+                  <td>{{ donation.txnid }}</td>
+                  <td>{{ donation.receipt_no }}</td>
+                </tr>
 
-
-   
-
-  </div>
-</div>
-
-
-          
-<div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Birthday</h5>
-      </div>
-
-      <div class="card-body">
-        <table
-          id="website_donation_table"
-          class="table table-bordered dt-responsive nowrap table-striped align-middle"
-          style="width: 100%"
-        >
-          <thead>
-            <tr>
-              <th data-ordering="false">SR No.</th>
-              <th data-ordering="false">ID</th>
-              <th data-ordering="false">Purchase ID</th>
-              <th data-ordering="false">Title</th>
-              <th data-ordering="false">User</th>
-              <th>Assigned To</th>
-              <th>Created By</th>
-              <th>Create Date</th>
-              <th>Status</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>01</td>
-              <td>VLZ-452</td>
-              <td>VLZ1400087402</td>
-              <td>Post launch reminder/ post list</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>03 Oct, 2021</td>
-              <td>
-                <span class="badge bg-info-subtle text-info">
-                  Re-open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>02</td>
-              <td>VLZ-453</td>
-              <td>VLZ1400087425</td>
-              <td>Additional Calendar</td>
-              <td>Diana Kohler</td>
-              <td>Admin</td>
-              <td>Mary Rucker</td>
-              <td>05 Oct, 2021</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>03</td>
-              <td>VLZ-454</td>
-              <td>VLZ1400087438</td>
-              <td>Make a creating an account profile</td>
-              <td>Tonya Noble</td>
-              <td>Admin</td>
-              <td>Tonya Noble</td>
-              <td>27 April, 2022</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>04</td>
-              <td>VLZ-455</td>
-              <td>VLZ1400087748</td>
-              <td>Apologize for shopping Error!</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>14 June, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>05</td>
-              <td>VLZ-456</td>
-              <td>VLZ1400087547</td>
-              <td>Support for theme</td>
-              <td>Donald Palmer</td>
-              <td>Admin</td>
-              <td>Donald Palmer</td>
-              <td>25 June, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>06</td>
-              <td>VLZ-457</td>
-              <td>VLZ1400087245</td>
-              <td>Benner design for FB & Twitter</td>
-              <td>Mary Rucker</td>
-              <td>Jennifer Carter</td>
-              <td>Mary Rucker</td>
-              <td>14 Aug, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>07</td>
-              <td>VLZ-458</td>
-              <td>VLZ1400087785</td>
-              <td>Change email option process</td>
-              <td>James Morris</td>
-              <td>Admin</td>
-              <td>James Morris</td>
-              <td>12 March, 2022</td>
-              <td>
-                <span class="badge bg-primary-subtle text-primary">
-                  Open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>08</td>
-              <td>VLZ-460</td>
-              <td>VLZ1400087745</td>
-              <td>Support for theme</td>
-              <td>Nathan Cole</td>
-              <td>Nancy Martino</td>
-              <td>Nathan Cole</td>
-              <td>28 Feb, 2022</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>09</td>
-              <td>VLZ-461</td>
-              <td>VLZ1400087179</td>
-              <td>Form submit issue</td>
-              <td>Grace Coles</td>
-              <td>Admin</td>
-              <td>Grace Coles</td>
-              <td>07 Jan, 2022</td>
-              <td>
-                <span class="badge bg-success-subtle text-success">
-                  New
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>10</td>
-              <td>VLZ-462</td>
-              <td>VLZ140008856</td>
-              <td>Edit customer testimonial</td>
-              <td>Freda</td>
-              <td>Alexis Clarke</td>
-              <td>Freda</td>
-              <td>16 Aug, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
+                {% empty %}
+                <tr>
+                  <td colspan="12" class="text-center">
+                    No Service Donations Found
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!--end-->
+
+    {%endblock%} {% block extra_js %}
+
+    <script>
+      const homeChartData = {{ home_chart_data|safe }};
+      const serviceChartData = {{ service_chart_data|safe }};
+    </script>
+
+
+    <script src="{% static 'dashboard/js/Website-Donation-js/stacked_line_chart.js' %}"></script>
+
+    {% endblock %}
   </div>
 </div>
-<!--end row-->
-
-<!--end -->
-
-
-
-<div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Home's</h5>
-      </div>
-
-      <div class="card-body">
-        <table
-          id="website_donation_table_home"
-          class="table table-bordered dt-responsive nowrap table-striped align-middle"
-          style="width: 100%"
-        >
-          <thead>
-            <tr>
-              <th data-ordering="false">SR No.</th>
-              <th data-ordering="false">ID</th>
-              <th data-ordering="false">Purchase ID</th>
-              <th data-ordering="false">Title</th>
-              <th data-ordering="false">User</th>
-              <th>Assigned To</th>
-              <th>Created By</th>
-              <th>Create Date</th>
-              <th>Status</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>01</td>
-              <td>VLZ-452</td>
-              <td>VLZ1400087402</td>
-              <td>Post launch reminder/ post list</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>03 Oct, 2021</td>
-              <td>
-                <span class="badge bg-info-subtle text-info">
-                  Re-open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>02</td>
-              <td>VLZ-453</td>
-              <td>VLZ1400087425</td>
-              <td>Additional Calendar</td>
-              <td>Diana Kohler</td>
-              <td>Admin</td>
-              <td>Mary Rucker</td>
-              <td>05 Oct, 2021</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>03</td>
-              <td>VLZ-454</td>
-              <td>VLZ1400087438</td>
-              <td>Make a creating an account profile</td>
-              <td>Tonya Noble</td>
-              <td>Admin</td>
-              <td>Tonya Noble</td>
-              <td>27 April, 2022</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>04</td>
-              <td>VLZ-455</td>
-              <td>VLZ1400087748</td>
-              <td>Apologize for shopping Error!</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>14 June, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>05</td>
-              <td>VLZ-456</td>
-              <td>VLZ1400087547</td>
-              <td>Support for theme</td>
-              <td>Donald Palmer</td>
-              <td>Admin</td>
-              <td>Donald Palmer</td>
-              <td>25 June, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>06</td>
-              <td>VLZ-457</td>
-              <td>VLZ1400087245</td>
-              <td>Benner design for FB & Twitter</td>
-              <td>Mary Rucker</td>
-              <td>Jennifer Carter</td>
-              <td>Mary Rucker</td>
-              <td>14 Aug, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>07</td>
-              <td>VLZ-458</td>
-              <td>VLZ1400087785</td>
-              <td>Change email option process</td>
-              <td>James Morris</td>
-              <td>Admin</td>
-              <td>James Morris</td>
-              <td>12 March, 2022</td>
-              <td>
-                <span class="badge bg-primary-subtle text-primary">
-                  Open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>08</td>
-              <td>VLZ-460</td>
-              <td>VLZ1400087745</td>
-              <td>Support for theme</td>
-              <td>Nathan Cole</td>
-              <td>Nancy Martino</td>
-              <td>Nathan Cole</td>
-              <td>28 Feb, 2022</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>09</td>
-              <td>VLZ-461</td>
-              <td>VLZ1400087179</td>
-              <td>Form submit issue</td>
-              <td>Grace Coles</td>
-              <td>Admin</td>
-              <td>Grace Coles</td>
-              <td>07 Jan, 2022</td>
-              <td>
-                <span class="badge bg-success-subtle text-success">
-                  New
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>10</td>
-              <td>VLZ-462</td>
-              <td>VLZ140008856</td>
-              <td>Edit customer testimonial</td>
-              <td>Freda</td>
-              <td>Alexis Clarke</td>
-              <td>Freda</td>
-              <td>16 Aug, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--end-->
-
-<div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Service's</h5>
-      </div>
-
-      <div class="card-body">
-        <table
-          id="website_donation_table_service"
-          class="table table-bordered dt-responsive nowrap table-striped align-middle"
-          style="width: 100%"
-        >
-          <thead>
-            <tr>
-              <th data-ordering="false">SR No.</th>
-              <th data-ordering="false">ID</th>
-              <th data-ordering="false">Purchase ID</th>
-              <th data-ordering="false">Title</th>
-              <th data-ordering="false">User</th>
-              <th>Assigned To</th>
-              <th>Created By</th>
-              <th>Create Date</th>
-              <th>Status</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>01</td>
-              <td>VLZ-452</td>
-              <td>VLZ1400087402</td>
-              <td>Post launch reminder/ post list</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>03 Oct, 2021</td>
-              <td>
-                <span class="badge bg-info-subtle text-info">
-                  Re-open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>02</td>
-              <td>VLZ-453</td>
-              <td>VLZ1400087425</td>
-              <td>Additional Calendar</td>
-              <td>Diana Kohler</td>
-              <td>Admin</td>
-              <td>Mary Rucker</td>
-              <td>05 Oct, 2021</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>03</td>
-              <td>VLZ-454</td>
-              <td>VLZ1400087438</td>
-              <td>Make a creating an account profile</td>
-              <td>Tonya Noble</td>
-              <td>Admin</td>
-              <td>Tonya Noble</td>
-              <td>27 April, 2022</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>04</td>
-              <td>VLZ-455</td>
-              <td>VLZ1400087748</td>
-              <td>Apologize for shopping Error!</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>14 June, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>05</td>
-              <td>VLZ-456</td>
-              <td>VLZ1400087547</td>
-              <td>Support for theme</td>
-              <td>Donald Palmer</td>
-              <td>Admin</td>
-              <td>Donald Palmer</td>
-              <td>25 June, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>06</td>
-              <td>VLZ-457</td>
-              <td>VLZ1400087245</td>
-              <td>Benner design for FB & Twitter</td>
-              <td>Mary Rucker</td>
-              <td>Jennifer Carter</td>
-              <td>Mary Rucker</td>
-              <td>14 Aug, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>07</td>
-              <td>VLZ-458</td>
-              <td>VLZ1400087785</td>
-              <td>Change email option process</td>
-              <td>James Morris</td>
-              <td>Admin</td>
-              <td>James Morris</td>
-              <td>12 March, 2022</td>
-              <td>
-                <span class="badge bg-primary-subtle text-primary">
-                  Open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>08</td>
-              <td>VLZ-460</td>
-              <td>VLZ1400087745</td>
-              <td>Support for theme</td>
-              <td>Nathan Cole</td>
-              <td>Nancy Martino</td>
-              <td>Nathan Cole</td>
-              <td>28 Feb, 2022</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>09</td>
-              <td>VLZ-461</td>
-              <td>VLZ1400087179</td>
-              <td>Form submit issue</td>
-              <td>Grace Coles</td>
-              <td>Admin</td>
-              <td>Grace Coles</td>
-              <td>07 Jan, 2022</td>
-              <td>
-                <span class="badge bg-success-subtle text-success">
-                  New
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>10</td>
-              <td>VLZ-462</td>
-              <td>VLZ140008856</td>
-              <td>Edit customer testimonial</td>
-              <td>Freda</td>
-              <td>Alexis Clarke</td>
-              <td>Freda</td>
-              <td>16 Aug, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--end-->
-
-
-<div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Student's</h5>
-      </div>
-
-      <div class="card-body">
-        <table
-          id="website_donation_table_student"
-          class="table table-bordered dt-responsive nowrap table-striped align-middle"
-          style="width: 100%"
-        >
-          <thead>
-            <tr>
-              <th data-ordering="false">SR No.</th>
-              <th data-ordering="false">ID</th>
-              <th data-ordering="false">Purchase ID</th>
-              <th data-ordering="false">Title</th>
-              <th data-ordering="false">User</th>
-              <th>Assigned To</th>
-              <th>Created By</th>
-              <th>Create Date</th>
-              <th>Status</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>01</td>
-              <td>VLZ-452</td>
-              <td>VLZ1400087402</td>
-              <td>Post launch reminder/ post list</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>03 Oct, 2021</td>
-              <td>
-                <span class="badge bg-info-subtle text-info">
-                  Re-open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>02</td>
-              <td>VLZ-453</td>
-              <td>VLZ1400087425</td>
-              <td>Additional Calendar</td>
-              <td>Diana Kohler</td>
-              <td>Admin</td>
-              <td>Mary Rucker</td>
-              <td>05 Oct, 2021</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>03</td>
-              <td>VLZ-454</td>
-              <td>VLZ1400087438</td>
-              <td>Make a creating an account profile</td>
-              <td>Tonya Noble</td>
-              <td>Admin</td>
-              <td>Tonya Noble</td>
-              <td>27 April, 2022</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>04</td>
-              <td>VLZ-455</td>
-              <td>VLZ1400087748</td>
-              <td>Apologize for shopping Error!</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>14 June, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>05</td>
-              <td>VLZ-456</td>
-              <td>VLZ1400087547</td>
-              <td>Support for theme</td>
-              <td>Donald Palmer</td>
-              <td>Admin</td>
-              <td>Donald Palmer</td>
-              <td>25 June, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>06</td>
-              <td>VLZ-457</td>
-              <td>VLZ1400087245</td>
-              <td>Benner design for FB & Twitter</td>
-              <td>Mary Rucker</td>
-              <td>Jennifer Carter</td>
-              <td>Mary Rucker</td>
-              <td>14 Aug, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>07</td>
-              <td>VLZ-458</td>
-              <td>VLZ1400087785</td>
-              <td>Change email option process</td>
-              <td>James Morris</td>
-              <td>Admin</td>
-              <td>James Morris</td>
-              <td>12 March, 2022</td>
-              <td>
-                <span class="badge bg-primary-subtle text-primary">
-                  Open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>08</td>
-              <td>VLZ-460</td>
-              <td>VLZ1400087745</td>
-              <td>Support for theme</td>
-              <td>Nathan Cole</td>
-              <td>Nancy Martino</td>
-              <td>Nathan Cole</td>
-              <td>28 Feb, 2022</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>09</td>
-              <td>VLZ-461</td>
-              <td>VLZ1400087179</td>
-              <td>Form submit issue</td>
-              <td>Grace Coles</td>
-              <td>Admin</td>
-              <td>Grace Coles</td>
-              <td>07 Jan, 2022</td>
-              <td>
-                <span class="badge bg-success-subtle text-success">
-                  New
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>10</td>
-              <td>VLZ-462</td>
-              <td>VLZ140008856</td>
-              <td>Edit customer testimonial</td>
-              <td>Freda</td>
-              <td>Alexis Clarke</td>
-              <td>Freda</td>
-              <td>16 Aug, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--end-->
-              
-
-<div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Festival's</h5>
-      </div>
-
-      <div class="card-body">
-        <table
-          id="website_donation_table_festival"
-          class="table table-bordered dt-responsive nowrap table-striped align-middle"
-          style="width: 100%"
-        >
-          <thead>
-            <tr>
-              <th data-ordering="false">SR No.</th>
-              <th data-ordering="false">ID</th>
-              <th data-ordering="false">Purchase ID</th>
-              <th data-ordering="false">Title</th>
-              <th data-ordering="false">User</th>
-              <th>Assigned To</th>
-              <th>Created By</th>
-              <th>Create Date</th>
-              <th>Status</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>01</td>
-              <td>VLZ-452</td>
-              <td>VLZ1400087402</td>
-              <td>Post launch reminder/ post list</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>03 Oct, 2021</td>
-              <td>
-                <span class="badge bg-info-subtle text-info">
-                  Re-open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>02</td>
-              <td>VLZ-453</td>
-              <td>VLZ1400087425</td>
-              <td>Additional Calendar</td>
-              <td>Diana Kohler</td>
-              <td>Admin</td>
-              <td>Mary Rucker</td>
-              <td>05 Oct, 2021</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>03</td>
-              <td>VLZ-454</td>
-              <td>VLZ1400087438</td>
-              <td>Make a creating an account profile</td>
-              <td>Tonya Noble</td>
-              <td>Admin</td>
-              <td>Tonya Noble</td>
-              <td>27 April, 2022</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>04</td>
-              <td>VLZ-455</td>
-              <td>VLZ1400087748</td>
-              <td>Apologize for shopping Error!</td>
-              <td>Joseph Parker</td>
-              <td>Alexis Clarke</td>
-              <td>Joseph Parker</td>
-              <td>14 June, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>05</td>
-              <td>VLZ-456</td>
-              <td>VLZ1400087547</td>
-              <td>Support for theme</td>
-              <td>Donald Palmer</td>
-              <td>Admin</td>
-              <td>Donald Palmer</td>
-              <td>25 June, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>06</td>
-              <td>VLZ-457</td>
-              <td>VLZ1400087245</td>
-              <td>Benner design for FB & Twitter</td>
-              <td>Mary Rucker</td>
-              <td>Jennifer Carter</td>
-              <td>Mary Rucker</td>
-              <td>14 Aug, 2021</td>
-              <td>
-                <span class="badge bg-warning-subtle text-warning">
-                  Inprogress
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-
-            <tr>
-              <td>07</td>
-              <td>VLZ-458</td>
-              <td>VLZ1400087785</td>
-              <td>Change email option process</td>
-              <td>James Morris</td>
-              <td>Admin</td>
-              <td>James Morris</td>
-              <td>12 March, 2022</td>
-              <td>
-                <span class="badge bg-primary-subtle text-primary">
-                  Open
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>08</td>
-              <td>VLZ-460</td>
-              <td>VLZ1400087745</td>
-              <td>Support for theme</td>
-              <td>Nathan Cole</td>
-              <td>Nancy Martino</td>
-              <td>Nathan Cole</td>
-              <td>28 Feb, 2022</td>
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary">
-                  On-Hold
-                </span>
-              </td>
-              <td><span class="badge bg-success">Low</span></td>
-            </tr>
-
-            <tr>
-              <td>09</td>
-              <td>VLZ-461</td>
-              <td>VLZ1400087179</td>
-              <td>Form submit issue</td>
-              <td>Grace Coles</td>
-              <td>Admin</td>
-              <td>Grace Coles</td>
-              <td>07 Jan, 2022</td>
-              <td>
-                <span class="badge bg-success-subtle text-success">
-                  New
-                </span>
-              </td>
-              <td><span class="badge bg-danger">High</span></td>
-            </tr>
-
-            <tr>
-              <td>10</td>
-              <td>VLZ-462</td>
-              <td>VLZ140008856</td>
-              <td>Edit customer testimonial</td>
-              <td>Freda</td>
-              <td>Alexis Clarke</td>
-              <td>Freda</td>
-              <td>16 Aug, 2021</td>
-              <td>
-                <span class="badge bg-danger-subtle text-danger">
-                  Closed
-                </span>
-              </td>
-              <td><span class="badge bg-info">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--end-->
-           
-                
-
-
-
-
-
-
-{%endblock%}
-
-{% block extra_js %}
-<script src="{% static 'dashboard/js/Website-Donation-js/stacked_line_chart.js' %}"></script>
-{% endblock %}

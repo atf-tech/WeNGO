@@ -6,6 +6,104 @@
 
 {% block content %}
 
+<style>
+.food-banner-wrapper{
+    display:flex;
+    justify-content:center;
+    margin:40px 0;
+}
+
+.food-banner-link{
+    position:relative;
+    display:block;
+    width:100%;
+    max-width:1470px;
+    overflow:hidden;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,.15);
+    transition:all .3s ease;
+    text-decoration:none;
+}
+
+.food-banner-img{
+    width:100%;
+    display:block;
+    transition:transform .4s ease;
+}
+
+.food-banner-link:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+}
+
+.food-banner-link:hover .food-banner-img{
+    transform:scale(1.03);
+}
+
+/* Bottom Overlay */
+.food-banner-overlay{
+    position:absolute;
+    left:0;
+    bottom:-80px;              /* Hidden initially */
+    width:100%;
+    padding:18px;
+    background:linear-gradient(to top, rgba(0,0,0,.75), transparent);
+    display:flex;
+    justify-content:center;
+    transition:bottom .35s ease;
+}
+
+.food-banner-link:hover .food-banner-overlay{
+    bottom:0;
+}
+
+/* Donate Button */
+.food-banner-btn{
+    background:#ff6b00;
+    color:#fff;
+    padding:12px 30px;
+    border-radius:50px;
+    font-size:18px;
+    font-weight:700;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.food-banner-btn:hover{
+    background:#ff8c1a;
+    color:#fff;
+}
+</style>
+
+<div class="col-12">
+    <div class="feature-course-thumbnail">
+        <div class="video-popup-wrapper rbt-shadow-box" style="height: 50%;">
+            <video
+                class="w-100"
+                style="height: auto; display: block;"
+                autoplay
+                muted
+                loop
+                playsinline>
+                <source src="{% static 'website/videos/wengo_home.mp4' %}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+</div>
+
+<div class="food-banner-wrapper">
+    <a href="/food" class="food-banner-link">
+        <img
+            class="food-banner-img"
+            src="{% static 'website/images/banner/meenakshi banner.jpg.jpeg' %}"
+            alt="Donate Food">
+
+        <div class="food-banner-overlay">
+            <span class="food-banner-btn"> Donate Now</span>
+        </div>
+    </a>
+</div>
    
 
 <div class="rbt-banner-area pt-4">
@@ -96,9 +194,85 @@
 </div>
   <br>
 
- <div> <img class="rbt-radius w-100"
-    src="{% static 'website/images/banner/meenakshi banner.jpg.jpeg' %}"
-    alt="Banner Images"></div>
+
+
+
+{% comment %} <section>
+  <div class="container">
+    <div class="banner-supper-sale">
+      <h6>Note:</h6>
+      <div class="body-text-1">
+        💡All Donations Are Eligible for Tax Benefits Under Section 80G
+      </div>
+    </div>
+  </div>
+</section> {% endcomment %}
+
+{% comment %} <section id="donation-section" class="flat-spacing pt-4 pb-0">
+    <div class="container">
+
+        <h3 class="title wow fadeInUp mb-4 text-center">
+            <a href="#" class="link">Our Homes</a>
+        </h3>
+
+        <div class="grid-cls grid-cls-4">
+
+            {% for home in homes %}
+
+            <div class="item{{ forloop.counter }} collection-default style-1 text-center hover-img">
+
+                <a href="{% url 'home_details' slug=home.slug %}" class="img-style">
+
+                    {% if home.home_image %}
+                        <img
+                            class="lazyload"
+                            src="{{ home.home_image.url }}"
+                            data-src="{{ home.home_image.url }}"
+                            alt="{{ home.name }}">
+                    {% else %}
+                        <img
+                            class="lazyload"
+                            src="{% static 'website/images/no-image.png' %}"
+                            alt="No Image">
+                    {% endif %}
+
+                </a>
+
+                <div class="content">
+
+                    <h3 class="title wow fadeInUp">
+                        <a href="{% url 'home_details' slug=home.slug %}" class="link">
+                            {{ home.name }}
+                        </a>
+                    </h3>
+
+                    <p class="desc mb-xl-12 text-clamp-md-2 wow fadeInUp">
+                        {{ home.description|striptags|truncatewords:6 }}
+                    </p>
+
+                    <div class="box-btn-slider wow fadeInUp" data-wow-delay=".2s">
+                        <a href="{% url 'home_details' slug=home.slug %}" class="tf-btn btn-fill">
+                            <span class="text">Donate Now</span>
+                            <i class="icon icon-heart"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="col-12 text-center">
+                <p>No Homes Available.</p>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section> {% endcomment %}
 
 
 <div class="rbt-banner-area rbt-banner-1">

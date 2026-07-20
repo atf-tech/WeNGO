@@ -177,7 +177,7 @@ def conversation(request, convo_id):
         "is_active"
     ])
 
-    # 🔥 MARK WHATSAPP MESSAGES AS READ (for donor blue tick)
+    
     wa_pid, wa_token = _get_wa_creds(rm)
     unread_incoming_messages = conversation.messages.filter(
         direction="in",
@@ -342,13 +342,11 @@ def send_message(request, convo_id):
 
 
 
-    # 🔍 get last donor message
-    # 🔍 Check if within 24hr WhatsApp window
+    
     last_incoming = conversation.messages.filter(
         direction="in"
     ).order_by("-created_at").first()
 
-    # outside window if: no donor msg ever, OR last donor msg > 24hrs ago
     outside_window = (
         last_incoming is None or
         timezone.now() - last_incoming.created_at > timedelta(hours=24)
@@ -483,7 +481,6 @@ def send_media_message(request, convo_id):
     )
 
 
-    # 4️⃣ ⏳ WhatsApp upload (can be slow — UI already updated)
     wa_pid, wa_token = _get_wa_creds(rm)
 
     try:
@@ -552,8 +549,7 @@ def messages_partial(request, convo_id):
         rm=rm
     )
 
-    # Capture old high-water mark BEFORE we move it forward, so we know
-    # which incoming messages are newly-seen and need a WhatsApp read receipt.
+ 
     old_last_seen = conversation.last_seen_message_id
 
     last_msg = conversation.messages.order_by("-id").first()
@@ -570,7 +566,6 @@ def messages_partial(request, convo_id):
         "is_active"
     ])
 
-    # Tell WhatsApp these incoming messages were read → donor sees blue ticks.
     wa_pid, wa_token = _get_wa_creds(rm)
     unread_incoming = conversation.messages.filter(
         direction="in",
@@ -588,9 +583,7 @@ def messages_partial(request, convo_id):
     })
 
 
-# Stub views for URL compatibility — these are minimal implementations
-# that satisfy URL routing. Full implementations exist in IPF's
-# collection.py and gpay.py which depend on easypay models.
+
 
 @rm_login_required
 def rmportal_index(request,rm_code="esfc"):

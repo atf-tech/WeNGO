@@ -249,7 +249,8 @@ class PaymentSuccessView(View):
         return render(request, "website/success.html", {
             "donation": donation,
             "txnid": txnid,
-            "status": "success"
+            "status": "success",
+            "donation_type": "service"
         })
     
 

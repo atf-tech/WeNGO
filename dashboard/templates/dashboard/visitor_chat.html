@@ -14,6 +14,14 @@ Dashboard || visitor_chat wengo
 {% block content %}
 
 <style>
+.card-info-line{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    letter-spacing: .2px;
+}
+
 :root {
   --primary: #405189; --success: #0ab39c; --info: #299cdb;
   --warning: #f7b84b; --danger: #f06548; --chat-blue: #299cdb;
@@ -159,7 +167,7 @@ Dashboard || visitor_chat wengo
             <p class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
                 <i class="ri-arrow-down-line align-middle"></i> 0.24 %
-              </span> vs. previous month
+              </span> Yesterday : 
             </p>
           </div>
           <div>
@@ -186,7 +194,7 @@ Dashboard || visitor_chat wengo
             <p class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
                 <i class="ri-arrow-down-line align-middle"></i> 0.24 %
-              </span> vs. previous month
+              </span> vs last week
             </p>
           </div>
           <div>
@@ -213,7 +221,7 @@ Dashboard || visitor_chat wengo
             <p class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
                 <i class="ri-arrow-down-line align-middle"></i> 0.24 %
-              </span> vs. previous month
+              </span> Last month: 
             </p>
           </div>
           <div>
@@ -240,7 +248,7 @@ Dashboard || visitor_chat wengo
             <p class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
                 <i class="ri-arrow-down-line align-middle"></i> 0.24 %
-              </span> vs. previous month
+              </span> Total: 307
             </p>
           </div>
           <div>
@@ -257,93 +265,136 @@ Dashboard || visitor_chat wengo
 </div>
 
 
-<!-- INFO CARDS ROW (Blue) -->
+<!-- INFO CARDS ROW (Blue - Same Style as Top Row) -->
 <div class="row">
+
+  <!-- Visitor Messages -->
   <div class="col-xl-3 col-md-6">
-    <div class="card card-animate bg-info">
+    <div class="card card-animate" style="background:#299cdb;">
       <div class="card-body">
-        <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Visitor Messages (Today)</p></div>
-          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
-        </div>
-        <div class="d-flex align-items-end justify-content-between mt-4">
+        <div class="d-flex justify-content-between">
           <div>
-            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
-           
+            <p class="fw-medium text-white-50 mb-0">Visitor Messages (Today)</p>
+
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="36894">0</span>
+            </h2>
+
+            <p class="mb-0 text-white-50">
+              
+              RM Replies: 230
+            </p>
           </div>
-          <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
-              <i class="bx bx-shopping-bag text-white"></i>
-            </span>
+
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i class="ri-message-3-line text-white"></i>
+              </span>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Reply Rate -->
   <div class="col-xl-3 col-md-6">
-    <div class="card card-animate bg-info">
+    <div class="card card-animate" style="background:#299cdb;">
       <div class="card-body">
-        <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Reply Rate</p></div>
-          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
-        </div>
-        <div class="d-flex align-items-end justify-content-between mt-4">
+        <div class="d-flex justify-content-between">
           <div>
-            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
-            
-          </div>
-          <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
-              <i class="bx bx-shopping-bag text-white"></i>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-    <div class="card card-animate bg-info">
-      <div class="card-body">
-        <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Avg Response Time</p></div>
-          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
-        </div>
-        <div class="d-flex align-items-end justify-content-between mt-4">
-          <div>
-            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
-          
-          </div>
-          <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
-              <i class="bx bx-shopping-bag text-white"></i>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-    <div class="card card-animate bg-info">
-      <div class="card-body">
-        <div class="d-flex align-items-center">
-          <div class="flex-grow-1"><p class="text-uppercase fw-medium text-white-50 mb-0">Return Visitors(Today)</p></div>
-          <div class="flex-shrink-0"><h5 class="text-warning fs-14 mb-0"><i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %</h5></div>
-        </div>
-        <div class="d-flex align-items-end justify-content-between mt-4">
-          <div>
-            <h4 class="fs-22 fw-semibold ff-secondary mb-4 text-white"><span class="counter-value" data-target="36894">0</span></h4>
-            
+
+            <p class="fw-medium text-white-50 mb-0">Reply Rate</p>
+
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="96">0</span>%
+            </h2>
+
+            <p class="mb-0 text-white-50">
+            109 of 315 convs
+            </p>
 
           </div>
-          <div class="avatar-sm flex-shrink-0">
-            <span class="avatar-title bg-white bg-opacity-25 rounded fs-3 material-shadow">
-              <i class="bx bx-shopping-bag text-white"></i>
-            </span>
+
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i class="ri-reply-line text-white"></i>
+              </span>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Avg Response -->
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate" style="background:#299cdb;">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+
+            <p class="fw-medium text-white-50 mb-0">Avg Response Time</p>
+
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="2.4">0</span> Min
+            </h2>
+
+            <p class="mb-0 text-white-50">
+              Excellent
+            </p>
+
+          </div>
+
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i class="ri-time-line text-white"></i>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return Visitors -->
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-animate" style="background:#299cdb;">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+
+            <p class="fw-medium text-white-50 mb-0">Return Visitors (Today)</p>
+
+            <h2 class="mt-4 ff-secondary fw-semibold text-white">
+              <span class="counter-value" data-target="265">0</span>
+            </h2>
+
+            <p class="mb-0 text-white-50 card-info-line">
+               Desktop: 16 | Mobile: 290 | Avg 1.8 Pages
+            </p>
+
+          </div>
+
+          <div>
+            <div class="avatar-sm flex-shrink-0">
+              <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
+                <i class="ri-user-follow-line text-white"></i>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- CRM WIDGET ROW -->

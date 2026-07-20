@@ -1,137 +1,147 @@
-// Generate one-day hourly time data
-function generateTodayTimeSeries() {
-  let data = [];
+// Backend-injected chart data should already be defined in the template:
+//   const homeChartData = {{ home_chart_data|safe }};
+//   const serviceChartData = {{ service_chart_data|safe }};
 
-  for (let i = 0; i < 24; i++) {
-    let ampm = i >= 12 ? 'PM' : 'AM';
-    let displayHour = i % 12 || 12;
+(function initStackedLineChart() {
+  const isHomeArray = Array.isArray(window.homeChartData) || Array.isArray(homeChartData);
+  const isServiceArray = Array.isArray(window.serviceChartData) || Array.isArray(serviceChartData);
 
-    // Example: 12 AM, 01 AM, 02 PM
-    let label =
-      String(displayHour).padStart(2, '0') +
-      ' ' +
-      ampm;
+  // Help debugging without breaking rendering.
+  console.log('[Website_Donations] homeChartData:', homeChartData);
+  console.log('[Website_Donations] serviceChartData:', serviceChartData);
 
-    data.push({
-      x: label,
-      y: Math.floor(Math.random() * 60) + 10,
-    });
+  if (!isHomeArray || !isServiceArray) {
+    console.error('[Website_Donations] Chart data is missing or not an array.');
+    return;
   }
 
-  return data;
-}
+  const safeHome = homeChartData.map((d) => {
+    const y = typeof d.y === 'number' ? d.y : Number(d.y);
+    return { x: d.x, y: Number.isFinite(y) ? y : 0 };
+  });
 
-var options = {
-  series: [
-    {
-      name: 'Birthday',
-      data: generateTodayTimeSeries(),
-    },
-    {
-      name: "Home's",
-      data: generateTodayTimeSeries(),
-    },
-    {
-      name: "Service's",
-      data: generateTodayTimeSeries(),
-    },
-    {
-      name: "Student's",
-      data: generateTodayTimeSeries(),
-    },
-    {
-      name: "Festival's",
-      data: generateTodayTimeSeries(),
-    },
-  ],
+  const safeService = serviceChartData.map((d) => {
+    const y = typeof d.y === 'number' ? d.y : Number(d.y);
+    return { x: d.x, y: Number.isFinite(y) ? y : 0 };
+  });
 
-  chart: {
-    type: 'line',
-    height: 380,
+  // Use backend values for axis scaling.
+  const allValues = [...safeHome.map((item) => item.y), ...safeService.map((item) => item.y)];
+  const maxValue = allValues.length ? Math.max(...allValues) : 0;
 
-    toolbar: {
-      show: false,
-    },
+  // Dynamic Y-axis max (avoid 0/NaN issues)
+  const yAxisMax = Math.ceil(maxValue / 10) * 10 || 10;
 
-    zoom: {
-      enabled: false,
-    },
-  },
+  var options = {
+    series: [
+      {
+        name: "Home's",
+        data: safeHome,
+      },
+      {
+        name: "Service's",
+        data: safeService,
+      },
+    ],
 
-  stroke: {
-    curve: 'smooth',
-    width: 3,
-  },
+    chart: {
+      type: 'line',
+      height: 380,
 
-  dataLabels: {
-    enabled: false,
-  },
+      toolbar: {
+        show: false,
+      },
 
-  markers: {
-    size: 0,
-    hover: {
-      size: 6,
-    },
-  },
-
-  colors: [
-    '#1E88E5',
-    '#00A86B',
-    '#D18A00',
-    '#FF4D6D',
-    '#8B6BE8',
-  ],
-
-  tooltip: {
-    shared: true,
-    intersect: false,
-    theme: 'light',
-  },
-
-  legend: {
-    position: 'top',
-    horizontalAlign: 'center',
-  },
-
-  grid: {
-    borderColor: '#eef2f7',
-    strokeDashArray: 5,
-  },
-
-  xaxis: {
-    type: 'category',
-
-    title: {
-      text: 'Today Time (24 Hours)',
-    },
-
-    labels: {
-      rotate: -45, // time overlap avoid
-      style: {
-        fontSize: '11px',
+      zoom: {
+        enabled: false,
       },
     },
 
-    axisBorder: {
-      show: false,
+    stroke: {
+      curve: 'smooth',
+      width: 3,
     },
 
-    axisTicks: {
-      show: false,
+    dataLabels: {
+      enabled: false,
     },
-  },
 
-  yaxis: {
-    title: {
-      text: 'Collections',
+    markers: {
+      size: 0,
+      hover: {
+        size: 6,
+      },
     },
-  },
-};
 
-// Render Chart
-var chart1 = new ApexCharts(
-  document.querySelector('#stacked_line'),
-  options
-);
+    colors: [
+      '#D18A00',
+      '#FF4D6D',
+    ],
 
-chart1.render();
+    tooltip: {
+      shared: true,
+      intersect: false,
+      theme: 'light',
+    },
+
+    legend: {
+      position: 'top',
+      horizontalAlign: 'center',
+    },
+
+    grid: {
+      borderColor: '#eef2f7',
+      strokeDashArray: 5,
+    },
+
+    xaxis: {
+      type: 'category',
+
+      title: {
+        text: 'Today Time (24 Hours)',
+      },
+
+      labels: {
+        rotate: -45,
+        style: {
+          fontSize: '11px',
+        },
+      },
+
+      axisBorder: {
+        show: false,
+      },
+
+      axisTicks: {
+        show: false,
+      },
+    },
+
+    yaxis: {
+      min: 0,
+      max: yAxisMax,
+      tickAmount: 5,
+      title: {
+        text: 'Collections',
+      },
+      labels: {
+        formatter: function (value) {
+          return '₹ ' + value;
+        }
+      }
+    },
+  };
+
+  // Render Chart
+  var el = document.querySelector('#stacked_line');
+  if (!el) {
+    console.error('[Website_Donations] #stacked_line container not found.');
+    return;
+  }
+
+  var chart1 = new ApexCharts(el, options);
+  chart1.render();
+})();
+
+
+

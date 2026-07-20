@@ -108,10 +108,7 @@
       },
     },
 
-    title: {
-      text: "7 Days Data",
-      align: "left",
-    },
+    
 
     tooltip: {
       shared: true,
@@ -123,8 +120,8 @@
     },
 
     legend: {
-      position: "top",
-      horizontalAlign: "right",
+      position: "bottom",
+      horizontalAlign: "center",
     },
   };
 

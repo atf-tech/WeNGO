@@ -2539,7 +2539,7 @@
                         <b class="tm_primary_color tm_medium">Address: </b>{{ donor_address }}
                       </td>
                     </tr>
-                    {% if manual.donor_pan %}
+                    {% if donor_pan %}
                     <tr>
                         <td class="tm_width_6 tm_accent_border_20" colspan="2">
                             <b class="tm_primary_color tm_medium">Donor PAN: </b>{{ donor_pan }}
@@ -2577,9 +2577,9 @@
                       <td class="tm_width_1 tm_accent_border_20">
                         1
                       </td>
-                      <td class="tm_width_4 tm_accent_border_20">
-                        Donation
-                      </td>
+<td class="tm_width_4 tm_accent_border_20">
+    {{ donation_name }}
+</td>
                       <td class="tm_width_2 tm_accent_border_20">₹ {{ amount  }}</td>
                       <td class="tm_width_1 tm_accent_border_20">₹ {{ amount }}</td>
                     </tr>

@@ -64,11 +64,12 @@ def admin_search_page(request):
         date_to = today.isoformat()
 
 
-    # Only include the 4 modules requested: RM Link, GPay, Manual, Service
+    # Only include the 4 modules requested: RM Link, GPay, Manual, Service, Home
     rmpay_qs = RMPayment.objects.filter(is_paid=True)
     gpay_qs = RMGPayPayment.objects.all()
     service_qs = ServiceDonation.objects.filter(is_paid=True)
     manual_qs = Manual80GSubmission.objects.all()
+    home_qs = HomeDonation.objects.filter(is_paid=True)
    
 
     def normalize_mobile(v):
@@ -83,6 +84,7 @@ def admin_search_page(request):
         gpay_qs = RMGPayPayment.objects.all()
         service_qs = ServiceDonation.objects.all()
         manual_qs = Manual80GSubmission.objects.all()
+        home_qs = HomeDonation.objects.all()
 
         # Strict transaction id matching (no partial/contains matching)
         rmpay_qs = rmpay_qs.filter(Q(easebuzz_transaction_id__iexact=transaction_id))
@@ -92,6 +94,12 @@ def admin_search_page(request):
             Q(easebuzz_transaction_id__iexact=transaction_id) | Q(txnid__iexact=transaction_id)
         )
 
+        # HomeDonation: match by its transaction-id fields (txnid, easebuzz_transaction_id, receipt_no)
+        home_qs = home_qs.filter(
+            Q(txnid__iexact=transaction_id)
+            | Q(easebuzz_transaction_id__iexact=transaction_id)
+            | Q(receipt_no__iexact=transaction_id)
+        )
 
         # Manual80GSubmission: strict match by its real transaction identifier (receipt_no)
         manual_qs = manual_qs.filter(receipt_no__iexact=transaction_id)
@@ -102,6 +110,7 @@ def admin_search_page(request):
         gpay_qs = RMGPayPayment.objects.all().filter(donor_mobile=mobile_no)
         service_qs = ServiceDonation.objects.all().filter(donor_mobile=mobile_no)
         manual_qs = Manual80GSubmission.objects.all().filter(donor_mobile=mobile_no)
+        home_qs = home_qs.filter(donor_mobile=mobile_no)
 
 
 
@@ -166,6 +175,10 @@ def admin_search_page(request):
             manual_qs = manual_qs.filter(donation_date__range=(df, dt))
         except Exception:
             pass
+        # HomeDonation: filter by service_date when present, otherwise by submitted_at.
+        home_qs = home_qs.filter(
+            Q(service_date__range=(df, dt)) | Q(submitted_at__range=(start_dt, end_dt))
+        )
     elif df:
         start_dt = timezone.make_aware(datetime.combine(df, datetime.min.time()))
         end_dt = timezone.make_aware(datetime.combine(df, datetime.max.time()))
@@ -178,6 +191,10 @@ def admin_search_page(request):
             manual_qs = manual_qs.filter(donation_date=df)
         except Exception:
             pass
+        # HomeDonation: filter by service_date when present, otherwise by submitted_at.
+        home_qs = home_qs.filter(
+            Q(service_date=df) | Q(submitted_at__range=(start_dt, end_dt))
+        )
     else:
         start_dt = None
         end_dt = None
@@ -292,7 +309,7 @@ def admin_search_page(request):
 
                 'virtual_label': '-',
                 'branch': '-',
-                'donation_category': 'Service',
+                'donation_category': 'Service Donation',
                 'submitted_at': (
                     (timezone.make_aware(datetime.combine(sed.service_date, datetime.min.time())) if getattr(sed, 'service_date', None) and isinstance(sed.service_date, date) and not isinstance(sed.service_date, datetime) else getattr(sed, 'service_date', None))
                     or getattr(sed, 'created_at', None)
@@ -304,6 +321,28 @@ def admin_search_page(request):
                 'donor_mobile': sed.donor_mobile,
                 'donor_email': sed.donor_email,
                 'donor_address': sed.address,
+            })
+
+        
+        for hd in home_qs:
+            combined_qs.append({
+                'payment_status': hd.easebuzz_payment_status or ('Paid' if hd.is_paid else 'Unpaid'),
+                'amount': float(hd.donation_amount),
+
+                'virtual_label': '-',
+                'branch': '-',
+                'donation_category': 'Home Donation',
+                'submitted_at': (
+                    (timezone.make_aware(datetime.combine(hd.service_date, datetime.min.time())) if getattr(hd, 'service_date', None) and isinstance(hd.service_date, date) and not isinstance(hd.service_date, datetime) else getattr(hd, 'service_date', None))
+                    or getattr(hd, 'created_at', None)
+                ),
+
+                'transaction_id': hd.easebuzz_transaction_id or hd.txnid,
+                'payment_mode': hd.easebuzz_payment_mode or 'Home',
+                'donor_name': hd.donor_name,
+                'donor_mobile': hd.donor_mobile,
+                'donor_email': hd.donor_email,
+                'donor_address': hd.address,
             })
 
     
