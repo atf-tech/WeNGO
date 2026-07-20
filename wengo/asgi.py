@@ -8,15 +8,21 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
-from django.core.asgi import get_asgi_application
-import RMPortal.routing
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wengo.settings")
 
+from django.core.asgi import get_asgi_application
+
+# Initialise Django before importing anything that touches models.
+django_asgi_app = get_asgi_application()
+
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+
+import RMPortal.routing
+
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "http": django_asgi_app,
     "websocket": AuthMiddlewareStack(
         URLRouter(
             RMPortal.routing.websocket_urlpatterns
