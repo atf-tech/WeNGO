@@ -1,0 +1,30 @@
+# Keep the build context (and image) small and clean.
+.git
+.gitignore
+.venv
+venv
+env
+ENV
+__pycache__
+*.py[cod]
+*.so
+
+# Local databases / logs
+db.sqlite3
+*.db
+*.log
+logs/
+
+# Collected/generated files (regenerated in the container)
+staticfiles/
+media/
+
+# Secrets and IDE noise
+.env
+.vscode
+.idea
+.claude
+.devcontainer
+
+# Docker files themselves aren't needed inside the image
+docker-compose.yml

@@ -1,0 +1,23 @@
+# Production compose file for the VPS.
+# Usage:  docker compose -f docker-compose.prod.yml up -d --build
+#
+# Only the Django app runs in Docker. MySQL, Redis and Nginx keep running
+# directly on the VPS. network_mode: host lets the container reach them at
+# 127.0.0.1 with no MySQL config changes, and Nginx reaches Daphne at
+# 127.0.0.1:8000 just like it reached Gunicorn before.
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    network_mode: host
+    # Bind to 127.0.0.1 so Daphne is only reachable through Nginx,
+    # never directly from the internet.
+    command: daphne -b 127.0.0.1 -p 8000 wengo.asgi:application
+    env_file:
+      - .env
+    volumes:
+      # collectstatic output and uploaded media must live on the host
+      # so Nginx can serve them and uploads survive container rebuilds.
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media

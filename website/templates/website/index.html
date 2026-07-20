@@ -106,7 +106,7 @@
 </div>
    
 
-<div class="rbt-banner-area pt-4">
+{% comment %} <div class="rbt-banner-area pt-4">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -115,14 +115,7 @@
                         <!-- Start Single Banner  -->
                         <div class="swiper-slide">
 
-                            {% comment %} <div class="thumbnail">
-                                <a href="#">
-                                    <img class="rbt-radius w-100"
-                                        src="{% static 'website/images/sample/wengon_ramadan.webp' %}"
-                                        alt="Banner Images">
-                                </a>
-                                
-                            </div> {% endcomment %}
+                      
                             
                             
                              <div class="thumbnail">
@@ -159,18 +152,7 @@
                                 </a>
                             </div>
                         </div>
-                        <!-- End Single Banner  -->
-                        <!-- Start Single Banner  -->
-                        {% comment %} <div class="swiper-slide">
-                            <div class="thumbnail">
-                                <a href="#">
-                                    <img class="rbt-radius w-100"
-                                        src="{% static 'website/images/sample/womensday_we.jpeg' %}"
-                                        alt="Banner Images">
-                                </a>
-                            </div>
-                        </div> {% endcomment %}
-                        <!-- End Single Banner  -->
+                       
                     </div>
                     
                
@@ -191,135 +173,13 @@
             </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
   <br>
 
 
 
 
-{% comment %} <section>
-  <div class="container">
-    <div class="banner-supper-sale">
-      <h6>Note:</h6>
-      <div class="body-text-1">
-        💡All Donations Are Eligible for Tax Benefits Under Section 80G
-      </div>
-    </div>
-  </div>
-</section> {% endcomment %}
 
-{% comment %} <section id="donation-section" class="flat-spacing pt-4 pb-0">
-    <div class="container">
-
-        <h3 class="title wow fadeInUp mb-4 text-center">
-            <a href="#" class="link">Our Homes</a>
-        </h3>
-
-        <div class="grid-cls grid-cls-4">
-
-            {% for home in homes %}
-
-            <div class="item{{ forloop.counter }} collection-default style-1 text-center hover-img">
-
-                <a href="{% url 'home_details' slug=home.slug %}" class="img-style">
-
-                    {% if home.home_image %}
-                        <img
-                            class="lazyload"
-                            src="{{ home.home_image.url }}"
-                            data-src="{{ home.home_image.url }}"
-                            alt="{{ home.name }}">
-                    {% else %}
-                        <img
-                            class="lazyload"
-                            src="{% static 'website/images/no-image.png' %}"
-                            alt="No Image">
-                    {% endif %}
-
-                </a>
-
-                <div class="content">
-
-                    <h3 class="title wow fadeInUp">
-                        <a href="{% url 'home_details' slug=home.slug %}" class="link">
-                            {{ home.name }}
-                        </a>
-                    </h3>
-
-                    <p class="desc mb-xl-12 text-clamp-md-2 wow fadeInUp">
-                        {{ home.description|striptags|truncatewords:6 }}
-                    </p>
-
-                    <div class="box-btn-slider wow fadeInUp" data-wow-delay=".2s">
-                        <a href="{% url 'home_details' slug=home.slug %}" class="tf-btn btn-fill">
-                            <span class="text">Donate Now</span>
-                            <i class="icon icon-heart"></i>
-                        </a>
-                    </div>
-
-                </div>
-
-            </div>
-
-            {% empty %}
-
-            <div class="col-12 text-center">
-                <p>No Homes Available.</p>
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
-</section> {% endcomment %}
-
-
-<div class="rbt-banner-area rbt-banner-1">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 pb--120 pt--20">
-                <div class="content">
-                    <div class="inner">
-                        <div class="rbt-new-badge rbt-new-badge-one">
-                            <span class="rbt-new-badge-icon">🏆</span>Her Growth. Our Mission.
-                        </div>
-
-                        <h1 class="title">
-                            Welcome to WENGO - <br> Women Empowerment NGO
-                        </h1>
-                        <p class="description">
-                            WENGO is a non-profit NGO based in Anna Nagar, Chennai, working to empower women and uplift
-                            underprivileged communities through education, healthcare, and social welfare initiatives.
-                            {% comment %} <strong>Velit
-                                officia consequat.</strong> {% endcomment %}
-                        </p>
-                        <div class="slider-btn">
-                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'about' %}">
-                                <span class="icon-reverse-wrapper">
-                                    <span class="btn-text">Learn More</span>
-                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                    <span class="btn-icon"><i class="feather-heart"></i></span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="shape-wrapper" id="scene">
-                        <img src="{% static 'website/images/sample/index_web.jpeg' %}" alt="Hero Image">
-                        <div class="hero-bg-shape-1 layer" data-depth="0.4">
-                            <img src="{% static 'website/images/shape/shape-01.png' %}"
-                                alt="Hero Image Background Shape">
-                        </div>
-                        <div class="hero-bg-shape-2 layer" data-depth="0.4">
-                            <img src="{% static 'website/images/shape/shape-02.png' %}"
-                                alt="Hero Image Background Shape">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="rbt-course-area rbt-section-gap bg-gradient-8 masonary-wrapper-activation">
     <div class="container-fluid">
@@ -390,18 +250,56 @@
             {% endfor %}
             
         </div>
-        <!-- <div class="row mt--55 mt_sm--50">
-            <div class="col-lg-12">
-                <div class="load-more-btn text-center">
-                    <a class="rbt-btn rbt-switch-btn btn-white" href="#">
-                        <span data-text="View More">View More</span>
-                    </a>
-                </div>
-            </div>
-        </div> -->
     </div>
 </div>
 
+
+
+<div class="rbt-banner-area rbt-banner-1">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 pb--120 pt--20">
+                <div class="content">
+                    <div class="inner">
+                        <div class="rbt-new-badge rbt-new-badge-one">
+                            <span class="rbt-new-badge-icon">🏆</span>Her Growth. Our Mission.
+                        </div>
+
+                        <h1 class="title">
+                            Welcome to WENGO - <br> Women Empowerment NGO
+                        </h1>
+                        <p class="description">
+                            WENGO is a non-profit NGO based in Anna Nagar, Chennai, working to empower women and uplift
+                            underprivileged communities through education, healthcare, and social welfare initiatives.
+                            {% comment %} <strong>Velit
+                                officia consequat.</strong> {% endcomment %}
+                        </p>
+                        <div class="slider-btn">
+                            <a class="rbt-btn btn-gradient hover-icon-reverse" href="{% url 'about' %}">
+                                <span class="icon-reverse-wrapper">
+                                    <span class="btn-text">Learn More</span>
+                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                    <span class="btn-icon"><i class="feather-heart"></i></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="shape-wrapper" id="scene">
+                        <img src="{% static 'website/images/sample/index_web.jpeg' %}" alt="Hero Image">
+                        <div class="hero-bg-shape-1 layer" data-depth="0.4">
+                            <img src="{% static 'website/images/shape/shape-01.png' %}"
+                                alt="Hero Image Background Shape">
+                        </div>
+                        <div class="hero-bg-shape-2 layer" data-depth="0.4">
+                            <img src="{% static 'website/images/shape/shape-02.png' %}"
+                                alt="Hero Image Background Shape">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

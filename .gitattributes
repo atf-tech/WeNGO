@@ -1,0 +1,7 @@
+# Shell scripts must always use LF line endings — CRLF breaks them inside
+# Linux/Docker containers ("exec: no such file or directory").
+
+#.gitattributes — forces entrypoint.sh to always keep Linux line endings, 
+#so it never crashes the Docker container again.
+
+*.sh text eol=lf
