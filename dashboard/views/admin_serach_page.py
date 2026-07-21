@@ -14,11 +14,13 @@ from dashboard.models import *
 from website.models import *
 from easypay.models import *
 from receipt.models import *
+from dashboard.views.auth import superuser_required
 
 ist = pytz.timezone("Asia/Kolkata")
 
 
 
+@superuser_required(login_url='/dashboard/login')
 def admin_search_page(request):
     now = timezone.localtime(timezone.now())
     today = now.date()

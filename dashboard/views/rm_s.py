@@ -3,8 +3,10 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 from dashboard.models import RM
+from dashboard.views.auth import superuser_required
 
 
+@superuser_required(login_url='/dashboard/login')
 def RM_S(request):
 
     if request.method == "POST":

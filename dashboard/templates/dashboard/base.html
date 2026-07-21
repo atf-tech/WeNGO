@@ -141,7 +141,6 @@
     <script src="{% static 'dashboard/js/pages/datatables.init.js' %}"></script>
     
 
-
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     
@@ -149,6 +148,86 @@
   <script src="{% static 'dashboard/js/app.js' %}"></script>
   <script src="{% static 'dashboard/js/custom.js' %}"></script>
   {% block extra_js %}{% endblock %}
+
+  <!-- Dashboard Session Timeout & Keepalive (IPF-compatible) -->
+  <script>
+    (function() {
+      var SESSION_TIMEOUT_MS = 300000;    // 5 minutes
+      var KEEPALIVE_INTERVAL_MS = 240000; // 4 minutes (ping before expiry)
+      var INACTIVITY_TIMEOUT_MS = 300000; // 5 minutes of inactivity
+      var keepaliveUrl = "{% url 'dashboard_keepalive' %}";
+      var logoutUrl = "{% url 'dashboard_logout' %}";
+
+      var inactivityTimer = null;
+      var keepaliveTimer = null;
+
+      function redirectToLogout() {
+        window.location.href = logoutUrl;
+      }
+
+      function resetInactivityTimer() {
+        if (inactivityTimer) {
+          clearTimeout(inactivityTimer);
+        }
+        inactivityTimer = setTimeout(redirectToLogout, INACTIVITY_TIMEOUT_MS);
+      }
+
+      function sendKeepalive() {
+        fetch(keepaliveUrl, {
+          method: 'GET',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Cache-Control': 'no-cache'
+          },
+          credentials: 'same-origin'
+        })
+        .then(function(response) {
+          if (!response.ok) {
+            redirectToLogout();
+          }
+          return response.json();
+        })
+        .then(function(data) {
+          if (data.status === 'expired') {
+            redirectToLogout();
+          } else {
+            // Session refreshed, reset inactivity timer
+            resetInactivityTimer();
+          }
+        })
+        .catch(function() {
+          redirectToLogout();
+        });
+      }
+
+      // Listen for user activity events
+      function onUserActivity() {
+        resetInactivityTimer();
+      }
+
+      function initSessionManager() {
+        // Start inactivity timer
+        resetInactivityTimer();
+
+        // Keepalive ping every 4 minutes to refresh session expiry
+        keepaliveTimer = setInterval(sendKeepalive, KEEPALIVE_INTERVAL_MS);
+
+        // Bind user activity events
+        var events = ['mousedown', 'keydown', 'mousemove', 'scroll', 'touchstart', 'click'];
+        events.forEach(function(evt) {
+          document.addEventListener(evt, onUserActivity, { passive: true });
+        });
+      }
+
+      // Start when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSessionManager);
+      } else {
+        initSessionManager();
+      }
+    })();
+  </script>
+  
 
   
     

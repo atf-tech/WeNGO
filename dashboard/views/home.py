@@ -7,6 +7,7 @@ from easypay.models import RMPayment, RMGPayPayment
 from website.models import HomeDonation, ServiceDonation
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from dashboard.views.auth import superuser_required
 
 
 def _success_rmpayment_filter(qs):
@@ -73,6 +74,7 @@ def _sum_service_total(qs):
     return _sum_decimal(qs, "donation_amount")
 
 
+@superuser_required(login_url='/dashboard/login')
 def home(request):
 
     # Parse selected_date from query (Flatpickr range returns e.g.:

@@ -2,6 +2,7 @@ import calendar
 import logging
 
 from django.shortcuts import render
+from dashboard.views.auth import superuser_required
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import datetime, timedelta, time
@@ -46,6 +47,7 @@ def _verified_total(queryset, amount_field):
     return agg_total
 
 
+@superuser_required(login_url='/dashboard/login')
 def Website_Donations(request):
 
     now_local = timezone.localtime(timezone.now())

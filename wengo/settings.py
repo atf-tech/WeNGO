@@ -73,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'RMPortal.middleware.UpdateLastSeenMiddleware',
     'RMPortal.middleware.RMAuthMiddleware',
+    'dashboard.middleware.DashboardNoCacheMiddleware',
 ]
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'unsafe-none'
@@ -206,9 +207,9 @@ EASEBUZZ_ENV = config('EASEBUZZ_ENV', default='prod')
 EASEBUZZ_INITIATE_PAYMENT_URL = config('EASEBUZZ_INITIATE_PAYMENT_URL')
 
 
-SESSION_COOKIE_AGE = 3600
+SESSION_COOKIE_AGE = 300  # 5 minutes for dashboard session timeout 
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 LOGIN_URL = '/rm/login'
 LOGIN_REDIRECT_URL = '/rm/webchat/'

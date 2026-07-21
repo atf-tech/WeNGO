@@ -113,60 +113,76 @@ class CreateServicePaymentView(View):
                 txnid=txnid,
                 is_paid=False,
             )
-            request.session["txnid"] = txnid 
-            amount = str(donation.donation_amount).strip() 
 
-            # Easebuzz configuration
-            key = settings.EASEBUZZ_MERCHANT_KEY
-            salt = settings.EASEBUZZ_SALT
-            surl = request.build_absolute_uri("/payment/success/")
-            furl = request.build_absolute_uri("/payment/failed/")
-            hash_string = f"{key}|{txnid}|{amount}|{productinfo}|{donor_name}|{donor_email}|||||||||||{salt}"
-            hash_value = hashlib.sha512(hash_string.encode("utf-8")).hexdigest().lower()
 
-            print("SUCCESS URL:", surl)
-            print("FAILED URL:", furl)
+            # Temp ########################
+            donation.is_paid = True
+            donation.easebuzz_payment_status = "verification_mode"
+            donation.save()
 
-            payload = {
-                "key": key,
-                "txnid": txnid,
-                "amount": str(amount),
-                "productinfo": productinfo,
-                "firstname": donor_name,
-                "phone": donor_mobile,
-                "email": donor_email,
-                "surl": surl,
-                "furl": furl,
-                "hash": hash_value,
-            }
+            request.session["txnid"] = txnid
+            print("TEMP VERIFICATION MODE")
+            return JsonResponse({
+                "status": "success",
+                "redirect_url": "/payment/success/"
+            })
+        
 
-            headers = {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Accept": "application/json",
-            }
+            # request.session["txnid"] = txnid 
+            # amount = str(donation.donation_amount).strip() 
 
-            try:
-                response = requests.post(
-                    settings.EASEBUZZ_INITIATE_PAYMENT_URL, data=payload, headers=headers
-                )
-                print("STATUS CODE =", response.status_code)
-                print("RAW RESPONSE =", response.text)
-                result = response.json()
-                print("PARSED RESPONSE =", result)
+            # # Easebuzz configuration
+            # key = settings.EASEBUZZ_MERCHANT_KEY
+            # salt = settings.EASEBUZZ_SALT
+            # surl = request.build_absolute_uri("/payment/success/")
+            # furl = request.build_absolute_uri("/payment/failed/")
+            # hash_string = f"{key}|{txnid}|{amount}|{productinfo}|{donor_name}|{donor_email}|||||||||||{salt}"
+            # hash_value = hashlib.sha512(hash_string.encode("utf-8")).hexdigest().lower()
 
-            except Exception as e:
-                print("Easebuzz error:", e)
-                return JsonResponse(
-                    {"error": "Failed to connect with Easebuzz."}, status=500
-                )
+            # print("SUCCESS URL:", surl)
+            # print("FAILED URL:", furl)
 
-            if result.get("status") == 1 and "data" in result:
-                return JsonResponse({"key": result["data"]})
-            else:
-                return JsonResponse({
-                    "error": "Payment initiation failed",
-                    "details": result
-                }, status=400)
+            # payload = {
+            #     "key": key,
+            #     "txnid": txnid,
+            #     "amount": str(amount),
+            #     "productinfo": productinfo,
+            #     "firstname": donor_name,
+            #     "phone": donor_mobile,
+            #     "email": donor_email,
+            #     "surl": surl,
+            #     "furl": furl,
+            #     "hash": hash_value,
+            # }
+
+            # headers = {
+            #     "Content-Type": "application/x-www-form-urlencoded",
+            #     "Accept": "application/json",
+            # }
+
+            # try:
+            #     response = requests.post(
+            #         settings.EASEBUZZ_INITIATE_PAYMENT_URL, data=payload, headers=headers
+            #     )
+            #     print("STATUS CODE =", response.status_code)
+            #     print("RAW RESPONSE =", response.text)
+            #     result = response.json()
+            #     print("PARSED RESPONSE =", result)
+
+            # except Exception as e:
+            #     print("Easebuzz error:", e)
+            #     return JsonResponse(
+            #         {"error": "Failed to connect with Easebuzz."}, status=500
+            #     )
+
+            # if result.get("status") == 1 and "data" in result:
+            #     return JsonResponse({"key": result["data"]})
+            # else:
+            #     return JsonResponse({
+            #         "error": "Payment initiation failed",
+            #         "details": result
+            #     }, status=400)
+            
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
         

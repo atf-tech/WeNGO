@@ -1,0 +1,408 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg"
+    data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard Login || WeNGO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- App favicon -->
+    <link rel="apple-touch-icon" href="{% static 'website_v3/images/logo/logo.png'%}" />
+    <link rel="shortcut icon" href="{% static 'website_v3/images/logo/logo.png'%}" />
+
+    <!-- Layout config Js -->
+    <script src="{% static 'dashboard/js/layout.js' %}"></script>
+    <!-- Bootstrap Css -->
+    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{% static 'dashboard/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{% static 'dashboard/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- custom Css-->
+    <link href="{% static 'dashboard/css/custom.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <style>
+        :root{
+            --wn-violet-1:#6C5CE7;
+            --wn-violet-2:#5142D6;
+            --wn-ink:#1E1B3A;
+            --wn-muted:#8B87A6;
+            --wn-bg:#F3F1FC;
+            --wn-line:#E8E5F7;
+        }
+
+        html,body{
+            height:100%;
+            background:var(--wn-bg);
+            font-family:'Poppins','Segoe UI',sans-serif;
+        }
+
+        .wn-shell{
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:32px 16px;
+        }
+
+        .wn-card{
+            width:100%;
+            max-width:940px;
+            background:#fff;
+            border-radius:28px;
+            overflow:hidden;
+            box-shadow:0 30px 60px -20px rgba(81,66,214,0.35);
+            display:flex;
+            min-height:560px;
+        }
+
+        /* ---------- Left panel ---------- */
+        .wn-visual{
+            position:relative;
+            flex:0 0 46%;
+            background:linear-gradient(155deg,var(--wn-violet-1) 0%,var(--wn-violet-2) 100%);
+            padding:48px 40px;
+            color:#fff;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+        }
+
+        .wn-visual::before{
+            content:"";
+            position:absolute;
+            width:220px;height:220px;
+            border-radius:50%;
+            background:rgba(255,255,255,0.08);
+            top:-70px; right:-70px;
+        }
+        .wn-visual::after{
+            content:"";
+            position:absolute;
+            width:160px;height:160px;
+            border-radius:50%;
+            border:2px dashed rgba(255,255,255,0.18);
+            bottom:-40px; left:-40px;
+        }
+
+        .wn-visual .wn-logo{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-weight:700;
+            font-size:20px;
+            letter-spacing:.5px;
+            z-index:2;
+        }
+        .wn-visual .wn-logo img{
+            height:34px;
+            filter:brightness(0) invert(1);
+        }
+
+        .wn-visual .wn-copy{
+            margin-top:auto;
+            z-index:2;
+        }
+        .wn-visual .wn-copy h2{
+            font-size:26px;
+            font-weight:700;
+            margin-bottom:10px;
+        }
+        .wn-visual .wn-copy p{
+            font-size:14.5px;
+            color:rgba(255,255,255,0.82);
+            max-width:320px;
+            line-height:1.6;
+            margin-bottom:0;
+        }
+
+        .wn-illustration{
+            flex:1;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index:2;
+            margin:12px 0;
+        }
+        .wn-illustration svg{ width:100%; max-width:280px; height:auto; }
+
+        .wn-dots{
+            position:absolute;
+            inset:0;
+            z-index:1;
+            background-image:radial-gradient(rgba(255,255,255,0.14) 1.5px, transparent 1.5px);
+            background-size:18px 18px;
+            opacity:.35;
+        }
+
+        /* ---------- Right panel ---------- */
+        .wn-form-side{
+            flex:1;
+            padding:56px 56px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+        }
+
+        .wn-form-side h1{
+            font-size:26px;
+            font-weight:700;
+            color:var(--wn-ink);
+            margin-bottom:6px;
+        }
+        .wn-form-side .wn-sub{
+            color:var(--wn-muted);
+            font-size:14px;
+            margin-bottom:32px;
+        }
+
+        .wn-field{
+            margin-bottom:20px;
+        }
+        .wn-field label{
+            font-size:13px;
+            font-weight:600;
+            color:var(--wn-ink);
+            margin-bottom:8px;
+            display:block;
+        }
+        .wn-input-group{
+            position:relative;
+            display:flex;
+            align-items:center;
+            border:1.5px solid var(--wn-line);
+            border-radius:12px;
+            background:#FBFAFE;
+            transition:border-color .15s ease, box-shadow .15s ease;
+        }
+        .wn-input-group:focus-within{
+            border-color:var(--wn-violet-1);
+            box-shadow:0 0 0 3px rgba(108,92,231,0.12);
+            background:#fff;
+        }
+        .wn-input-group .wn-ic{
+            width:44px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:var(--wn-muted);
+            font-size:17px;
+        }
+        .wn-input-group input{
+            border:none;
+            background:transparent;
+            outline:none;
+            flex:1;
+            padding:13px 8px 13px 0;
+            font-size:14.5px;
+            color:var(--wn-ink);
+        }
+        .wn-input-group .wn-toggle{
+            width:44px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:var(--wn-muted);
+            cursor:pointer;
+            background:none;
+            border:none;
+            font-size:17px;
+        }
+
+        .wn-row-between{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:28px;
+            font-size:13.5px;
+        }
+        .wn-remember{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:var(--wn-muted);
+        }
+        .wn-remember input{
+            width:16px;height:16px;
+            accent-color:var(--wn-violet-1);
+        }
+        .wn-forgot{
+            color:var(--wn-violet-2);
+            font-weight:600;
+            text-decoration:none;
+        }
+        .wn-forgot:hover{ text-decoration:underline; color:var(--wn-violet-2); }
+
+        .wn-btn-submit{
+            width:100%;
+            border:none;
+            border-radius:12px;
+            padding:14px;
+            font-size:15px;
+            font-weight:600;
+            color:#fff;
+            background:linear-gradient(135deg,var(--wn-violet-1),var(--wn-violet-2));
+            box-shadow:0 12px 24px -10px rgba(81,66,214,0.55);
+            transition:transform .15s ease, box-shadow .15s ease;
+        }
+        .wn-btn-submit:hover{
+            transform:translateY(-1px);
+            box-shadow:0 16px 28px -10px rgba(81,66,214,0.6);
+            color:#fff;
+        }
+
+        .wn-alert{
+            margin-top:18px;
+            font-size:13.5px;
+            border-radius:10px;
+        }
+
+        .wn-footer-note{
+            text-align:center;
+            font-size:12.5px;
+            color:var(--wn-muted);
+            margin-top:24px;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 991.98px){
+            .wn-visual{ display:none; }
+            .wn-card{ min-height:auto; }
+            .wn-form-side{ padding:44px 32px; }
+        }
+
+        @media (max-width: 575.98px){
+            .wn-shell{ padding:16px 10px; }
+            .wn-card{ border-radius:20px; }
+            .wn-form-side{ padding:36px 20px; }
+            .wn-form-side h1{ font-size:22px; }
+            .wn-row-between{
+                flex-direction:column;
+                align-items:flex-start;
+                gap:12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wn-shell">
+        <div class="wn-card">
+
+            <!-- Left visual panel : hidden on mobile -->
+            <div class="wn-visual">
+                <div class="wn-dots"></div>
+                <div class="wn-logo">
+                    <img src="{% static 'website_v3/images/logo/logo.png' %}" alt="WeNGO" onerror="this.style.display='none'">
+                    <span>WeNGO</span>
+                </div>
+
+                <div class="wn-illustration">
+                    <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="120" cy="196" rx="86" ry="12" fill="rgba(255,255,255,0.10)"/>
+                        <rect x="52" y="118" width="136" height="76" rx="10" fill="rgba(255,255,255,0.14)"/>
+                        <rect x="66" y="132" width="108" height="6" rx="3" fill="rgba(255,255,255,0.35)"/>
+                        <rect x="66" y="146" width="80" height="6" rx="3" fill="rgba(255,255,255,0.25)"/>
+                        <rect x="66" y="160" width="94" height="6" rx="3" fill="rgba(255,255,255,0.25)"/>
+                        <circle cx="120" cy="66" r="30" fill="#FFD8A8"/>
+                        <path d="M92 70c0-16 12-28 28-28s28 12 28 28" fill="none"/>
+                        <path d="M90 62c2-18 14-30 30-30s28 12 30 30c-6-4-10-10-10-10s-6 8-20 8-20-8-20-8-4 6-10 10z" fill="#3B2F63"/>
+                        <rect x="98" y="94" width="44" height="52" rx="14" fill="#fff"/>
+                        <rect x="98" y="94" width="44" height="24" rx="12" fill="#FFC3C3"/>
+                        <rect x="60" y="118" width="120" height="10" rx="5" fill="rgba(255,255,255,0.4)"/>
+                        <circle cx="196" cy="46" r="5" fill="rgba(255,255,255,0.5)"/>
+                        <circle cx="30" cy="90" r="4" fill="rgba(255,255,255,0.5)"/>
+                        <circle cx="206" cy="120" r="3" fill="rgba(255,255,255,0.5)"/>
+                    </svg>
+                </div>
+
+                <div class="wn-copy">
+                    <h2>Dashboard Access</h2>
+                    <p>Sign in to access the admin Dashboard, manage collections, and monitor organisation performance.</p>
+                </div>
+            </div>
+            <!-- end left panel -->
+
+            <!-- Right form panel -->
+            <div class="wn-form-side">
+                <h1>Dashboard Login</h1>
+                <p class="wn-sub">Enter your Django superuser credentials to continue</p>
+
+                <form method="POST" action="{% url 'dashboard_login' %}">
+                    {% csrf_token %}
+
+                    <div class="wn-field">
+                        <label for="username">Username</label>
+                        <div class="wn-input-group">
+                            <span class="wn-ic"><i class="ri-user-3-line"></i></span>
+                            <input type="text" name="username" id="username" placeholder="Enter username" autocomplete="username" required />
+                        </div>
+                    </div>
+
+                    <div class="wn-field">
+                        <label for="password-input">Password</label>
+                        <div class="wn-input-group">
+                            <span class="wn-ic"><i class="ri-lock-2-line"></i></span>
+                            <input type="password" name="password" id="password-input" placeholder="Enter password" autocomplete="current-password" required />
+                            <button class="wn-toggle" type="button" id="password-addon" aria-label="Toggle password visibility">
+                                <i class="ri-eye-line" id="password-eye-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="wn-row-between">
+                        <label class="wn-remember">
+                            <input type="checkbox" name="remember" />
+                            Remember me
+                        </label>
+                        <a href="#" class="wn-forgot">Forgot Password?</a>
+                    </div>
+
+                    <button class="wn-btn-submit" type="submit">Sign In</button>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger wn-alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </form>
+
+                <p class="wn-footer-note">
+                    &copy; <script>document.write(new Date().getFullYear());</script> IPF &middot; WeNGO
+                </p>
+            </div>
+            <!-- end right panel -->
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'dashboard/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'dashboard/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'dashboard/libs/node-waves/waves.min.js' %}"></script>
+    <script src="{% static 'dashboard/libs/feather-icons/feather.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/pages/plugins/lord-icon-2.1.0.js' %}"></script>
+    <script src="{% static 'dashboard/js/plugins.js' %}"></script>
+
+    <script>
+        // password show/hide toggle
+        (function(){
+            var toggleBtn = document.getElementById('password-addon');
+            var input = document.getElementById('password-input');
+            var icon = document.getElementById('password-eye-icon');
+            if(toggleBtn){
+                toggleBtn.addEventListener('click', function(){
+                    var isPassword = input.getAttribute('type') === 'password';
+                    input.setAttribute('type', isPassword ? 'text' : 'password');
+                    icon.className = isPassword ? 'ri-eye-off-line' : 'ri-eye-line';
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>
+

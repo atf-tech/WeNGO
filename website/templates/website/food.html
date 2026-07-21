@@ -1009,12 +1009,22 @@ document.getElementById("donation-form-popup").addEventListener("submit", async 
 
         const result = await response.json();
 
-        if (!result.key) {
-            alert(result.error || "Payment initiation failed");
-            return;
+        /* temp #############  this is future detele code */   
+        if (result.status === "success") {
+            window.location.href = result.redirect_url;
+        } else {
+            alert(result.error || "Something went wrong");
         }
 
-        easebuzzCheckout.initiatePayment(
+        
+
+
+        /*if (!result.key) {
+            alert(result.error || "Payment initiation failed");
+            return;
+        }*/
+
+        /*easebuzzCheckout.initiatePayment(
             { access_key: result.key },
             {
                 onResponse: async function (res) {
@@ -1033,7 +1043,7 @@ document.getElementById("donation-form-popup").addEventListener("submit", async 
                     }
                 }
             }
-        );
+        );*/
 
     } catch (err) {
         console.error(err);

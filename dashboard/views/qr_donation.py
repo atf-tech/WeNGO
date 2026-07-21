@@ -6,9 +6,11 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from dashboard.models import RM
+from dashboard.views.auth import superuser_required
 from easypay.models import RMPayment, RMGPayPayment
 
 
+@superuser_required(login_url='/dashboard/login')
 def qr_donation(request):
     selected_rm_code = request.GET.get("rm_code", "")
     selected_date_str = request.GET.get("selected_date", "")

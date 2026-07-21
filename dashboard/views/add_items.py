@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from dashboard.models import *
+from dashboard.views.auth import superuser_required
 
 
+@superuser_required(login_url='/dashboard/login')
 def add_items(request):
 
     if request.method == "POST":

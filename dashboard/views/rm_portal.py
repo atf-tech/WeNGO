@@ -8,6 +8,7 @@ from collections import defaultdict
 from django.db.models import Sum
 from django.utils import timezone
 from dashboard.models import RM
+from dashboard.views.auth import superuser_required
 from easypay.models import RMGPayPayment, RMPayment
 from datetime import datetime
 
@@ -212,6 +213,7 @@ def _filtered_totals(link_qs, gpay_qs):
     )
 
 
+@superuser_required(login_url='/dashboard/login')
 def RM_Portal(request):
     # If the request is made via AJAX/fetch, return JSON for the selected filters.
     if request.headers.get("x-requested-with") == "XMLHttpRequest" or request.GET.get("ajax") == "1":
