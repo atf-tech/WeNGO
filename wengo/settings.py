@@ -28,6 +28,20 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
+# Nginx terminates TLS and proxies to Daphne over plain HTTP, so Django must
+# trust X-Forwarded-Proto to know the original request was HTTPS. Without this
+# CSRF sees the request as http:// and rejects the browser's https:// Origin.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+# Django 4.0+ checks the Origin header against this list (scheme required).
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in config(
+        'CSRF_TRUSTED_ORIGINS',
+        default='https://wengo.org.in,https://www.wengo.org.in',
+    ).split(',') if o.strip()
+]
+
 
 # Application definition
 
