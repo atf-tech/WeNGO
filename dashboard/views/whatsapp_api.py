@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from dashboard.views.auth import superuser_required
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Sum, Value, CharField, F, Q, Avg, Count, Max
@@ -124,7 +124,7 @@ def _avg_response_minutes(rm=None, since=None, until=None):
     return round(total_minutes / count, 1) if count else None
 
 
-@login_required(login_url="/dashboard/login")
+@superuser_required(login_url='/dashboard/login')
 def whatsapp_api(request):
     branches = RM.BRANCH_CHOICES
     rm_objects = (
@@ -163,6 +163,7 @@ def _api_period_filter(request, default_since_fn, default_until_fn):
     return since, until, period, branch, r
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_kpi_data(request):
     since, until, period, branch, r = _api_period_filter(request, lambda r: r["today_start"], lambda r: r["today_end"])
 
@@ -230,6 +231,7 @@ def api_kpi_data(request):
     })
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_branch_chart(request):
     since, until, period, branch, r = _api_period_filter(request, lambda r: r["week_start"], lambda r: r["now"])
 
@@ -263,6 +265,7 @@ def api_branch_chart(request):
     })
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_trend_chart(request):
     since, until, period, branch, r = _api_period_filter(request, lambda r: r["week_start"], lambda r: r["now"])
     ctype = request.GET.get("type", "daily")
@@ -310,6 +313,7 @@ def api_trend_chart(request):
     })
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_rm_table(request):
     since, until, period, branch, r = _api_period_filter(request, lambda r: r["today_start"], lambda r: r["today_end"])
     rm_status = request.GET.get("rm_status", "active")
@@ -373,6 +377,7 @@ def api_rm_table(request):
     return JsonResponse({"rows": rows, "period": period})
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_response_time(request):
     since, until, period, branch, r = _api_period_filter(request, lambda r: r["week_start"], lambda r: r["now"])
 
@@ -388,6 +393,7 @@ def api_response_time(request):
     return JsonResponse({"labels": labels, "values": values, "colors": colors})
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_conversion_funnel(request):
     since, until, period, branch, r = _api_period_filter(request, lambda r: r["month_start"], lambda r: r["now"])
 
@@ -438,12 +444,13 @@ def _get_msg_body(msg):
     return ""
 
 
-@login_required(login_url="/dashboard/login")
+@superuser_required(login_url='/dashboard/login')
 def rm_analytics_detailed(request, rm_code):
     rm = get_object_or_404(RM, rm_code=rm_code)
     return render(request, "dashboard/rm_analytics_detailed.html", {"rm": rm})
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_rm_detail_profile(request, rm_code):
     from django.shortcuts import get_object_or_404
     rm = get_object_or_404(RM, rm_code=rm_code)
@@ -458,6 +465,7 @@ def api_rm_detail_profile(request, rm_code):
     })
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_rm_detail_stats(request, rm_code):
     from django.shortcuts import get_object_or_404
     rm = get_object_or_404(RM, rm_code=rm_code)
@@ -487,6 +495,7 @@ def api_rm_detail_stats(request, rm_code):
     })
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_rm_detail_trend(request, rm_code):
     from django.shortcuts import get_object_or_404
     rm = get_object_or_404(RM, rm_code=rm_code)
@@ -565,6 +574,7 @@ def api_rm_detail_trend(request, rm_code):
     return JsonResponse({"labels": labels, "received": recv_data, "sent": sent_data, "leads": leads_data})
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_rm_detail_conversations(request, rm_code):
     from django.shortcuts import get_object_or_404
     rm = get_object_or_404(RM, rm_code=rm_code)
@@ -611,6 +621,7 @@ def api_rm_detail_conversations(request, rm_code):
     return JsonResponse({"conversations": rows, "total": len(rows), "period": period})
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_rm_detail_conv_messages(request, rm_code, conv_id):
     from django.shortcuts import get_object_or_404
     rm = get_object_or_404(RM, rm_code=rm_code)
@@ -657,6 +668,7 @@ def _minutes_between(a, b):
     return round((b - a).total_seconds() / 60, 1)
 
 
+@superuser_required(login_url='/dashboard/login')
 def api_donor_search(request):
     q = (request.GET.get("q") or "").strip()
     if len(q) < 3:
