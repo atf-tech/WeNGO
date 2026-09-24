@@ -235,9 +235,9 @@ a {
   color: #0d6efd;
   text-decoration: underline;
 }
-a:hover {
+/* a:hover {
   color: #0a58ca;
-}
+} */
 a:not([href]):not([class]),
 a:not([href]):not([class]):hover {
   color: inherit;
@@ -610,7 +610,7 @@ progress {
   .container-sm,
   .container-xl,
   .container-xxl {
-    max-width: 1320px;
+    max-width: 1378px;
   }
 }
 .row {
@@ -628,7 +628,7 @@ progress {
   margin-left: calc(-0.5 * var(--bs-gutter-x));
 }
 .row > * {
-  -webkit-flex-shrink: 0;
+  -webkit-flex-shrink: 0; 
   -ms-flex-negative: 0;
   flex-shrink: 0;
   width: 100%;
@@ -636,6 +636,7 @@ progress {
   padding-right: calc(var(--bs-gutter-x) * 0.5);
   padding-left: calc(var(--bs-gutter-x) * 0.5);
   margin-top: var(--bs-gutter-y);
+  padding-top: 10px;
 }
 .col {
   -webkit-box-flex: 1;

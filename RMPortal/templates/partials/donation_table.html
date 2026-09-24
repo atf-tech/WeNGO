@@ -1,5 +1,3 @@
-  {% if donations %}
-    <table id="rm-donation-link-qr" class="table nowrap align-middle" style="width:100%">
       <thead class="table-light">
         <tr>
           <th>SR No</th>
@@ -22,7 +20,7 @@
           <th>Update</th>
           <th>Download Receipt</th>
         </tr>
-      </thead>  
+      </thead>
       <tbody>
         {% for d in donations %}
         <tr data-id="{{ d.donation_id }}">
@@ -34,13 +32,6 @@
           
           <td>₹{{ d.amount|default_if_none:"-" }}</td>
           
-          {% comment %} <td>
-          {% if d.status == 'success' %}
-            <span class="badge rounded-pill bg-success-subtle text-success">Success</span>
-          {% else %}
-            <span class="badge rounded-pill bg-danger-subtle text-danger">{{ d.status }}</span>
-          {% endif %}
-          </td> {% endcomment %}
           <td>
                     {% with status=d.status %}
                       {% if status %}
@@ -103,20 +94,26 @@
           </td>
           <td>
             {% if d.donor_complete %}
-              <form action="{% url 'generate_receipt' %}" method="post" class="receipt-form">
-                {% csrf_token %}
-                <input type="hidden" name="donation_id" value="{{ d.donation_id }}">
-                <input type="hidden" name="donation_source" value="{{ d.source }}">
-                <button type="submit"
-                        data-has-pan="{{ d.pan_no|yesno:'true,false' }}"
-                        class="btn btn-sm {% if d.pan_no %}btn-success{% else %}btn-outline-secondary{% endif %}">
+              <div class="d-flex flex-column gap-1">
+                <button type="button"
+                        class="btn btn-sm w-100 receipt-download-btn {% if d.pan_no %}btn-success{% else %}btn-outline-secondary{% endif %}"
+                        data-donation-id="{{ d.donation_id }}"
+                        data-source="{{ d.source }}"
+                        data-has-pan="{{ d.pan_no|yesno:'true,false' }}">
                   {% if d.pan_no %}
                     <i class="ri-file-shield-2-line"></i> 80G Receipt
                   {% else %}
                     <i class="ri-file-text-line"></i> Normal Receipt
                   {% endif %}
                 </button>
-              </form>
+                <button type="button"
+                        class="btn btn-sm w-100 btn-outline-primary send-email-btn"
+                        data-id="{{ d.donation_id }}"
+                        data-source="{{ d.source }}"
+                        {% if not d.donor_email %}disabled title="No donor email"{% endif %}>
+                  <i class="ri-mail-send-line"></i> Send Mail
+                </button>
+              </div>
             {% else %}
               <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Please update donor details">
                 <i class="ri-file-text-line"></i> Normal Receipt
@@ -126,5 +123,3 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
-  {% endif %}

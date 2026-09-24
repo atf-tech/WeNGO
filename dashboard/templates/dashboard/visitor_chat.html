@@ -106,6 +106,8 @@ Dashboard || visitor_chat wengo
 .sec-tab:not(.active):hover { background:#eef1fb; color:var(--primary); }
 .section-pane { display:none; }
 .section-pane.active { display:block; }
+.overview-chart-filter { display:none; align-items:center; gap:8px; flex-wrap:wrap; }
+.overview-chart-filter.visible { display:flex; }
 </style>
 
 <!-- HEADER -->
@@ -143,12 +145,6 @@ Dashboard || visitor_chat wengo
     <input type="date" id="customTo" style="border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:12.5px;outline:none;color:#495057;">
     <button onclick="applyCustomPeriod()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;">Apply</button>
   </div>
-  <span class="filter-label" style="margin-left:10px;">Chart:</span>
-  <div class="pill-group" id="chartGroup">
-    <button class="pf-btn active" data-c="daily">Daily</button>
-    <button class="pf-btn" data-c="weekly">Weekly</button>
-    <button class="pf-btn" data-c="monthly">Monthly</button>
-  </div>
   <span id="lastUpdated" style="font-size:12px;color:var(--muted);margin-left:auto;"></span>
 </div>
 
@@ -159,15 +155,14 @@ Dashboard || visitor_chat wengo
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <p class="fw-medium text-white-50 mb-0">Visitors (Today)</p>
+            <p id="kpiVisitorsLabel" class="fw-medium text-white-50 mb-0">Visitors (Today)</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-              
-              <span class="counter-value" data-target="4050">0</span>
+              <span id="kpiVisitorsValue" class="counter-value" data-target="{{ visitors_today }}">{{ visitors_today }}</span>
             </h2>
-            <p class="mb-0 text-white-50">
+            <p id="kpiVisitorsSubtext" class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
-                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
-              </span> Yesterday : 
+                <i class="ri-arrow-down-line align-middle"></i> <span id="kpiVisitorsPctValue">{{visitors_today_pct}}</span> %
+              </span> Yesterday : <span id="kpiVisitorsPreviousValue">{{visitors_yesterday}}</span>
             </p>
           </div>
           <div>
@@ -188,12 +183,11 @@ Dashboard || visitor_chat wengo
           <div>
             <p class="fw-medium text-white-50 mb-0">Visitors This Week</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-              
-              <span class="counter-value" data-target="4065">0</span>
+              <span id="kpiVisitorsWeekValue" class="counter-value" data-target="{{ visitors_week }}">{{ visitors_week }}</span>
             </h2>
             <p class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
-                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
+                <i class="ri-arrow-down-line align-middle"></i> <span id="kpiVisitorsWeekPctValue">{{visitors_week_pct}}</span> %
               </span> vs last week
             </p>
           </div>
@@ -215,12 +209,11 @@ Dashboard || visitor_chat wengo
           <div>
             <p class="fw-medium text-white-50 mb-0">Visitors This Month</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-            
-              <span class="counter-value" data-target="4110">0</span>
+              <span id="kpiVisitorsMonthValue" class="counter-value" data-target="{{ visitors_month }}">{{ visitors_month }}</span>
             </h2>
             <p class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
-                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
+                <i class="ri-arrow-down-line align-middle"></i> <span id="kpiVisitorsMonthPctValue">{{visitors_month_pct}}</span> %
               </span> Last month: 
             </p>
           </div>
@@ -240,15 +233,14 @@ Dashboard || visitor_chat wengo
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <p class="fw-medium text-white-50 mb-0">Conversations (Today)</p>
+            <p id="kpiConversationsLabel" class="fw-medium text-white-50 mb-0">Conversations (Today)</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-              
-              <span class="counter-value" data-target="4540">0</span>
+              <span id="kpiConversationsValue" class="counter-value" data-target="{{ conversations_today }}">{{ conversations_today }}</span>
             </h2>
-            <p class="mb-0 text-white-50">
+            <p id="kpiConversationsSubtext" class="mb-0 text-white-50">
               <span class="badge bg-white bg-opacity-25 text-white mb-0">
-                <i class="ri-arrow-down-line align-middle"></i> 0.24 %
-              </span> Total: 307
+                <i class="ri-arrow-down-line align-middle"></i> 0 %
+              </span> Total: <span id="kpiConversationsTotal">{{total_convs}}</span>
             </p>
           </div>
           <div>
@@ -274,15 +266,12 @@ Dashboard || visitor_chat wengo
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <div>
-            <p class="fw-medium text-white-50 mb-0">Visitor Messages (Today)</p>
-
+            <p id="kpiVisitorMessagesLabel" class="fw-medium text-white-50 mb-0">Visitor Messages (Today)</p>
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-              <span class="counter-value" data-target="36894">0</span>
+              <span id="kpiVisitorMessagesValue" class="counter-value" data-target="{{ visitor_msgs_today }}">{{ visitor_msgs_today }}</span>
             </h2>
-
-            <p class="mb-0 text-white-50">
-              
-              RM Replies: 230
+            <p id="kpiVisitorMessagesSubtitle" class="mb-0 text-white-50">
+              RM Replies: <span id="kpiVisitorMessagesReplies">{{rm_replies_today}}</span>
             </p>
           </div>
 
@@ -309,15 +298,15 @@ Dashboard || visitor_chat wengo
             <p class="fw-medium text-white-50 mb-0">Reply Rate</p>
 
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-              <span class="counter-value" data-target="96">0</span>%
+              <span class="counter-value" data-target="{{ reply_rate }}">{{ reply_rate }}</span>%
             </h2>
 
             <p class="mb-0 text-white-50">
-            109 of 315 convs
+            {{convs_with_reply}} of {{total_convs}} convs
             </p>
 
           </div>
-
+          
           <div>
             <div class="avatar-sm flex-shrink-0">
               <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-2 material-shadow">
@@ -339,13 +328,17 @@ Dashboard || visitor_chat wengo
           <div>
 
             <p class="fw-medium text-white-50 mb-0">Avg Response Time</p>
-
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-              <span class="counter-value" data-target="2.4">0</span> Min
+                {% if avg_resp_min is not None %}
+                    <span id="kpiAvgResponseValue" class="counter-value" data-target="{{ avg_resp_min }}">{{ avg_resp_min }}</span>
+                    <span id="kpiAvgResponseUnit"> Min</span>
+                {% else %}
+                    <span id="kpiAvgResponseValue">—</span>
+                    <span id="kpiAvgResponseUnit" style="display:none;"> Min</span>
+                {% endif %}
             </h2>
-
-            <p class="mb-0 text-white-50">
-              Excellent
+            <p id="kpiAvgResponseLabel" class="mb-0 text-white-50">
+              {{avg_resp_label}}
             </p>
 
           </div>
@@ -370,14 +363,14 @@ Dashboard || visitor_chat wengo
         <div class="d-flex justify-content-between">
           <div>
 
-            <p class="fw-medium text-white-50 mb-0">Return Visitors (Today)</p>
+            <p id="kpiReturnVisitorsLabel" class="fw-medium text-white-50 mb-0">Return Visitors (Today)</p>
 
             <h2 class="mt-4 ff-secondary fw-semibold text-white">
-              <span class="counter-value" data-target="265">0</span>
+              <span id="kpiReturnVisitorsValue" class="counter-value" data-target="{{ return_visitors }}">{{ return_visitors }}</span>
             </h2>
 
-            <p class="mb-0 text-white-50 card-info-line">
-               Desktop: 16 | Mobile: 290 | Avg 1.8 Pages
+            <p id="kpiReturnVisitorsSubtext" class="mb-0 text-white-50 card-info-line">
+               Desktop: <span id="kpiDesktopCount">{{desktop_count}}</span> | Mobile: <span id="kpiMobileCount">{{mobile_count}}</span> | Avg <span id="kpiAvgPages">{{avg_pages}}</span> Pages
             </p>
 
           </div>
@@ -409,7 +402,7 @@ Dashboard || visitor_chat wengo
               <h5 class="text-muted text-uppercase fs-13">Visitors Online (Live) </h5>
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0"><i class="ri-wifi-fill display-6" style="color:#28a745;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="20">0</span></h2></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="{{ online_now }}">{{ online_now }}</span></h2></div>
               </div>
             </div>
           </div>
@@ -418,7 +411,7 @@ Dashboard || visitor_chat wengo
               <h5 class="text-muted text-uppercase fs-13">Waiting Chats</h5>
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0"><i class=" ri-chat-history-line display-6" style="color:#f7b84b;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="481">0</span></h2></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="{{ waiting }}">{{ waiting }}</span></h2></div>
               </div>
             </div>
           </div>
@@ -427,7 +420,7 @@ Dashboard || visitor_chat wengo
               <h5 class="text-muted text-uppercase fs-13">Active Chats</h5>
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0"><i class="ri-chat-heart-line display-6" style="color:#299cdb;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="327">0</span></h2></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="{{ active }}">{{ active }}</span></h2></div>
               </div>
             </div>
           </div>
@@ -436,7 +429,7 @@ Dashboard || visitor_chat wengo
               <h5 class="text-muted text-uppercase fs-13">Missed Chats</h5>
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0"><i class="ri-chat-delete-line display-6" style="color:#ff3b3b;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="1525">0</span></h2></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="{{ missed }}">{{ missed }}</span></h2></div>
               </div>
             </div>
           </div>
@@ -445,7 +438,7 @@ Dashboard || visitor_chat wengo
               <h5 class="text-muted text-uppercase fs-13">Quickly Left</h5>
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0"><i class="ri-logout-circle-line display-6" style="color:#ff68eed1;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="{{ quickly_left }}">{{ quickly_left }}</span></h2></div>
               </div>
             </div>
           </div>
@@ -454,7 +447,7 @@ Dashboard || visitor_chat wengo
               <h5 class="text-muted text-uppercase fs-13">Night Chat</h5>
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0"><i class=" ri-moon-clear-fill display-6 " style="color:#F6F1D5;"></i></div>
-                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="2659">0</span></h2></div>
+                <div class="flex-grow-1 ms-3"><h2 class="mb-0"><span class="counter-value" data-target="{{ night_chat }}">{{ night_chat }}</span></h2></div>
               </div>
             </div>
           </div>
@@ -470,6 +463,14 @@ Dashboard || visitor_chat wengo
   <button class="sec-tab active" data-sec="rmtable">RM Leaderboard</button>
   <button class="sec-tab" data-sec="visitors">Visitor Details</button>
   <button class="sec-tab" data-sec="overview">Overview & Charts</button>
+  <div id="overviewChartFilter" class="overview-chart-filter">
+    <span class="filter-label">Chart:</span>
+    <div class="pill-group" id="chartGroup">
+      <button class="pf-btn active" data-c="daily">Daily</button>
+      <button class="pf-btn" data-c="weekly">Weekly</button>
+      <button class="pf-btn" data-c="monthly">Monthly</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ SECTION 1: RM LEADERBOARD ═══ -->
@@ -546,7 +547,7 @@ Dashboard || visitor_chat wengo
 
 <!-- ✅ OVERVIEW SECTION -->
 
-<div id="sec-overview" class="tab-section" style="display:none;">
+<div id="sec-overview" class="section-pane" >
   <div class="row">
 
     <div class="col-lg-12">
@@ -560,7 +561,7 @@ Dashboard || visitor_chat wengo
           <div class="col-xl-7">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title mb-0">Line, Column & Area Charts</h4>
+                    <h4 class="card-title mb-0">Daily Visitors & Chats</h4>
                   </div>
                   <!-- end card header -->
                   <div class="card-body">
@@ -648,13 +649,211 @@ Dashboard || visitor_chat wengo
 <script>
 
 
-  /* ── SECTION TABS ── */
+
+/* ── GLOBAL STATE ── */
+let gPeriod = 'today';
+let gBranch = '';
+let gVisitorPage = 1;
+let gChart = "daily";
+
+/* ── API HELPER ── */
+async function apiGet(endpoint, params) {
+  const p = new URLSearchParams({ period: gPeriod, branch: gBranch });
+  if (params) {
+    Object.keys(params).forEach(k => p.set(k, params[k]));
+  }
+  if (gPeriod === 'custom') {
+    const from = document.getElementById('customFrom')?.value;
+    const to = document.getElementById('customTo')?.value;
+    if (from) p.set('from_date', from);
+    if (to) p.set('to_date', to);
+  }
+  try {
+    const r = await fetch(`/dashboard/visitor_chat/api/${endpoint}/?${p.toString()}`, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      credentials: 'same-origin'
+    });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (e) {
+    console.error('apiGet error:', e);
+    return null;
+  }
+}
+
+/* ── UPDATE PERIOD LABELS ── */
+function updatePeriodLabels() {
+const labels = {
+    'today': 'Today',
+    'yesterday': 'Yesterday',
+    'week': 'This Week',
+    'month': 'This Month',
+    'custom': 'Custom'
+  };
+  const lbl = labels[gPeriod] || 'Today';
+  document.getElementById('lbPeriodLabel').textContent = lbl;
+  document.getElementById('vPeriodLabel').textContent = lbl;
+}
+
+/* ── KPI + POLAR LOADERS ── */
+function updateKpiCards(kpi) {
+  const labels = {
+    today: 'Today',
+    yesterday: 'Yesterday',
+    week: 'This Week',
+    month: 'This Month',
+    custom: 'Custom'
+  };
+  const periodLabel = labels[gPeriod] || 'Today';
+
+  document.getElementById('kpiVisitorsLabel').textContent = `Visitors (${periodLabel})`;
+  document.getElementById('kpiConversationsLabel').textContent = `Conversations (${periodLabel})`;
+  document.getElementById('kpiVisitorMessagesLabel').textContent = `Visitor Messages (${periodLabel})`;
+  document.getElementById('kpiReturnVisitorsLabel').textContent = `Return Visitors (${periodLabel})`;
+
+  document.getElementById('kpiVisitorsValue').textContent = kpi.visitors_today ?? '—';
+  document.getElementById('kpiVisitorsPctValue').textContent = kpi.visitors_today_pct ?? 0;
+  document.getElementById('kpiVisitorsPreviousValue').textContent = kpi.visitors_yesterday ?? 0;
+  document.getElementById('kpiVisitorsWeekValue').textContent = kpi.visitors_week ?? 0;
+  document.getElementById('kpiVisitorsWeekPctValue').textContent = kpi.visitors_week_pct ?? 0;
+  document.getElementById('kpiVisitorsMonthValue').textContent = kpi.visitors_month ?? 0;
+  document.getElementById('kpiVisitorsMonthPctValue').textContent = kpi.visitors_month_pct ?? 0;
+  document.getElementById('kpiConversationsValue').textContent = kpi.conversations_today ?? 0;
+  document.getElementById('kpiConversationsTotal').textContent = kpi.conversations_total ?? 0;
+  document.getElementById('kpiVisitorMessagesValue').textContent = kpi.visitor_msgs_today ?? 0;
+  document.getElementById('kpiVisitorMessagesReplies').textContent = kpi.rm_msgs_today ?? 0;
+  const replyRateValue = document.getElementById('kpiReplyRateValue');
+  const replyRateSummary = document.getElementById('kpiReplyRateSummary');
+  if (replyRateValue) replyRateValue.textContent = kpi.reply_rate ?? 0;
+  if (replyRateSummary) {
+    replyRateSummary.textContent = `${kpi.convs_with_reply ?? 0} of ${kpi.total_convs ?? 0} convs`;
+  }
+
+  const avgResponseValue = document.getElementById('kpiAvgResponseValue');
+  const avgResponseUnit = document.getElementById('kpiAvgResponseUnit');
+  if (kpi.avg_resp_min !== null && kpi.avg_resp_min !== undefined) {
+    avgResponseValue.textContent = kpi.avg_resp_min;
+    avgResponseUnit.style.display = '';
+  } else {
+    avgResponseValue.textContent = '—';
+    avgResponseUnit.style.display = 'none';
+  }
+
+  document.getElementById('kpiAvgResponseLabel').textContent = kpi.avg_resp_label || '—';
+  document.getElementById('kpiReturnVisitorsValue').textContent = kpi.return_visitors ?? 0;
+  document.getElementById('kpiDesktopCount').textContent = kpi.desktop_count ?? 0;
+  document.getElementById('kpiMobileCount').textContent = kpi.mobile_count ?? 0;
+  document.getElementById('kpiAvgPages').textContent = kpi.avg_pages ?? 0;
+}
+
+async function loadKpiData() {
+  const d = await apiGet('kpi');
+  if (!d || !d.kpi) return;
+  updateKpiCards(d.kpi);
+  if (d.polar && window.polarChart) {
+    window.polarChart.updateOptions({ labels: d.polar.labels || [] });
+    window.polarChart.updateSeries(d.polar.series || []);
+  }
+}
+
+/* ── PERIOD FILTER ── */
+document.querySelectorAll('#periodGroup .pf-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#periodGroup .pf-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    gPeriod = this.dataset.p;
+
+    const customWrap = document.getElementById('customDateWrap');
+    if (customWrap) {
+      customWrap.style.display = gPeriod === 'custom' ? 'flex' : 'none';
+    }
+
+    updatePeriodLabels();
+    loadAll();
+  });
+});
+
+/* ── applyCustomPeriod ── */
+function applyCustomPeriod() {
+  const from = document.getElementById('customFrom').value;
+  const to = document.getElementById('customTo').value;
+  if (!from || !to) return;
+  loadAll();
+}
+
+/* ── BRANCH FILTERS ── */
+document.getElementById('branchFilter')?.addEventListener('change', function() {
+  gBranch = this.value;
+  const tableBranch = document.getElementById('tableRmBranch');
+  if (tableBranch) tableBranch.value = gBranch;
+  loadAll();
+});
+
+document.getElementById('tableRmBranch')?.addEventListener('change', function() {
+  gBranch = this.value;
+  const headerBranch = document.getElementById('branchFilter');
+  if (headerBranch) headerBranch.value = gBranch;
+  loadAll();
+});
+
+/* ── CHART GROUP FILTER ── */
+document.querySelectorAll("#chartGroup .pf-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+
+        document.querySelectorAll("#chartGroup .pf-btn")
+            .forEach(b => b.classList.remove("active"));
+
+        this.classList.add("active");
+
+        gChart = this.dataset.c;
+
+        loadOverviewChart(gChart, gBranch);
+    });
+});
+
+/* ── SECTION TABS ── */
 document.querySelectorAll('.sec-tab').forEach(btn => {
   btn.addEventListener('click', function() {
+    const overviewFilter = document.getElementById('overviewChartFilter');
+    const isClosingOverview = this.dataset.sec === 'overview' && this.classList.contains('active');
+
     document.querySelectorAll('.sec-tab').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.section-pane').forEach(p => p.classList.remove('active'));
+    if (overviewFilter) overviewFilter.classList.remove('visible');
+
+    if (isClosingOverview) {
+      const defaultTab = document.querySelector('.sec-tab[data-sec="rmtable"]');
+      if (defaultTab) defaultTab.classList.add('active');
+      document.getElementById('sec-rmtable')?.classList.add('active');
+      return;
+    }
+
     this.classList.add('active');
-    document.getElementById('sec-' + this.dataset.sec).classList.add('active');
+    document.getElementById('sec-' + this.dataset.sec)?.classList.add('active');
+
+// ═══ Fix: Force ApexCharts to recalculate dimensions when hidden tab becomes visible ═══
+    if (this.dataset.sec === 'overview') {
+      if (overviewFilter) overviewFilter.classList.add('visible');
+      loadOverviewChart(gChart, gBranch);
+      // Also load branch-wise and response time charts
+      if (window.loadBranchWiseChart) window.loadBranchWiseChart();
+      if (window.loadResponseTimeChart) window.loadResponseTimeChart();
+      setTimeout(() => {
+        if (typeof overviewChart !== 'undefined' && overviewChart) {
+          overviewChart.resize();
+        }
+        if (window.polarChart) {
+          window.polarChart.resize();
+        }
+        if (window.branchWiseChart) {
+          window.branchWiseChart.resize();
+        }
+        if (window.responseTimeChart) {
+          window.responseTimeChart.resize();
+        }
+        window.dispatchEvent(new Event('resize'));
+      }, 200);
+    }
   });
 });
 
@@ -829,7 +1028,14 @@ function loadAll() {
   const icon = document.getElementById('refreshIcon');
   icon.style.animation = 'spin 1s linear infinite';
   document.getElementById('lastUpdated').textContent = 'Refreshing...';
-  Promise.all([loadKPI(), loadMainChart(), loadBranchChart(), loadRespChart(), loadTable(), loadVisitors(1)])
+  Promise.all([
+      loadKpiData(),
+      loadTable(),
+      loadVisitors(1),
+      loadOverviewChart(gChart, gBranch),
+      window.loadBranchWiseChart ? window.loadBranchWiseChart() : Promise.resolve(),
+      window.loadResponseTimeChart ? window.loadResponseTimeChart() : Promise.resolve()
+  ])
     .then(() => {
       icon.style.animation = '';
       document.getElementById('lastUpdated').textContent =

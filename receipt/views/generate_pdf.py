@@ -44,6 +44,28 @@ def download_pdf_response(pdf_file, filename):
 def build_donation_context(donation, donation_type):
     donor_pan = get_donor_pan(donation)
 
+    # Support RMGPayPayment which has `amount` and `payment_date` fields
+    amount = (
+        getattr(donation, "donation_price", None)
+        or getattr(donation, "donation_amount", None)
+        or getattr(donation, "donor_amount", None)
+        or getattr(donation, "amount", 0)
+    )
+
+    donation_date = (
+        getattr(donation, "donation_date", None)
+        or getattr(donation, "service_date", None)
+        or getattr(donation, "submitted_at", None)
+        or getattr(donation, "payment_date", None)
+    )
+
+    # RMGPayPayment has easebuzz_payment_mode as a @property returning "UPI"
+    payment_mode = (
+        getattr(donation, "mode_of_donation", None)
+        or getattr(donation, "easebuzz_payment_mode", None)
+        or getattr(donation, "payment_mode", "")
+    )
+
     return {
         "donor_name": getattr(donation, "donor_name", ""),
         "donor_email": getattr(donation, "donor_email", ""),
@@ -54,26 +76,14 @@ def build_donation_context(donation, donation_type):
         ),
         "donor_pan": donor_pan,
         "donation_name": get_donation_name(donation, donation_type),
-        "amount": (
-            getattr(donation, "donation_price", None)
-            or getattr(donation, "donation_amount", None)
-            or getattr(donation, "donor_amount", 0)
-        ),
+        "amount": amount,
         "receipt_no": (
             getattr(donation, "receipt_no", None)
             or getattr(donation, "txnid", "")
         ),
-        "date": (
-            getattr(donation, "donation_date", None)
-            or getattr(donation, "service_date", None)
-            or getattr(donation, "submitted_at", None)
-        ),
-        "service_date": getattr(donation, "service_date", None),
-        "payment_mode": (
-            getattr(donation, "mode_of_donation", None)
-            or getattr(donation, "easebuzz_payment_mode", None)
-            or getattr(donation, "payment_mode", "")
-        ),
+        "date": donation_date,
+        "service_date": donation_date,
+        "payment_mode": payment_mode,
         "donation_type": (donation_type or "Donation").title(),
     }
 

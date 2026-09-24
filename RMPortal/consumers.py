@@ -945,7 +945,10 @@ class VisitorChatConsumer(AsyncWebsocketConsumer):
                     convo.rm_first_response_at = now
                     update_fields.append("rm_first_response_at")
                     if convo.visitor_first_message_at:
-                        delta = (now - convo.visitor_first_message_at).seconds
+                        delta = max(
+                            0,
+                            int((now - convo.visitor_first_message_at).total_seconds()),
+                        )
                         convo.response_time_seconds = delta
                         update_fields.append("response_time_seconds")
 

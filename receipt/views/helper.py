@@ -40,8 +40,12 @@ def get_amount(donation):
         return donation.donation_price
     elif hasattr(donation, 'donation_amount'):
         return donation.donation_amount
+    elif hasattr(donation, 'donor_amount'):
+        return donation.donor_amount
     elif hasattr(donation, 'total_price'):
         return donation.total_price
+    elif hasattr(donation, 'amount'):
+        return donation.amount
     return 0
 
 

@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db.models import Q, Max
 from django.db.models.functions import Coalesce
 from django.utils import timezone
@@ -16,6 +16,7 @@ from dashboard.models import RM
 from RMPortal.models import (
     Conversation, Message, MessageMedia,
     VisitorConversation,
+    BlockedContact,
 )
 from RMPortal.utils import convert_webm_to_ogg
 from RMPortal.services import (
@@ -24,6 +25,13 @@ from RMPortal.services import (
     upload_media_to_whatsapp,
     send_whatsapp_media_message,
     mark_whatsapp_message_as_read,
+    block_whatsapp_user,
+)
+from RMPortal.media_sender import (
+    MAX_MEDIA_PER_SEND,
+    MEDIA_SIZE_LIMITS,
+    validate_media_batch,
+    queue_media_batch,
 )
 
 from .auth import rm_login_required
@@ -253,6 +261,42 @@ def mark_active(request, convo_id):
     return HttpResponse(status=204)
 
 
+@require_POST
+@rm_login_required
+def block_donor(request, convo_id):
+    """RM blocks an abusive donor from their own conversation.
+    Blocks on WhatsApp's side (Cloud API) + our DB (permanent backup),
+    closes every open conversation of that donor. Only admin can unblock
+    (Django admin → Blocked contacts)."""
+    rm = request.rm
+
+    conversation = get_object_or_404(
+        Conversation,
+        id=convo_id,
+        rm=rm
+    )
+    donor = conversation.donor
+    reason = (request.POST.get("reason") or "").strip()
+
+    if BlockedContact.is_blocked(donor.phone_number):
+        return JsonResponse({"status": "already_blocked"})
+
+    wa_ok = block_whatsapp_user(donor.phone_number)
+
+    BlockedContact.objects.create(
+        donor=donor,
+        blocked_by=rm,
+        reason=reason,
+        wa_api_blocked=wa_ok,
+    )
+
+    Conversation.objects.filter(
+        donor=donor,
+        status="open"
+    ).update(is_active=False, status="closed", unread_count=0)
+
+    return JsonResponse({"status": "blocked", "wa_api_blocked": wa_ok})
+
 
 @require_POST
 @rm_login_required
@@ -382,87 +426,84 @@ def send_message(request, convo_id):
         print("WhatsApp send failed:", e)
 
     return HttpResponse(status=200)
-
-
 @require_POST
 @rm_login_required
 def send_media_message(request, convo_id):
+    """Save up to MAX_MEDIA_PER_SEND files, show them in the chat at once, then deliver them in the background."""
     rm = request.rm
 
     conversation = get_object_or_404(
-    Conversation,
-    id=convo_id,
-    rm=rm
-)
-
-
-    uploaded = request.FILES.get("file")
-    message_type = request.POST.get("message_type")
-
-    if not uploaded or message_type not in ["image", "video", "audio", "document"]:
-        return HttpResponse(status=400)
-
-    # 1️⃣ Save message
-    message = Message.objects.create(
-        conversation=conversation,
-        direction="out",
-        message_type=message_type,
-        status="sent"
+        Conversation,
+        id=convo_id,
+        rm=rm
     )
 
-    # 🔥 Update conversation last message info
-    conversation.last_message_type = message.message_type
-    conversation.last_message_status = message.status
-    conversation.last_message_direction = message.direction
+    uploads = request.FILES.getlist("files") or request.FILES.getlist("file")
+    message_types = request.POST.getlist("message_types") or request.POST.getlist("message_type")
+
+    error = validate_media_batch(uploads, message_types)
+    if error:
+        return JsonResponse({"ok": False, "error": error}, status=400)
+
+    channel_layer = get_channel_layer()
+    media_ids = []
+    last_message = None
+
+    for uploaded, message_type in zip(uploads, message_types):
+        message = Message.objects.create(
+            conversation=conversation,
+            direction="out",
+            message_type=message_type,
+            status="sent"
+        )
+        media = MessageMedia.objects.create(
+            message=message,
+            file=uploaded,
+            mime_type=uploaded.content_type,
+            size=uploaded.size
+        )
+        media_ids.append(media.id)
+        last_message = message
+
+        local_time = timezone.localtime(message.created_at)
+        async_to_sync(channel_layer.group_send)(
+            f"chat_{conversation.id}",
+            {
+                "type": "chat_message",
+                "message": {
+                    "id": message.id,
+                    "conversation_id": conversation.id,
+
+                    "direction": "out",
+                    "message_type": message_type,
+                    "file_url": media.file.url,
+                    "status": message.status,
+                    "time": local_time.isoformat(),
+                    "date": local_time.strftime("%Y-%m-%d"),
+                }
+            }
+        )
+
+    # Update conversation last message info — from the last file of the batch
+    conversation.last_message_type = last_message.message_type
+    conversation.last_message_status = last_message.status
+    conversation.last_message_direction = last_message.direction
     conversation.last_message_preview = ""   # no text for media
-    conversation.last_message_at = message.created_at
-    conversation.last_seen_message_id = message.id
+    conversation.last_message_at = last_message.created_at
+    conversation.last_seen_message_id = last_message.id
     conversation.last_seen_at = timezone.now()
     conversation.unread_count = 0
 
     conversation.save(update_fields=[
-    "last_message_type",
-    "last_message_status",
-    "last_message_direction",
-    "last_message_preview",
-    "last_message_at",
-    "last_seen_message_id",
-    "last_seen_at",
-    "unread_count",
-])
-
-
-
-
-    media = MessageMedia.objects.create(
-        message=message,
-        file=uploaded,
-        mime_type=uploaded.content_type,
-        size=uploaded.size
-    )
-
-    channel_layer = get_channel_layer()
-
-    local_time = timezone.localtime(message.created_at)
-
-    async_to_sync(channel_layer.group_send)(
-        f"chat_{conversation.id}",
-        {
-            "type": "chat_message",
-            "message": {
-                "id": message.id,
-                "conversation_id": conversation.id,
-
-                "direction": "out",
-                "message_type": message_type,
-                "file_url": media.file.url,
-                "status": message.status,
-                "time": local_time.isoformat(),
-                "date": local_time.strftime("%Y-%m-%d"),
-            }
-        }
-    )
-
+        "last_message_type",
+        "last_message_status",
+        "last_message_direction",
+        "last_message_preview",
+        "last_message_at",
+        "last_seen_message_id",
+        "last_seen_at",
+        "unread_count",
+    ])
 
     async_to_sync(channel_layer.group_send)(
         f"inbox_rm_{rm.id}",
@@ -470,70 +511,21 @@ def send_media_message(request, convo_id):
             "type": "inbox_update",
             "conversation_id": conversation.id,
             "phone": conversation.donor.phone_number,
-            "preview": message.body or "",
+            "preview": "",
             "unread": conversation.unread_count,
             "direction": "out",
-            "status": message.status,
-            "message_type": message_type,
-            "time": local_time.isoformat(),
+            "status": last_message.status,
+            "message_type": last_message.message_type,
+            "time": timezone.localtime(last_message.created_at).isoformat(),
 
         }
     )
 
+    # WhatsApp upload runs in a thread — the RM's chat is already updated
+    queue_media_batch(conversation.id, media_ids)
 
-    wa_pid, wa_token = _get_wa_creds(rm)
+    return JsonResponse({"ok": True, "count": len(media_ids)})
 
-    try:
-        file_path = media.file.path
-        mime_type = media.mime_type
-
-        if message_type == "audio" and mime_type == "audio/webm":
-            webm_path, ogg_path = convert_webm_to_ogg(media.file)
-            file_path = ogg_path
-            mime_type = "audio/ogg"
-            print("Uploading:", file_path, mime_type)
-
-        # 🔍 Check 24hr window before uploading
-        last_incoming = conversation.messages.filter(
-            direction="in"
-        ).order_by("-created_at").first()
-
-        outside_window = (
-            last_incoming is None or
-            timezone.now() - last_incoming.created_at > timedelta(hours=24)
-        )
-
-        if outside_window:
-            try:
-                send_whatsapp_template(
-                    to=conversation.donor.phone_number,
-                    template_name="rm_followup_message",
-                    phone_number_id=wa_pid,
-                    access_token=wa_token,
-                )
-                import time as time_module
-                time_module.sleep(1)
-            except Exception as tmpl_err:
-                print("WhatsApp template send skipped:", tmpl_err)
-
-        wa_media_id = upload_media_to_whatsapp(file_path, mime_type, phone_number_id=wa_pid, access_token=wa_token)
-        media.wa_media_id = wa_media_id
-        media.save(update_fields=["wa_media_id"])
-
-        res = send_whatsapp_media_message(
-            conversation.donor.phone_number,
-            wa_media_id,
-            message_type,
-            phone_number_id=wa_pid,
-            access_token=wa_token,
-        )
-
-        message.external_id = res["messages"][0]["id"]
-        message.save(update_fields=["external_id"])
-
-    except Exception as e:
-        print("WhatsApp media send failed:", e)
-    return HttpResponse(status=204)
 
 
 

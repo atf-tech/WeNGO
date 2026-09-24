@@ -46,15 +46,15 @@ $(document).ready(function () {
         updateAmount($(this).val());
     });
 
-    $(document).on("click", "#qty-plus", function () {
-        var current = parseInt($("#quantity-input").val(), 10) || 0;
-        updateAmount(current + 1);
-    });
+    // $(document).on("click", "#qty-plus", function () {
+    //     var current = parseInt($("#quantity-input").val(), 10) || 0;
+    //     updateAmount(current + 1);
+    // });
 
-    $(document).on("click", "#qty-minus", function () {
-        var current = parseInt($("#quantity-input").val(), 10) || 1;
-        if (current > 1) updateAmount(current - 1);
-    });
+    // $(document).on("click", "#qty-minus", function () {
+    //     var current = parseInt($("#quantity-input").val(), 10) || 1;
+    //     if (current > 1) updateAmount(current - 1);
+    // });
 
     // ── End Donation Calculator ───────────────────────────────────
 });

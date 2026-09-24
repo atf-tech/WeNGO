@@ -10,7 +10,8 @@
 .food-banner-wrapper{
     display:flex;
     justify-content:center;
-    margin:40px 0;
+    margin:15px 5px;
+    margin-top: 40px;
 }
 
 .food-banner-link{
@@ -73,7 +74,887 @@
     background:#ff8c1a;
     color:#fff;
 }
+
+
+/* =========================================
+   WENGO MOBILE NAV - HIDDEN BY DEFAULT
+========================================= */
+
+.wengo-service-nav-wrapper {
+    display: none;
+}
+
+
+/* =========================================
+   MOBILE ONLY
+========================================= */
+
+@media (max-width: 767px) {
+    
+
+    /* MAIN CONTAINER */
+    .wengo-service-nav-wrapper {
+        display: block;
+        width: 100%;
+
+        margin: 12px 0 4px;
+
+        padding: 6px 0;
+
+        background: transparent;
+
+        overflow: visible;
+    }
+
+
+    /* =========================================
+       HORIZONTAL SCROLL ROW
+    ========================================= */
+
+    .wengo-service-nav {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        width: 100%;
+
+        padding: 10px 8px;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        scroll-behavior: smooth;
+
+        -webkit-overflow-scrolling: touch;
+
+        scrollbar-width: none;
+    }
+
+    .wengo-service-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================
+       NAV ITEM - PILL MODEL
+    ========================================= */
+
+    .wengo-nav-item {
+        flex: 0 0 115px;
+        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        
+        gap: 7px;
+        
+        height: 46px;
+        padding: 0 16px;
+        
+        background: #ffffff;
+        border: 1px solid #eeeeee;
+        border-radius: 24px;
+        
+        color: #444;
+        text-decoration: none;
+        
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        
+        transition:
+            background-color 0.25s ease,
+            color 0.25s ease,
+            border-color 0.25s ease,
+            box-shadow 0.25s ease,
+            transform 0.2s ease;
+    }
+
+
+    /* =========================================
+       ICON
+    ========================================= */
+
+    .wengo-nav-icon {
+        width: auto;
+        height: auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: none;
+        border-radius: 0;
+
+        background: transparent;
+
+        color: #ff6b00;
+
+        font-size: 18px;
+
+        box-shadow: none;
+
+        transition: 0.25s ease;
+    }
+
+
+    /* =========================================
+       ACTIVE ITEM - FULL ORANGE PILL
+    ========================================= */
+
+    .wengo-nav-item.active {
+        background: #ff6b00;
+
+        border-color: #ff6b00;
+
+        color: #ffffff;
+
+        box-shadow:
+            0 4px 12px rgba(255, 107, 0, 0.28);
+    }
+
+
+    /* ACTIVE ICON */
+    .wengo-nav-item.active .wengo-nav-icon {
+        width: auto;
+        height: auto;
+
+        background: transparent;
+
+        color: #ffffff;
+
+        border: none;
+
+        box-shadow: none;
+    }
+
+
+    /* =========================================
+       TAP EFFECT
+    ========================================= */
+
+    .wengo-nav-item:active {
+        transform: scale(0.96);
+    }
+
+    .wengo-service-nav.no-transition .wengo-nav-item,
+    .wengo-service-nav.no-transition .wengo-nav-item::before,
+    .wengo-service-nav.no-transition .wengo-nav-item::after {
+        transition: none !important;
+    }
+
+}
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const nav = document.querySelector(".wengo-service-nav");
+    const navItems = document.querySelectorAll(".wengo-nav-item");
+    const homeItem = document.querySelector('.wengo-nav-item[data-nav="home"]');
+
+    function setActiveItem(item, animate = true) {
+
+        if (!item) {
+            item = homeItem;
+        }
+
+        // Back / page load → instant active state
+        if (!animate) {
+            nav.classList.add("no-transition");
+        }
+
+        navItems.forEach(function (navItem) {
+            navItem.classList.remove("active");
+            navItem.removeAttribute("aria-current");
+        });
+
+        item.classList.add("active");
+        item.setAttribute("aria-current", "page");
+
+        if (!animate) {
+            // Remove transition after browser paints the active state
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    nav.classList.remove("no-transition");
+                });
+            });
+        }
+    }
+
+
+    function getCleanPath(url) {
+        const path = new URL(url, window.location.origin).pathname;
+        return path.replace(/\/+$/, "") || "/";
+    }
+
+
+    function setActiveFromCurrentRoute() {
+
+        const currentPath = getCleanPath(window.location.href);
+
+        let matchedItem = null;
+
+        navItems.forEach(function (item) {
+
+            if (getCleanPath(item.href) === currentPath) {
+                matchedItem = item;
+            }
+
+        });
+
+        // IMPORTANT:
+        // Back / Forward / Page Load = instant change
+        setActiveItem(matchedItem || homeItem, false);
+    }
+
+
+    // Normal click
+    navItems.forEach(function (item) {
+
+        item.addEventListener("click", function () {
+
+            // Click animation
+            setActiveItem(item, true);
+
+            // Keep clicked item visible in horizontal scroll
+            item.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "center"
+            });
+
+        });
+
+    });
+
+
+    // Browser Back / Forward
+    window.addEventListener("popstate", function () {
+        setActiveFromCurrentRoute();
+    });
+
+
+    // Browser back-forward cache
+    window.addEventListener("pageshow", function () {
+        setActiveFromCurrentRoute();
+    });
+
+
+    // Initial page load
+    setActiveFromCurrentRoute();
+
+});
+</script>
+<style>
+/* =========================================================
+   WENGO OUR HOMES SECTION
+   ========================================================= */
+
+.wengo-homes-section {
+    width: 100%;
+    padding: 1px 0 70px;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.wengo-homes-heading {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-bottom: 28px;
+    margin-top: 28px;
+}
+
+
+/* =========================================================
+   OUR HOMES - DESKTOP
+   ========================================================= */
+
+.wengo-section-subtitle {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    padding: 11px 20px;
+
+    margin: 0;
+
+    background: #fff4eb;
+    color: #444444;
+
+    border-radius: 10px;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+
+/* Orange vertical line */
+
+.wengo-section-subtitle::before {
+    content: "";
+
+    width: 5px;
+    height: 23px;
+
+    margin-right: 10px;
+
+    border-radius: 5px;
+
+    background: #ff6b00;
+}
+
+
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
+.wengo-section-title {
+    margin: 0;
+
+    font-size: 32px;
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    color: #222222;
+}
+
+
+/* =========================================================
+   SEE ALL
+   ========================================================= */
+
+.wengo-see-all {
+    color: #ff6b00;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.2s ease;
+}
+
+.wengo-see-all:hover {
+    color: #e85d00;
+}
+
+
+/* =========================================================
+   CARDS ROW
+   ========================================================= */
+
+.wengo-homes-row {
+    row-gap: 24px;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+        #donation-section {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    #donation-section .container {
+        padding-left: 0;
+        padding-right: 0;
+        max-width: 100%;
+    }
+
+    .wengo-homes-heading {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        margin-bottom: 25px;
+
+        padding-left: 4px;
+        margin-top: 10px;
+    }
+
+    .wengo-homes-section {
+        width: 100%;
+        padding: 1px 0 40px;
+    }
+
+
+    /* Mobile Our Homes */
+
+    .wengo-section-subtitle {
+        padding: 7px 13px;
+
+        margin: 0;
+
+        border-radius: 8px;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        line-height: 1;
+
+        letter-spacing: 0.3px;
+    }
+
+
+    /* Mobile orange line */
+
+    .wengo-section-subtitle::before {
+        width: 3px;
+        height: 15px;
+
+        margin-right: 7px;
+
+        border-radius: 4px;
+    }
+
+
+    /* Mobile section title */
+
+    .wengo-section-title {
+        font-size: 24px;
+    }
+
+
+    /* Mobile see all */
+
+    .wengo-see-all {
+        font-size: 13px;
+    }
+
+
+    /* Mobile cards gap */
+
+    .wengo-homes-row {
+        row-gap: 20px;
+    }
+}
+
+/* =========================================================
+   HOME CARD
+   ========================================================= */
+
+.wengo-home-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    border: 1px solid #eeeeee;
+
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.16);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.wengo-home-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.11);
+}
+
+
+/* =========================================================
+   HOME IMAGE
+   ========================================================= */
+
+.wengo-home-image-link {
+    display: block;
+
+    width: 100%;
+
+    overflow: hidden;
+}
+
+.wengo-home-image {
+    display: block;
+
+    width: 100%;
+    height: 220px;
+
+    aspect-ratio: 4 / 3;
+
+    object-fit: cover;
+    object-position: center;
+
+    transition: transform 0.35s ease;
+}
+
+.wengo-home-card:hover .wengo-home-image {
+    transform: scale(1.04);
+}
+
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.wengo-home-card-body {
+    padding: 16px;
+}
+
+
+/* Home name */
+
+.wengo-home-name {
+    margin: 0 0 15px;
+
+    min-height: 48px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center; /* Center horizontally */
+    text-align: center;
+}
+
+.wengo-home-name a {
+    color: #222222;
+
+    font-size: 23px;
+    line-height: 1.35;
+
+    font-weight: 500;
+
+    text-decoration: none;
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+}
+
+/* =========================================================
+   DONATE BUTTON
+   ========================================================= */
+
+.wengo-donate-button {
+    width: 180px;
+    min-height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 8px 20px;
+
+    margin: 0 auto;
+
+    border-radius: 25px;
+
+    background: #ff6b00;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+}
+
+.wengo-donate-button:hover {
+    background: #e85d00;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+.wengo-donate-button i {
+    font-size: 16px;
+}
+
+
+/* Empty state */
+
+.wengo-no-homes {
+    text-align: center;
+
+    padding: 40px 20px;
+
+    color: #777777;
+}
+
+
+
+/* =========================================================
+   OUR HOMES - FULL BROWSER WIDTH
+   DESKTOP ONLY
+   ========================================================= */
+
+@media (min-width: 1200px) {
+
+
+
+    #donation-section .wengo-homes-row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #donation-section .wengo-homes-row > .col-12 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    #donation-section .wengo-home-card {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    #donation-section .wengo-home-image {
+        width: 100%;
+        height: 582px;
+        aspect-ratio: auto;
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
+
+/* =========================================================
+   OUR SERVICES HEADING
+   SAME STYLE AS OUR HOMES
+   ========================================================= */
+
+.wengo-service-heading .wengo-section-subtitle {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    padding: 11px 20px;
+
+    margin: 0;
+
+    background: #fff4eb;
+    color: #444444;
+
+    border-radius: 10px;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wengo-service-heading {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin: 0 0 28px;
+
+    padding: 0 0 0 80px;
+}
+
+.wengo-service-heading .wengo-section-subtitle::before {
+    content: "";
+
+    width: 5px;
+    height: 23px;
+
+    margin-right: 10px;
+
+    border-radius: 5px;
+
+    background: #ff6b00;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .wengo-service-heading {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        margin: 15px 7px 20px;
+
+        padding-left: 4px;
+    }
+
+    .wengo-service-heading .wengo-section-subtitle {
+        padding: 7px 13px;
+
+        margin: 0;
+
+        border-radius: 8px;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        line-height: 1;
+
+        letter-spacing: 0.3px;
+    }
+
+    .wengo-service-heading .wengo-section-subtitle::before {
+        width: 3px;
+        height: 15px;
+
+        margin-right: 7px;
+    }
+}
+/* =========================================================
+   MOBILE SERVICE CARDS
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .section-title .subtitle {
+        font-size: 15px;
+        line-height: 15px;
+        font-weight: 500;
+        color: var(--color-heading);
+        margin-bottom: 15px;
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 100px;
+        text-transform: uppercase;
+        display: inline-block;
+        background: var(--color-primary);
+        color: var(--color-primary);
+    }  
+    
+    .bg-white-opacity {
+      background: #2f57efba !important;
+      color: #ffffffba;
+    }
+
+    .mb--55 {
+      margin-bottom: 10px !important;
+      margin-left:40px !important;
+    }
+
+    .text-start {
+        text-align: left !important;
+    }
+
+
+    .rbt-course-area .container-fluid {
+        width: 100%;
+        padding-left: 2px;
+        padding-right: 6px;
+        box-sizing: border-box;
+        background-color:white;
+    }
+
+    .rbt-course-area .row {
+        --bs-gutter-x: 15px;
+        --bs-gutter-y: 30px;
+    }
+
+    .rbt-course-area .row > .col-6 {
+        width: 50%;
+        max-width: 50%;
+        flex: 0 0 50%;
+        padding-left: 11px;
+        
+    }
+
+    .rbt-card.variation-01.rbt-hover {
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px 3px rgba(0, 0, 0, 0.10);
+    }
+
+    .rbt-course-area .rbt-card {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .rbt-course-area .rbt-card-img {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .rbt-course-area .rbt-card-img img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .rbt-course-area .rbt-card-body {
+        padding: 12px;
+    }
+
+    .rbt-course-area .rbt-card-title {
+        font-size: 15px;
+        line-height: 1.3;
+        margin-bottom: 10px;
+    }
+
+    .rbt-course-area .rbt-card-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .rbt-course-area .current-price {
+        font-size: 14px;
+    }
+
+    .rbt-course-area .rbt-btn-link {
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 767px) {
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body {
+        scrollbar-gutter: auto;
+    }
+}
+</style>
+
+
 
 <div class="col-12">
     <div class="feature-course-thumbnail">
@@ -87,12 +968,381 @@
                 playsinline>
                 <source src="{% static 'website/videos/wengo_home.mp4' %}" type="video/mp4">
                 Your browser does not support the video tag.
+
             </video>
+
         </div>
     </div>
 </div>
 
-<div class="food-banner-wrapper">
+<!-- Start Mobile Style Service Navigation -->
+{% comment %} <div class="wengo-service-nav-wrapper">
+    <div class="wengo-service-nav">
+
+        <a href="{% url 'index' %}" class="wengo-nav-item active" data-nav="home">
+            <span class="wengo-nav-icon">
+                <i class="feather-home"></i>
+            </span>
+            <span>Home</span>
+        </a>
+
+        <a href="{% url 'service' %}" class="wengo-nav-item" data-nav="services">
+            <span class="wengo-nav-icon">
+                <i class="feather-grid"></i>
+            </span>
+            <span>Services</span>
+        </a>
+
+        <a href="{% url 'about' %}" class="wengo-nav-item" data-nav="about">
+            <span class="wengo-nav-icon">
+                <i class="feather-info"></i>
+            </span>
+            <span>About</span>
+        </a>
+
+        <a href="{% url 'join_us' %}" class="wengo-nav-item" data-nav="volunteer">
+            <span class="wengo-nav-icon">
+                <i class="feather-users"></i>
+            </span>
+            <span>Volunteer</span>
+        </a>
+
+        <a href="{% url 'contact' %}" class="wengo-nav-item" data-nav="contact">
+            <span class="wengo-nav-icon">
+                <i class="feather-heart"></i>
+            </span>
+            <span>Contact</span>
+        </a>
+    </div>
+</div> {% endcomment %}
+<!-- End Mobile Style Service Navigation -->
+
+<!-- =========================================================
+     WENGO TOP INTRO
+     ========================================================= -->
+
+<!-- MOBILE ONLY - WENGO FOCUS CARDS -->
+<!-- WENGO FOCUS AREAS -->
+<section class="wengo-mobile-focus">
+    <div class="container">
+
+        {% comment %} <div class="wengo-mobile-focus-title">
+            <span>OUR FOCUS</span>
+            <h2>What We Do</h2>
+        </div> {% endcomment %}
+
+        <div class="wengo-focus-scroll">
+
+            <!-- 01 Care & Support -->
+            <div class="wengo-focus-card">
+                <div class="wengo-focus-icon">
+                    <i class="feather-heart"></i>
+                </div>
+                <h3>Care &amp; Support</h3>
+            </div>
+
+            <!-- 02 Education -->
+            <div class="wengo-focus-card">
+                <div class="wengo-focus-icon">
+                    <i class="feather-book-open"></i>
+                </div>
+                <h3>Education</h3>
+            </div>
+
+            <!-- 03 Community -->
+            <div class="wengo-focus-card">
+                <div class="wengo-focus-icon">
+                    <i class="feather-users"></i>
+                </div>
+                <h3>Community</h3>
+            </div>
+
+            <!-- 04 Women Empowerment -->
+            <div class="wengo-focus-card">
+                <div class="wengo-focus-icon">
+                    <i class="feather-user-check"></i>
+                </div>
+                <h3>Women Empowerment</h3>
+            </div>
+
+            <!-- 05 Healthcare -->
+            <div class="wengo-focus-card">
+                <div class="wengo-focus-icon">
+                    <i class="feather-plus-circle"></i>
+                </div>
+                <h3>Healthcare</h3>
+            </div>
+
+            <!-- 06 Food & Nutrition -->
+            <div class="wengo-focus-card">
+                <div class="wengo-focus-icon">
+                    <i class="feather-home"></i>
+                </div>
+                <h3>Food &amp; Nutrition</h3>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<style>
+
+/* =========================================
+   WENGO FOCUS AREAS
+========================================= */
+
+.wengo-mobile-focus {
+    display: block;
+    width: 100%;
+    padding: 28px 0 32px;
+    background: #ffffff;
+}
+
+
+/* SECTION TITLE */
+
+.wengo-mobile-focus-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.wengo-mobile-focus-title span {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #e8892f;
+}
+
+.wengo-mobile-focus-title h2 {
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #234b75;
+}
+
+
+/* =========================================
+   DESKTOP - 6 CARDS SINGLE ROW
+========================================= */
+
+.wengo-focus-scroll {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 14px;
+    width: 100%;
+}
+
+
+/* CARD */
+
+.wengo-focus-card {
+    min-width: 0;
+    min-height: 135px;
+    padding: 20px 10px 17px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background: #ffffff;
+    border: 1px solid #e7edf3;
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 18px rgba(35, 75, 117, 0.07);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+/* ICON */
+
+.wengo-focus-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 11px;
+
+    border-radius: 50%;
+
+    background: #fff4e8;
+    color: #e8892f;
+
+    font-size: 21px;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+
+/* CARD TITLE */
+
+.wengo-focus-card h3 {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 600;
+
+    color: #234b75;
+}
+
+
+/* DESKTOP HOVER */
+
+.wengo-focus-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #d9e5ef;
+
+    box-shadow:
+        0 10px 25px rgba(35, 75, 117, 0.12);
+}
+
+.wengo-focus-card:hover .wengo-focus-icon {
+    background: #234b75;
+    color: #ffffff;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 991px) {
+
+    .wengo-focus-scroll {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+   6 CARDS = SINGLE HORIZONTAL SCROLL
+========================================= */
+
+@media (max-width: 767px) {
+
+    .wengo-mobile-focus {
+        padding: 10px 0 0px;
+        overflow: hidden;
+    }
+
+    .wengo-mobile-focus-title {
+        margin-bottom: 14px;
+        padding: 0 15px;
+    }
+
+    .wengo-mobile-focus-title span {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        margin-bottom: 3px;
+    }
+
+    .wengo-mobile-focus-title h2 {
+        font-size: 21px;
+    }
+
+
+    /* HORIZONTAL SCROLL */
+
+    .wengo-focus-scroll {
+        display: flex;
+
+        flex-wrap: nowrap;
+
+        gap: 10px;
+
+        width: 100%;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        padding: 2px 15px 10px;
+
+        scroll-snap-type: x mandatory;
+
+        -webkit-overflow-scrolling: touch;
+
+        scrollbar-width: none;
+    }
+
+    .wengo-focus-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* MOBILE CARD */
+
+    .wengo-focus-card {
+        flex: 0 0 107px;
+
+        width: 79px;
+        min-width: 64px;
+
+        min-height: 50px;
+
+        padding: 5px 8px 7px;
+
+        border-radius: 13px;
+
+        scroll-snap-align: start;
+
+        box-shadow:
+            0 4px 14px rgba(35, 75, 117, 0.07);
+    }
+
+
+    .wengo-focus-icon {
+        width: 40px;
+        height: 40px;
+
+        margin-bottom: 8px;
+
+        font-size: 17px;
+    }
+
+
+    .wengo-focus-card h3 {
+        font-size: 11px;
+        line-height: 1.3;
+    }
+
+
+    /* Disable hover movement on mobile */
+
+    .wengo-focus-card:hover {
+        transform: none;
+    }
+
+}
+</style>
+
+
+<!-- =========================================================
+     END WENGO TOP INTRO
+     ========================================================= -->
+
+{% comment %} <div class="food-banner-wrapper">
     <a href="/food" class="food-banner-link">
         <img
             class="food-banner-img"
@@ -103,7 +1353,7 @@
             <span class="food-banner-btn"> Donate Now</span>
         </div>
     </a>
-</div>
+</div> {% endcomment %}
    
 
 {% comment %} <div class="rbt-banner-area pt-4">
@@ -155,8 +1405,6 @@
                        
                     </div>
                     
-               
-
                     <div class="rbt-swiper-arrow rbt-arrow-left">
                         <div class="custom-overfolow">
                             <i class="rbt-icon feather-arrow-left"></i>
@@ -174,34 +1422,140 @@
         </div>
     </div>
 </div> {% endcomment %}
-  <br>
 
 
 
+                            {% comment %} ### HOME PAGE DYNAMIC ROWS -------------------- {% endcomment %}
+
+
+{% comment %} <section>
+  <div class="container">
+    <div class="banner-supper-sale">
+      <h6>Note:</h6>
+      <div class="body-text-1">
+        💡All Donations Are Eligible for Tax Benefits Under Section 80G
+      </div>
+    </div>
+  </div>
+</section> {% endcomment %}
+
+<!-- =========================================================
+     OUR HOMES
+     ========================================================= -->
+
+<section id="donation-section" class="wengo-homes-section">
+
+    <div class="container">
+
+        <!-- Section Heading -->
+        <div class="wengo-homes-heading">
+
+            <div>
+                <span class="wengo-section-subtitle">
+                    Our Homes
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- Home Cards -->
+        <div class="row wengo-homes-row">
+
+            {% for home in homes %}
+
+            <div class="col-12">
+
+                <div class="wengo-home-card">
+
+                    <!-- Image -->
+                    <a
+                        href="{% url 'home_details' slug=home.slug %}"
+                        class="wengo-home-image-link">
+
+                        {% if home.home_image %}
+
+                            <img
+                                class="wengo-home-image"
+                                src="{{ home.home_image.url }}"
+                                alt="{{ home.name }}">
+
+                        {% else %}
+
+                            <img
+                                class="wengo-home-image"
+                                src="{% static 'website/images/no-image.png' %}"
+                                alt="{{ home.name }}">
+
+                        {% endif %}
+
+                    </a>
+
+
+                    <!-- Card Content -->
+                    <div class="wengo-home-card-body">
+
+                        <!-- Home Name -->
+                        <h3 class="wengo-home-name">
+
+                            <a href="{% url 'home_details' slug=home.slug %}">
+                                {{ home.name }}
+                            </a>
+
+                        </h3>
+
+
+                        <!-- Donate Button -->
+                        <a
+                            href="{% url 'home_details' slug=home.slug %}"
+                            class="wengo-donate-button">
+
+                            <span>Donate Now</span>
+
+                            <i class="feather-heart"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="col-12">
+
+                <div class="wengo-no-homes">
+                    <p>No Homes Available.</p>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+<!-- Section Heading -->
+<div class="wengo-service-heading">
+    <div>
+        <span class="wengo-section-subtitle">
+            Our Service's
+        </span>
+    </div>
+</div>
 
 
 
 <div class="rbt-course-area rbt-section-gap bg-gradient-8 masonary-wrapper-activation">
     <div class="container-fluid">
-        <div class="row mb--55 g-5 align-items-end">
-            <div class="col-lg-1"></div>
-            <div class="col-lg-5 col-md-5 col-11">
-                <div class="section-title text-start">
-                    <span class="subtitle bg-white-opacity">Top Popular Service</span>
-                    <h2 class="title color-white">Most Popular Service</h2>
-                </div>
-            </div>
-            <div class="col-lg-5 col-md-5 col-11">
-                <div class="load-more-btn text-start text-md-end">
-                    <a class="rbt-btn rbt-switch-btn btn-white" href="{% url 'service' %}">
-                        <span data-text="View All Service">View All Service</span>
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-1"></div>
-        </div>
-
-
 
         <div class="row g-5">
                 
@@ -229,7 +1583,7 @@
                         <div class="rbt-card-bottom">
                             <div class="rbt-price">
                                 <span class="current-price">
-                                    ₹ {{ s.amount }}
+                                    ₹ {{ s.amount|floatformat }}
                                 </span>
                             </div>
                         
@@ -895,4 +2249,5 @@
     </div>
 </div> {% endcomment %}
 
+{% include 'website/bottom_nav.html' %}
 {% endblock %}

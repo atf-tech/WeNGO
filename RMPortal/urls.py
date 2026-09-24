@@ -11,6 +11,10 @@ urlpatterns = [
     path('rm_keepalive/', views.rm_keepalive, name='rm_keepalive'),
     path('keepalive/', views.rm_keepalive),
 
+    path('download-receipt/', views.download_receipt, name='download_receipt'),
+    path("update-donation/", views.update_donation, name="update_donation"),
+    path("send-email/", views.send_donation_email, name="send_donation_email"),
+
     path("webhook/", webhook, name="whatsapp_webhook"),
 
     # WhatsApp conversation endpoints
@@ -19,6 +23,7 @@ urlpatterns = [
     path("conversation/<int:convo_id>/active/", views.mark_active, name="mark_active"),
     path("conversation/<int:convo_id>/send/", views.send_message, name="send-message"),
     path("conversation/<int:convo_id>/send-media/", views.send_media_message, name="send-media-message"),
+    path("conversation/<int:convo_id>/block/", views.block_donor, name="block-donor"),
 
     # Visitor live chat — website-facing API
     path("visitor/session/init/", views.visitor_session_init, name="visitor_session_init"),
@@ -44,5 +49,7 @@ urlpatterns = [
     # <str:rm_code> patterns LAST (catches any rm_code)
     path("<str:rm_code>/gpay/payments/", views.rm_gpay_payments, name="rm_gpay_payments"),
     path("<str:rm_code>/collection/", views.rm_collection, name="rm_collection"),
+
+    path("<str:rm_code>/ajax-filter/", views.ajax_filter_donations, name="ajax_filter_donations"),
     path("<str:rm_code>/", views.rmportal_index, name="rmportal_index"),
 ]

@@ -1,0 +1,241 @@
+<div class="bottom-nav-wrapper  ">
+  <nav class="bottom-nav">
+    <div class="nav-row">
+  
+      <!-- Home -->
+      <a href="{% url 'index' %}" class="nav-item" data-nav="home">
+        <svg class="icon-home" viewBox="0 0 24 24">
+          <path class="roof" d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V11.5z"/>
+        </svg>
+        <span>Home</span>
+      </a>
+ 
+      <!-- Services -->
+      <a href="{% url 'service' %}" class="nav-item" data-nav="services">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        <span>Services</span>
+      </a>
+  
+      <!-- Center Search button -->
+      <div class="search-wrap">
+        <a href="{% url 'search_services' %}" class="search-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24">
+            <circle cx="10.5" cy="10.5" r="6.5"/>
+            <line x1="15.3" y1="15.3" x2="19.5" y2="19.5" stroke-linecap="round"/>
+          </svg>
+        </a>
+        <div class="search-label"></div>
+      </div>
+  
+      <!-- About -->
+      <a href="{% url 'about' %}" class="nav-item" data-nav="about">
+        <svg class="icon-receipt" viewBox="0 0 24 24">
+          <path d="M5 3h14v18l-3-2-4 2-4-2-3 2V3z"/>
+          <path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/>
+        </svg>
+        <span>About</span>
+      </a>
+  
+      <!-- Contact -->
+      <a href="{% url 'contact' %}" class="nav-item" data-nav="contact">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="3.5"/>
+          <path d="M5.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke-linecap="round"/>
+        </svg>
+        <span>Contact</span>
+      </a>
+  
+    </div>
+ 
+ 
+  </nav>
+</div>
+
+<style>
+    /* Desktop default - Hide */
+    .bottom-nav-wrapper {
+        display: none;
+        font-family: -apple-system, BlinkMacSystemFont,
+            'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+
+    /* Mobile மட்டும் Show */
+    @media (max-width: 767px) {
+
+        .bottom-nav-wrapper {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 99999;
+        }
+
+    }
+
+
+  :root{
+    --purple:#5B4FE9;
+    --gray-bg:#C9D3E0;
+    --icon-gray:#3C3C43;
+    --label-gray:#3C3C43;
+    --card-bg:#FFFFFF;
+    --top-strip:#F3F4F6;
+  }
+ 
+  *{ box-sizing:border-box; }
+ 
+  .bottom-nav-wrapper {
+        font-family: -apple-system, BlinkMacSystemFont,
+        'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+ 
+  /* ===== Bottom Nav Bar ===== */
+  .bottom-nav{
+    position:r0\elative;
+    width:100%;
+    max-width:600px;
+    margin:0 auto;
+    background:var(--card-bg);
+    border-radius:0;
+    padding-top:0px;
+    padding-bottom:0px;
+    box-shadow:0 -8px 24px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+  }
+
+  .bottom-nav.scrolled {
+    border-radius: 16px 16px 0 0;
+  }
+ 
+ 
+  .nav-row{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding:0 8px;
+    
+  }
+ 
+  .nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:var(--icon-gray);
+    font-size:14px;
+    -webkit-tap-highlight-color:transparent;
+  }
+ 
+  .nav-item svg{
+    width:26px;
+    height:26px;
+    stroke:var(--icon-gray);
+    fill:none;
+    stroke-width:1.7;
+  }
+ 
+  .nav-item span{
+    font-size:14px;
+    color:var(--label-gray);
+  }
+ 
+  .nav-item.active{ color:var(--purple); }
+  .nav-item.active svg{ stroke:var(--purple); fill:var(--purple); }
+  .nav-item.active span{ color:var(--purple); font-weight:500; }
+ 
+  /* home icon uses a filled look */
+  .nav-item.active .icon-home path.roof{ fill:var(--purple); }
+  .nav-item.active .icon-receipt{ fill:var(--purple) ; }
+  
+  /* center floating search button */
+  .search-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    transform:translateY(-30px);
+  }
+ 
+  .search-btn{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:var(--purple);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 20px rgba(91,79,233,0.45), 0 0 0 8px #fff;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+  }
+  
+  .search-btn svg{
+    width:34px;
+    height:34px;
+    stroke:#fff;
+    fill:none;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  
+  .search-label{
+    height:20px; /* keeps row alignment even though no label shown */
+  }
+ 
+ 
+  
+  @media (max-width:380px){
+    .search-btn{ width:76px; height:76px; }
+    .search-wrap{ transform:translateY(-7px); }
+    .nav-item svg{ width:22px; height:22px; }
+    .nav-item span{ font-size:12px; }
+  }
+</style>
+
+<script>
+    window.addEventListener('scroll', function () {
+        var nav = document.querySelector('.bottom-nav');
+        if (nav) {
+            if (window.scrollY > 10) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        }
+    });
+
+    (function () {
+      var navItems = document.querySelectorAll('.bottom-nav .nav-item');
+      var currentPath = window.location.pathname;
+      var activeItem = navItems[0];
+
+      navItems.forEach(function (item) {
+        var href = item.getAttribute('href');
+        if (href && (href === currentPath || currentPath.indexOf(href) === 0 || (href !== '/' && currentPath.indexOf(href) > -1))) {
+          activeItem = item;
+        }
+      });
+
+      navItems.forEach(function (item) {
+        item.classList.toggle('active', item === activeItem);
+        item.addEventListener('click', function () {
+          navItems.forEach(function (navItem) { navItem.classList.remove('active'); });
+          item.classList.add('active');
+        });
+      });
+    }());
+</script>

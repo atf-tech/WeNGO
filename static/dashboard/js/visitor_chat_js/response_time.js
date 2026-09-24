@@ -2,7 +2,7 @@
 var options = {
     series: [{
         name: "Response Time",
-        data: [521.4, 63.6, 239.2, 192.6, 556.0, 501.9]
+        data: []
     }],
 
     chart: {
@@ -37,7 +37,7 @@ var options = {
     },
 
     xaxis: {
-        categories: ['1.0', '2.0', '3.0', '4.0', '5.0', '6.0'],
+        categories: [],
         min: 0,
         max: 600,
         labels: {
@@ -87,10 +87,57 @@ var options = {
 };
 
 
-var chart = new ApexCharts(
+var responseTimeChart = new ApexCharts(
     document.querySelector("#TimeChart"),
     options
 );
 
 
-chart.render();
+responseTimeChart.render();
+window.responseTimeChart = responseTimeChart;
+
+function responseTimeChartQueryParams() {
+    const params = new URLSearchParams({
+        chart: typeof gChart !== 'undefined' ? gChart : 'daily',
+        period: typeof gPeriod !== 'undefined' ? gPeriod : 'today',
+        branch: typeof gBranch !== 'undefined' ? gBranch : '',
+    });
+
+    if (typeof gPeriod !== 'undefined' && gPeriod === 'custom') {
+        const from = document.getElementById('customFrom')?.value;
+        const to = document.getElementById('customTo')?.value;
+        if (from) params.set('from_date', from);
+        if (to) params.set('to_date', to);
+    }
+
+    return params;
+}
+
+window.loadResponseTimeChart = function () {
+    return fetch(`/dashboard/visitor_chat/api/charts/?${responseTimeChartQueryParams().toString()}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'same-origin'
+    })
+        .then(function(response) {
+            if (!response.ok) throw new Error("HTTP " + response.status);
+            return response.json();
+        })
+        .then(function(data) {
+            if (!data || !data.response || !window.responseTimeChart) return;
+
+            window.responseTimeChart.updateOptions({
+                xaxis: {
+                    categories: data.response.categories || []
+                }
+            });
+            window.responseTimeChart.updateSeries([
+                {
+                    name: "Response Time",
+                    data: data.response.data || []
+                }
+            ]);
+        })
+        .catch(function(error) {
+            console.error("Response time chart error:", error);
+        });
+};

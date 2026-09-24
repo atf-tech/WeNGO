@@ -1,19 +1,12 @@
 var options = {
-    series: [42, 47, 52, 58, 65, 72],
+    series: [],
 
     chart: {
-        height: 380,
+        height: 430,
         type: 'polarArea'
     },
 
-    labels: [
-        'Waiting',
-        'Active',
-        'Closed',
-        'Missed',
-        'Quickly Left',
-        'Night Chat'
-    ],
+    labels: [],
 
     colors: [
         '#0d6efd', // Blue
@@ -59,3 +52,6 @@ var chart = new ApexCharts(
 );
 
 chart.render();
+
+// Store globally so loadKpiData() can update it
+window.polarChart = chart;

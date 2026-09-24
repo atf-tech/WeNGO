@@ -51,7 +51,7 @@ const branchChartOptions = {
 
     chart: {
         type: "bar",
-        height: 420,
+        height: 625,
         toolbar: {
             show: false
         },

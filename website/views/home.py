@@ -265,7 +265,7 @@ def home_details(request, slug):
         }
     }
 
-    return render(request, "website/food.html", context)
+    return render(request, "website/home_details.html", context)
 
 
 def home(request):
@@ -276,4 +276,4 @@ def home(request):
         }
     }
 
-    return render(request, 'website/food.html', context)
+    return render(request, 'website/home_details.html', context)

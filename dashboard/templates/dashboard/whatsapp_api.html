@@ -1,0 +1,1113 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+{% block title %}Dashboard || WhatsApp Analytics{% endblock %}
+
+{% block content %}
+<style>
+:root {
+  --primary: #405189; --success: #0ab39c; --info: #299cdb;
+  --warning: #f7b84b; --danger: #f06548; --wa-green: #25d366;
+  --muted: #878a99; --border: #e9ebec;
+}
+/* HEADER */
+.wa-header {
+  background: linear-gradient(135deg,#405189,#28367a);
+  border-radius:14px; padding:22px 28px; margin-bottom:20px;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:14px; box-shadow:0 4px 20px rgba(64,81,137,.3);
+}
+.wa-header h4 { color:#fff; font-size:20px; font-weight:700; margin:0; display:flex; align-items:center; gap:8px; }
+.wa-header p  { color:rgba(255,255,255,.6); font-size:13px; margin:4px 0 0; }
+.wa-header .hr { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.hdr-sel {
+  border-radius:8px; font-size:13px; padding:8px 14px; border:none;
+  background:rgba(255,255,255,.15); color:#fff; cursor:pointer; outline:none;
+}
+.hdr-sel option { background:#405189; }
+.btn-ref {
+  padding:8px 18px; border-radius:8px; border:none;
+  background:var(--wa-green); color:#fff; font-size:13px; font-weight:600;
+  cursor:pointer; display:flex; align-items:center; gap:6px; transition:opacity .2s;
+}
+.btn-ref:hover { opacity:.85; }
+
+/* FILTER BAR */
+.filter-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+.filter-label { font-size:13px; font-weight:600; color:#495057; }
+.pill-group { display:flex; background:#fff; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.pf-btn {
+  padding:7px 15px; font-size:12.5px; font-weight:600; border:none;
+  background:none; cursor:pointer; color:var(--muted);
+  border-right:1px solid var(--border); transition:background .15s,color .15s;
+}
+.pf-btn:last-child { border-right:none; }
+.pf-btn.active { background:var(--primary); color:#fff; }
+.pf-btn:not(.active):hover { background:#eef1fb; color:var(--primary); }
+
+/* KPI GRID */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:18px; }
+@media(max-width:1200px){ .kpi-grid { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:600px) { .kpi-grid { grid-template-columns:1fr; } }
+.kpi-card {
+  background:#fff; border-radius:12px; border:1px solid var(--border);
+  padding:16px 18px; border-left:3px solid transparent;
+  transition:transform .2s,box-shadow .2s; position:relative; overflow:hidden;
+}
+.kpi-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.08); }
+.kpi-card.c-warn   { border-left-color:var(--warning); }
+.kpi-card.c-blue   { border-left-color:var(--primary); }
+.kpi-card.c-green  { border-left-color:var(--success); }
+.kpi-card.c-info   { border-left-color:var(--info); }
+.kpi-card.c-purple { border-left-color:#6c5bb9; }
+.kpi-card.c-wa     { border-left-color:var(--wa-green); }
+.kpi-card.c-dark   { border-left-color:#495057; }
+.kpi-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.kpi-value { font-size:28px; font-weight:800; color:#212529; line-height:1; margin-bottom:7px; }
+.kpi-footer { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.kpi-badge { display:inline-flex; align-items:center; gap:3px; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:20px; }
+.kpi-badge.pos { background:rgba(10,179,156,.12); color:var(--success); }
+.kpi-badge.neg { background:rgba(240,101,72,.12);  color:var(--danger); }
+.kpi-sub { font-size:11.5px; color:var(--muted); }
+.kpi-icon { position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:40px; opacity:.07; }
+
+/* MINI STATS */
+.mini-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+.mini-stat { background:#fff; border-radius:10px; padding:14px 16px; border:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+.ms-ico { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.ms-val { font-size:22px; font-weight:800; color:#212529; line-height:1; }
+.ms-lbl { font-size:11.5px; color:var(--muted); font-weight:600; margin-top:2px; }
+
+/* CHART CARD */
+.chart-card { background:#fff; border-radius:12px; border:1px solid var(--border); overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.cc-head { padding:14px 18px 10px; border-bottom:1px solid #f3f6f9; display:flex; align-items:center; justify-content:space-between; }
+.cc-head h6 { font-size:14px; font-weight:700; color:#212529; margin:0; }
+.cc-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; background:rgba(64,81,137,.1); color:var(--primary); }
+.cc-body { padding:14px; }
+.cc-foot { padding:9px 18px; border-top:1px solid #f3f6f9; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.leg { display:flex; align-items:center; gap:5px; }
+.leg-dot { width:10px; height:10px; border-radius:3px; }
+
+/* FUNNEL */
+.funnel-stage { margin-bottom:14px; }
+.funnel-head  { display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; margin-bottom:5px; }
+.funnel-bar   { height:9px; border-radius:5px; background:#f3f6f9; overflow:hidden; }
+.funnel-fill  { height:100%; border-radius:5px; width:0%; transition:width .9s cubic-bezier(.16,1,.3,1); }
+.funnel-stage:nth-child(1) .funnel-fill { background:linear-gradient(90deg,var(--primary),var(--info)); }
+.funnel-stage:nth-child(2) .funnel-fill { background:linear-gradient(90deg,var(--warning),#e6a534); }
+.funnel-stage:nth-child(3) .funnel-fill { background:linear-gradient(90deg,var(--success),#08907e); }
+
+/* LEADERBOARD */
+.lb-wrap { background:#fff; border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+.lb-head { padding:14px 18px 10px; border-bottom:1px solid #f3f6f9; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.lb-head h5 { font-size:15px; font-weight:700; color:#212529; margin:0; }
+
+.lb-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.lb-table thead tr { background:#f8f9ff; }
+.lb-table thead th { padding:9px 12px; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; border-bottom:1px solid var(--border); white-space:nowrap; text-align:left; }
+.lb-table tbody tr { border-bottom:1px solid #f5f6f8; transition:background .12s; }
+.lb-table tbody tr:last-child { border-bottom:none; }
+.lb-table tbody tr:hover { background:#fafbff; }
+.lb-table tbody td { padding:9px 12px; vertical-align:middle; }
+
+.rk { width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
+.rk-1{background:#fef3c7;color:#b45309;} .rk-2{background:#f1f5f9;color:#475569;} .rk-3{background:#fff0e8;color:#c2562a;} .rk-n{background:#f3f6f9;color:var(--muted);}
+.rm-nm { font-weight:700; color:#212529; }
+.rm-cd { font-size:11px; color:var(--muted); }
+.rm-tl { font-size:11px; color:var(--info); font-weight:600; }
+.br-pill { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; display:inline-block; }
+.br-chennai   { background:rgba(64,81,137,.1);  color:var(--primary); }
+.br-madurai   { background:rgba(10,179,156,.1); color:var(--success); }
+.br-bangalore { background:rgba(41,156,219,.1); color:var(--info); }
+.wa-dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+.wa-on  { background:var(--wa-green); box-shadow:0 0 4px var(--wa-green); }
+.wa-off { background:#d1d5db; }
+.mini-prog { width:60px; height:5px; background:#f3f6f9; border-radius:3px; overflow:hidden; display:inline-block; vertical-align:middle; margin-right:4px; }
+.mini-prog-fill { height:100%; border-radius:3px; }
+.resp-fast{color:var(--success);font-weight:800;} .resp-mid{color:var(--warning);font-weight:800;} .resp-slow{color:var(--danger);font-weight:800;}
+
+.tbl-loading { text-align:center; padding:36px; color:var(--muted); }
+.tbl-loading i { font-size:28px; animation:spin 1s linear infinite; display:block; margin-bottom:8px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+@media(max-width:768px){ .mini-stats{grid-template-columns:1fr;} }
+
+/* ══════ DONOR CHAT LOOKUP ══════ */
+.ds-wrap { background:#fff; border-radius:12px; border:1px solid var(--border); margin-bottom:18px; overflow:hidden; }
+.ds-head { padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; border-bottom:1px solid #f3f6f9; }
+.ds-head h6 { margin:0; font-size:14px; font-weight:700; color:#212529; display:flex; align-items:center; gap:7px; }
+.ds-head small { font-size:11.5px; color:var(--muted); display:block; margin-top:2px; font-weight:500; }
+.ds-form { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.ds-input {
+  border:1px solid var(--border); border-radius:8px; padding:8px 13px; font-size:13px;
+  outline:none; color:#495057; min-width:250px; transition:border-color .15s,box-shadow .15s;
+}
+.ds-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(64,81,137,.09); }
+.ds-btn { padding:8px 18px; border-radius:8px; border:none; background:var(--primary); color:#fff; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+.ds-btn:hover { opacity:.9; }
+.ds-btn.ghost { background:#fff; color:var(--muted); border:1px solid var(--border); font-weight:600; }
+.ds-body { padding:0; }
+.ds-msgbox { padding:26px 18px; text-align:center; color:var(--muted); font-size:13px; }
+.ds-msgbox i { font-size:30px; display:block; margin-bottom:8px; opacity:.5; }
+.ds-msgbox.err { color:var(--danger); }
+
+/* donor identity strip */
+.ds-donor { padding:16px 18px; background:linear-gradient(135deg,#f8f9ff,#fff); border-bottom:1px solid #f3f6f9; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.ds-av { width:46px; height:46px; border-radius:50%; background:var(--wa-green); color:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.ds-dn { font-size:16px; font-weight:800; color:#212529; line-height:1.2; }
+.ds-dp { font-size:13px; color:var(--muted); font-weight:600; margin-top:2px; letter-spacing:.3px; }
+.ds-tags { display:flex; gap:6px; flex-wrap:wrap; margin-left:auto; align-items:center; }
+.ds-tag { font-size:11px; font-weight:700; padding:4px 11px; border-radius:20px; background:#f3f6f9; color:var(--muted); }
+.ds-tag.g { background:rgba(10,179,156,.12); color:var(--success); }
+.ds-tag.b { background:rgba(64,81,137,.1);   color:var(--primary); }
+.ds-tag.r { background:rgba(240,101,72,.12); color:var(--danger); }
+.ds-tag.w { background:rgba(247,184,75,.14); color:#a4761c; }
+.ds-tag a { color:inherit; text-decoration:none; }
+
+/* summary chips */
+.ds-chips { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border-bottom:1px solid var(--border); }
+@media(max-width:900px){ .ds-chips { grid-template-columns:repeat(2,1fr); } }
+.ds-chip { background:#fff; padding:12px 16px; }
+.ds-chip-l { font-size:10.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+.ds-chip-v { font-size:17px; font-weight:800; color:#212529; margin-top:3px; }
+.ds-chip-v.sm { font-size:13px; font-weight:700; }
+
+/* section titles */
+.ds-sec { padding:14px 18px 4px; font-size:12.5px; font-weight:800; color:#212529; display:flex; align-items:center; gap:7px; }
+.ds-sec span.n { font-size:11px; font-weight:700; color:var(--muted); }
+
+/* RM cards */
+.ds-rms { display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:10px; padding:6px 18px 14px; }
+.ds-rm { border:1px solid var(--border); border-radius:10px; padding:12px 14px; border-left:3px solid var(--primary); transition:box-shadow .18s,transform .18s; }
+.ds-rm:hover { box-shadow:0 4px 14px rgba(0,0,0,.07); transform:translateY(-1px); }
+.ds-rm-t { display:flex; align-items:center; gap:8px; }
+.ds-rm-n { font-size:13.5px; font-weight:800; color:#212529; }
+.ds-rm-n a { color:inherit; text-decoration:none; }
+.ds-rm-n a:hover { color:var(--primary); text-decoration:underline; }
+.ds-rm-c { font-size:11px; color:var(--muted); font-weight:600; }
+.ds-rm-g { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; }
+.ds-rm-b { background:#f8f9ff; border-radius:6px; padding:6px 8px; text-align:center; }
+.ds-rm-bv { font-size:14px; font-weight:800; color:#212529; line-height:1; }
+.ds-rm-bl { font-size:9.5px; color:var(--muted); font-weight:700; text-transform:uppercase; margin-top:3px; }
+.ds-rm-f { font-size:11px; color:var(--muted); margin-top:9px; line-height:1.6; }
+.ds-rm-f b { color:#495057; font-weight:700; }
+
+/* conversation accordion */
+.ds-convs { padding:6px 18px 16px; }
+.ds-conv { border:1px solid var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden; }
+.ds-conv-h { padding:11px 14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; cursor:pointer; background:#fff; transition:background .15s; }
+.ds-conv-h:hover { background:#fafbff; }
+.ds-conv.open .ds-conv-h { background:#f8f9ff; border-bottom:1px solid var(--border); }
+.ds-conv-h .chev { color:var(--muted); font-size:17px; transition:transform .2s; display:flex; }
+.ds-conv.open .ds-conv-h .chev { transform:rotate(90deg); color:var(--primary); }
+.ds-conv-meta { display:flex; gap:14px; margin-left:auto; flex-wrap:wrap; align-items:center; font-size:11.5px; color:var(--muted); }
+.ds-conv-meta b { color:#212529; font-weight:800; }
+.ds-conv-body { display:none; padding:0; }
+.ds-conv.open .ds-conv-body { display:block; }
+.sp2 { font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; text-transform:capitalize; }
+.sp2-open   { background:rgba(10,179,156,.12); color:var(--success); }
+.sp2-closed { background:rgba(240,101,72,.12); color:var(--danger); }
+
+/* transcript table */
+.ds-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+.ds-tbl thead th { background:#f8f9ff; padding:8px 12px; font-size:10.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+.ds-tbl tbody td { padding:9px 12px; border-bottom:1px solid #f5f6f8; vertical-align:top; }
+.ds-tbl tbody tr:last-child td { border-bottom:none; }
+.ds-tbl tbody tr.in-row  { background:#fff; }
+.ds-tbl tbody tr.out-row { background:#fbfdfb; }
+.ds-time { font-size:11.5px; color:#495057; white-space:nowrap; font-weight:600; }
+.ds-time small { display:block; color:var(--muted); font-weight:500; font-size:10.5px; }
+.ds-dir { font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+.ds-dir-in  { background:rgba(41,156,219,.12); color:var(--info); }
+.ds-dir-out { background:rgba(37,211,102,.14); color:#128c3e; }
+.ds-body-txt { color:#212529; line-height:1.55; white-space:pre-wrap; word-break:break-word; max-width:520px; }
+.ds-body-txt.med { color:var(--muted); font-style:italic; }
+.ds-body-txt a { color:var(--primary); }
+.ds-rt { font-size:11.5px; font-weight:800; white-space:nowrap; }
+.ds-rt.f { color:var(--success); } .ds-rt.m { color:var(--warning); } .ds-rt.s { color:var(--danger); } .ds-rt.n { color:var(--muted); font-weight:600; }
+.ds-st { font-size:10.5px; font-weight:700; color:var(--muted); text-transform:capitalize; }
+.ds-st.read { color:var(--info); } .ds-st.failed { color:var(--danger); } .ds-st.delivered { color:var(--success); }
+
+/* generic sub tables (broadcasts / blocks) */
+.ds-mini { width:100%; border-collapse:collapse; font-size:12px; }
+.ds-mini thead th { background:#f8f9ff; padding:8px 12px; font-size:10.5px; font-weight:700; color:var(--muted); text-transform:uppercase; text-align:left; border-bottom:1px solid var(--border); }
+.ds-mini tbody td { padding:8px 12px; border-bottom:1px solid #f5f6f8; color:#495057; }
+.ds-scroll { overflow-x:auto; padding:0 18px 16px; }
+
+/* multi-match picker */
+.ds-pick { padding:6px 18px 16px; display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; }
+.ds-pick-c { border:1px solid var(--border); border-radius:9px; padding:11px 13px; cursor:pointer; transition:border-color .15s,background .15s; }
+.ds-pick-c:hover { border-color:var(--primary); background:#f8f9ff; }
+</style>
+
+<!-- HEADER -->
+<div class="wa-header">
+  <div>
+    <h4><i class="bx bxl-whatsapp" style="color:#25d366;font-size:24px;"></i>RM WhatsApp Analytics</h4>
+    <p>Leads, messages & RM performance — WeNGO</p>
+  </div>
+  <div class="hr">
+    <select class="hdr-sel" id="branchFilter">
+      <option value="">All Branches</option>
+      {% for code, label in branches %}
+        <option value="{{ code }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn-ref" onclick="loadAll()">
+      <i class="bx bx-refresh" id="refreshIcon"></i> Refresh
+    </button>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Period:</span>
+  <div class="pill-group" id="periodGroup">
+    <button class="pf-btn active" data-p="today">Today</button>
+    <button class="pf-btn" data-p="yesterday">Yesterday</button>
+    <button class="pf-btn" data-p="week">This Week</button>
+    <button class="pf-btn" data-p="month">This Month</button>
+    <button class="pf-btn" data-p="custom">Custom</button>
+  </div>
+  <div id="customDateWrap" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
+    <input type="date" id="customFrom" style="border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:12.5px;outline:none;color:#495057;">
+    <span style="font-size:12px;color:var(--muted);">to</span>
+    <input type="date" id="customTo" style="border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:12.5px;outline:none;color:#495057;">
+    <button onclick="applyCustomPeriod()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--primary);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;">Apply</button>
+  </div>
+
+  <span class="filter-label" style="margin-left:10px;">Chart:</span>
+  <div class="pill-group" id="chartGroup">
+    <button class="pf-btn active" data-c="daily">Daily</button>
+    <button class="pf-btn" data-c="weekly">Weekly</button>
+    <button class="pf-btn" data-c="monthly">Monthly</button>
+  </div>
+
+  <span id="lastUpdated" style="font-size:12px;color:var(--muted);margin-left:auto;"></span>
+</div>
+
+<!-- ══════ DONOR CHAT LOOKUP ══════ -->
+<div class="ds-wrap">
+  <div class="ds-head">
+    <div>
+      <h6><i class="bx bx-search-alt" style="color:var(--primary);font-size:17px;"></i> Donor Chat Lookup</h6>
+      <small>Enter a donor's mobile number to see which RM chatted with them, and the full conversation with timings.</small>
+    </div>
+    <div class="ds-form">
+      <input type="text" class="ds-input" id="dsQuery" autocomplete="off" placeholder="Donor mobile no. e.g. 9876543210">
+      <button class="ds-btn" onclick="donorSearch()"><i class="bx bx-search"></i> Search</button>
+      <button class="ds-btn ghost" onclick="dsClear()">Clear</button>
+      <button class="ds-btn ghost" id="dsExportBtn" onclick="dsExport()" style="display:none;">
+        <i class="bx bx-export"></i> CSV
+      </button>
+    </div>
+  </div>
+  <div class="ds-body" id="dsResult">
+    <div class="ds-msgbox">
+      <i class="bx bxl-whatsapp"></i>
+      Search a donor number to pull up their complete WhatsApp history.
+    </div>
+  </div>
+</div>
+
+<!-- KPI GRID — id="kpiCards" -->
+<div class="kpi-grid" id="kpiCards">
+  {% for i in "12345678" %}
+  <div class="kpi-card c-blue" style="opacity:.25;min-height:95px;"></div>
+  {% endfor %}
+</div>
+
+<!-- MINI STATS -->
+<div class="mini-stats">
+  <div class="mini-stat">
+    <div class="ms-ico" style="background:rgba(37,211,102,.12);color:var(--wa-green);"><i class="bx bxl-whatsapp"></i></div>
+    <div><div class="ms-val" id="msOpenConvs">—</div><div class="ms-lbl">Open Conversations</div></div>
+  </div>
+  <div class="mini-stat">
+    <div class="ms-ico" style="background:rgba(240,101,72,.12);color:var(--danger);"><i class="bx bx-x-circle"></i></div>
+    <div><div class="ms-val" id="msClosedConvs">—</div><div class="ms-lbl">Closed Conversations</div></div>
+  </div>
+  <div class="mini-stat">
+    <div class="ms-ico" style="background:rgba(247,184,75,.12);color:var(--warning);"><i class="bx bx-group"></i></div>
+    <div><div class="ms-val" id="msActiveRms">—</div><div class="ms-lbl">Active RMs Today</div></div>
+  </div>
+</div>
+
+<!-- CHARTS ROW 1 -->
+<div class="row g-3 mb-3">
+  <div class="col-xl-8">
+    <div class="chart-card">
+      <div class="cc-head">
+        <h6 id="mainChartTitle">📈 Daily Leads & Messages</h6>
+        <span class="cc-badge" id="mainChartBadge">Last 14 Days</span>
+      </div>
+      <div class="cc-body"><div id="mainChart" style="min-height:300px;"></div></div>
+      <div class="cc-foot" id="mainChartLegend"></div>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="chart-card h-100 d-flex flex-column">
+      <div class="cc-head">
+        <h6>🔄 Conversion Funnel</h6>
+        <span class="cc-badge" id="funnelBadge">This Period</span>
+      </div>
+      <div class="cc-body flex-grow-1">
+        <div id="funnelWrap">
+          <div class="tbl-loading"><i class="bx bx-loader-alt"></i>Loading…</div>
+        </div>
+        <div style="border-top:1px solid #f3f6f9;padding-top:14px;margin-top:10px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:12.5px;font-weight:700;color:#212529;">Reply Rate</span>
+            <span style="font-size:13px;font-weight:800;color:var(--success);" id="replyRateVal">—</span>
+          </div>
+          <div style="height:9px;background:#f3f6f9;border-radius:5px;overflow:hidden;">
+            <div id="replyRateBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--success),#08907e);border-radius:5px;transition:width .9s;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Conversations with at least one RM reply</div>
+        </div>
+        <div style="border-top:1px solid #f3f6f9;padding-top:12px;margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+            <span style="font-size:12.5px;font-weight:700;color:#212529;">Avg Response Time</span>
+            <span style="font-size:13px;font-weight:800;" id="avgRespVal">—</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);">Avg time for RM to reply to first message</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHARTS ROW 2 -->
+<div class="row g-3 mb-3">
+  <div class="col-xl-7">
+    <div class="chart-card">
+      <div class="cc-head">
+        <h6>🏢 Branch-wise Performance</h6>
+        <span class="cc-badge" id="branchBadge">This Period</span>
+      </div>
+      <div class="cc-body"><div id="branchChart" style="min-height:280px;"></div></div>
+      <div class="cc-foot">
+        <span class="leg"><span class="leg-dot" style="background:var(--warning);"></span>Leads</span>
+        <span class="leg"><span class="leg-dot" style="background:var(--primary);"></span>Received</span>
+        <span class="leg"><span class="leg-dot" style="background:var(--success);"></span>Sent</span>
+        <span class="leg"><span class="leg-dot" style="background:var(--info);"></span>Conv %</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-5">
+    <div class="chart-card">
+      <div class="cc-head">
+        <h6>⏱ Response Time per RM</h6>
+        <span class="cc-badge">
+          <span style="color:var(--success);">●</span>&lt;5m &nbsp;
+          <span style="color:var(--warning);">●</span>&lt;15m &nbsp;
+          <span style="color:var(--danger);">●</span>15m+
+        </span>
+      </div>
+      <div class="cc-body"><div id="respChart" style="min-height:280px;"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="lb-wrap mb-4">
+  <div class="lb-head">
+    <div>
+      <h5>🏆 RM Performance Leaderboard</h5>
+      <small style="font-size:12px;color:var(--muted);">Ranked by leads generated · <span id="lbPeriodLabel">Today</span></small>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <select id="tableRmName" style="border:1px solid var(--border);border-radius:8px;font-size:12.5px;padding:6px 12px;outline:none;color:#495057;max-width:180px;">
+        <option value="">-- All RM Names --</option>
+        {% for rm in rm_objects %}
+          <option value="{{ rm.rm_code }}">{{ rm.rm_name }} - {{ rm.rm_code }}</option>
+        {% endfor %}
+      </select>
+      <div class="pill-group" id="rmStatusGroup">
+        <button class="pf-btn active" data-s="active">Active</button>
+        <button class="pf-btn" data-s="inactive">Inactive</button>
+        <button class="pf-btn" data-s="all">All</button>
+      </div>
+      <select id="tableRmBranch" style="border:1px solid var(--border);border-radius:8px;font-size:12.5px;padding:6px 12px;outline:none;color:#495057;">
+        <option value="">All Branches</option>
+        {% for code, label in branches %}
+          <option value="{{ code }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button onclick="exportTable()" style="border:1px solid var(--border);border-radius:8px;background:#fff;font-size:12px;padding:6px 14px;cursor:pointer;font-weight:600;color:var(--primary);display:flex;align-items:center;gap:5px;">
+        <i class="bx bx-export"></i> CSV
+      </button>
+    </div>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="lb-table" id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>#</th><th>RM Details</th><th>Branch</th><th>Team Lead</th><th>WA</th>
+          <th>Leads</th><th>Recv'd</th><th>Sent</th><th>Reply %</th><th>Conv %</th>
+          <th>Avg Resp</th><th>Open</th><th>Closed</th><th>Last Active</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody">
+        <tr><td colspan="14" class="tbl-loading"><i class="bx bx-loader-alt"></i>Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ── STATE ── */
+let gBranch = "{{ default_branch }}";
+let gPeriod = "today";
+let gTrend  = "daily";
+let gRmStatus = "active";
+let gRmCode   = "";
+let gCustomFrom = "";
+let gCustomTo   = "";
+let chartMain = null, chartBranch = null, chartResp = null;
+
+/* ── API URLs ── */
+const URLS = {
+  kpi:    "{% url 'wa_api_kpi' %}",
+  branch: "{% url 'wa_api_branch_chart' %}",
+  trend:  "{% url 'wa_api_trend_chart' %}",
+  table:  "{% url 'wa_api_rm_table' %}",
+  resp:   "{% url 'wa_api_response_time' %}",
+  funnel: "{% url 'wa_api_funnel' %}",
+};
+
+function apiGet(key, extra={}) {
+  const p = new URLSearchParams({ branch: gBranch, period: gPeriod, ...extra });
+  if (gCustomFrom) p.set('from', gCustomFrom);
+  if (gCustomTo)   p.set('to',   gCustomTo);
+  return fetch(`${URLS[key]}?${p}`)
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status} [${key}]`); return r.json(); })
+    .catch(err => { console.error(err); return null; });
+}
+
+/* ── PERIOD FILTERS ── */
+document.querySelectorAll('#periodGroup .pf-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#periodGroup .pf-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    gPeriod = this.dataset.p;
+    const wrap = document.getElementById('customDateWrap');
+    wrap.style.display = gPeriod === 'custom' ? 'flex' : 'none';
+    if (gPeriod !== 'custom') {
+      gCustomFrom = ''; gCustomTo = '';
+      const lbl = this.textContent.trim();
+      document.getElementById('lbPeriodLabel').textContent = lbl;
+      document.getElementById('funnelBadge').textContent   = lbl;
+      document.getElementById('branchBadge').textContent   = lbl;
+      loadKPI(); loadTable(); loadBranchChart(); loadFunnel(); loadRespChart();
+    }
+  });
+});
+
+function applyCustomPeriod() {
+  const from = document.getElementById('customFrom').value;
+  const to   = document.getElementById('customTo').value;
+  if (!from || !to)  { alert('Please select both From and To dates.'); return; }
+  if (from > to)     { alert('From date must be before To date.'); return; }
+  gCustomFrom = from;
+  gCustomTo   = to;
+  const lbl = `${from} → ${to}`;
+  document.getElementById('lbPeriodLabel').textContent = lbl;
+  document.getElementById('funnelBadge').textContent   = lbl;
+  document.getElementById('branchBadge').textContent   = lbl;
+  loadKPI(); loadTable(); loadBranchChart(); loadFunnel(); loadRespChart();
+}
+
+/* ── CHART TYPE ── */
+document.querySelectorAll('#chartGroup .pf-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#chartGroup .pf-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    gTrend = this.dataset.c;
+    const meta = {
+      daily:   { title:'📈 Daily Leads & Messages',   badge:'Last 14 Days' },
+      weekly:  { title:'📈 Weekly Leads & Messages',  badge:'Last 8 Weeks'  },
+      monthly: { title:'📈 Monthly Leads & Messages', badge:'Last 6 Months' },
+    };
+    if (meta[gTrend]) {
+      document.getElementById('mainChartTitle').textContent = meta[gTrend].title;
+      document.getElementById('mainChartBadge').textContent = meta[gTrend].badge;
+    }
+    loadMainChart();
+  });
+});
+
+/* ── BRANCH FILTERS ── */
+document.getElementById('branchFilter').addEventListener('change', function() {
+  gBranch = this.value;
+  document.getElementById('tableRmBranch').value = this.value;
+  loadAll();
+});
+document.getElementById('tableRmBranch').addEventListener('change', function() {
+  gBranch = this.value;
+  document.getElementById('branchFilter').value = this.value;
+  loadTable(); loadRespChart();
+});
+
+/* ── LEADERBOARD FILTERS ── */
+document.getElementById('tableRmName').addEventListener('change', function() {
+  gRmCode = this.value;
+  loadTable();
+});
+
+document.querySelectorAll('#rmStatusGroup .pf-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#rmStatusGroup .pf-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    gRmStatus = this.dataset.s;
+    loadTable();
+  });
+});
+
+/* ── HELPERS ── */
+const PL = { today:'Today', yesterday:'Yesterday', week:'This Week', month:'This Month' };
+
+function pctHtml(obj) {
+  if (!obj || obj.status === 'neutral') return '';
+  const cls  = obj.status === 'positive' ? 'pos' : 'neg';
+  const icon = obj.status === 'positive' ? 'bx-trending-up' : 'bx-trending-down';
+  return `<span class="kpi-badge ${cls}"><i class="bx ${icon}"></i>${obj.value}%</span>`;
+}
+
+function fmtMins(v) {
+  if (v === null || v === undefined || v === '') return '—';
+  const n = Number(v);
+  if (isNaN(n)) return '—';
+  return n + ' min';
+}
+
+/* ── KPI CARDS ── */
+async function loadKPI() {
+  const d = await apiGet('kpi');
+  if (!d) return;
+  const pl = PL[gPeriod] || gPeriod;
+  const ar = d.avg_response_min;
+
+  document.getElementById('replyRateVal').textContent = d.reply_rate + '%';
+  document.getElementById('replyRateBar').style.width = Math.min(d.reply_rate, 100) + '%';
+  const arEl = document.getElementById('avgRespVal');
+  arEl.textContent = fmtMins(ar);
+  arEl.style.color = ar == null ? 'var(--muted)' : ar < 5 ? 'var(--success)' : ar < 15 ? 'var(--warning)' : 'var(--danger)';
+
+  document.getElementById('msOpenConvs').textContent   = d.conversations.open;
+  document.getElementById('msClosedConvs').textContent = d.conversations.closed;
+  document.getElementById('msActiveRms').textContent   = d.active_rms_today;
+
+  const cards = [
+    { c:'c-warn',   icon:'bx-user-plus',           label:`New Leads (${pl})`,
+      val: d.leads.period,
+      chg: gPeriod==='today' ? d.leads.today_change : gPeriod==='week' ? d.leads.week_change : gPeriod==='month' ? d.leads.month_change : null,
+      sub: gPeriod==='today' ? `Yesterday: ${d.leads.yesterday}` : gPeriod==='yesterday' ? `Today: ${d.leads.today}` : `Last month: ${d.leads.last_month}` },
+    { c:'c-blue',   icon:'bx-calendar-week',        label:'Leads This Week',
+      val: d.leads.week,  chg: d.leads.week_change,  sub:'vs last week' },
+    { c:'c-green',  icon:'bx-calendar-check',       label:'Leads This Month',
+      val: d.leads.month, chg: d.leads.month_change, sub:`Last month: ${d.leads.last_month}` },
+    { c:'c-info',   icon:'bx-message-arrow-left',   label:`Msgs Received (${pl})`,
+      val: d.messages.received_period, chg:null, sub:`Sent: ${d.messages.sent_period}` },
+    { c:'c-green',  icon:'bx-message-arrow-right',  label:`Msgs Sent (${pl})`,
+      val: d.messages.sent_period, chg:null, sub:`Recv'd: ${d.messages.received_period}` },
+    { c:'c-purple', icon:'bx-reply',                label:'Reply Rate',
+      val: d.reply_rate+'%', chg:null, sub:`${d.conversations.replied} of ${d.conversations.total} convs` },
+    { c:'c-wa',     icon:'bx-trending-up',          label:`Conversion (${pl})`,
+      val: d.conversion_rate+'%', chg:null, sub:`${d.donors_period} new donors` },
+    { c:'c-dark',   icon:'bx-time-five',            label:'Avg Response Time',
+      val: fmtMins(ar), chg:null,
+      sub: ar==null ? 'No data yet' : ar<5 ? '🟢 Excellent' : ar<15 ? '🟡 Acceptable' : '🔴 Needs improvement' },
+  ];
+
+  document.getElementById('kpiCards').innerHTML = cards.map(c => `
+    <div class="kpi-card ${c.c}">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.val}</div>
+      <div class="kpi-footer">
+        ${pctHtml(c.chg)}
+        <span class="kpi-sub">${c.sub}</span>
+      </div>
+      <i class="bx ${c.icon} kpi-icon"></i>
+    </div>`).join('');
+}
+
+/* ── MAIN CHART ── */
+async function loadMainChart() {
+  const d = await apiGet('trend', { type: gTrend });
+  if (!d) return;
+  if (chartMain) { chartMain.destroy(); chartMain = null; }
+  document.getElementById('mainChart').innerHTML = '';
+
+  chartMain = new ApexCharts(document.querySelector('#mainChart'), {
+    series: [
+      { name:'New Leads',     type:'area', data: d.leads    },
+      { name:'Msgs Received', type:'bar',  data: d.received },
+      { name:'Msgs Sent',     type:'bar',  data: d.sent     },
+    ],
+    chart: { type:'line', height:300, toolbar:{show:false}, animations:{enabled:true,speed:400} },
+    colors: ['#f7b84b','#405189','#0ab39c'],
+    stroke: { width:[3,0,0], curve:'smooth' },
+    fill: {
+      type:['gradient','solid','solid'], opacity:[.25,.85,.85],
+      gradient:{ shade:'light', type:'vertical', shadeIntensity:.4, gradientToColors:['rgba(247,184,75,0)'], stops:[0,100] }
+    },
+    plotOptions: { bar:{ columnWidth:'45%', borderRadius:3 } },
+    dataLabels: { enabled:false },
+    grid: { borderColor:'#f3f6f9', row:{ colors:['#fafbff','transparent'] } },
+    xaxis: { categories:d.labels, labels:{style:{fontSize:'11.5px',colors:'#878a99'}}, axisBorder:{show:false}, axisTicks:{show:false} },
+    yaxis: { labels:{ style:{colors:'#878a99',fontSize:'11.5px'}, formatter: v => Math.round(v) } },
+    legend: { show:false }, tooltip: { shared:true, intersect:false },
+  });
+  chartMain.render();
+
+  document.getElementById('mainChartLegend').innerHTML = [
+    { c:'#f7b84b',l:'New Leads' },{ c:'#405189',l:'Messages Received' },{ c:'#0ab39c',l:'Messages Sent' }
+  ].map(x => `<span class="leg"><span class="leg-dot" style="background:${x.c}"></span>${x.l}</span>`).join('');
+}
+
+/* ── BRANCH CHART ── */
+async function loadBranchChart() {
+  const d = await apiGet('branch');
+  if (!d) return;
+  if (chartBranch) { chartBranch.destroy(); chartBranch = null; }
+  document.getElementById('branchChart').innerHTML = '';
+
+  chartBranch = new ApexCharts(document.querySelector('#branchChart'), {
+    series: [
+      { name:'Leads',      data:d.leads           },
+      { name:'Received',   data:d.received        },
+      { name:'Sent',       data:d.sent            },
+      { name:'Conv Rate%', data:d.conversion_rate },
+    ],
+    chart: { type:'bar', height:280, toolbar:{show:false}, animations:{enabled:true,speed:400} },
+    colors: ['#f7b84b','#405189','#0ab39c','#299cdb'],
+    plotOptions: { bar:{ horizontal:false, columnWidth:'60%', borderRadius:4 } },
+    dataLabels: { enabled:false },
+    grid: { borderColor:'#f3f6f9' },
+    xaxis: { categories:d.labels, labels:{style:{fontSize:'12px',colors:'#878a99'}}, axisBorder:{show:false}, axisTicks:{show:false} },
+    yaxis: { labels:{ style:{colors:'#878a99',fontSize:'11px'}, formatter: v => Math.round(v) } },
+    legend: { show:false }, tooltip: { shared:true, intersect:false },
+  });
+  chartBranch.render();
+}
+
+/* ── RESPONSE CHART ── */
+async function loadRespChart() {
+  const d = await apiGet('resp');
+  if (chartResp) { chartResp.destroy(); chartResp = null; }
+  document.getElementById('respChart').innerHTML = '';
+
+  if (!d || !d.labels || !d.labels.length) {
+    document.getElementById('respChart').innerHTML =
+      '<div class="tbl-loading" style="padding:50px 20px;"><i class="bx bx-time-five" style="font-size:30px;display:block;margin-bottom:8px;animation:none;color:#d1d5db;"></i>No response data yet</div>';
+    return;
+  }
+  chartResp = new ApexCharts(document.querySelector('#respChart'), {
+    series: [{ name:'Avg Response (min)', data:d.values }],
+    chart: { type:'bar', height:Math.max(200,d.labels.length*38), toolbar:{show:false} },
+    plotOptions: { bar:{ horizontal:true, barHeight:'55%', borderRadius:4, distributed:true } },
+    colors: d.colors,
+    dataLabels: { enabled:true, formatter: v => fmtMins(v), style:{fontSize:'11px'} },
+    grid: { borderColor:'#f3f6f9', xaxis:{lines:{show:true}} },
+    xaxis: { categories:d.labels, labels:{ style:{colors:'#878a99',fontSize:'11px'}, formatter: v => fmtMins(v) } },
+    yaxis: { labels:{ style:{colors:'#495057',fontSize:'11.5px',fontWeight:600}, maxWidth:150 } },
+    legend: { show:false }, tooltip: { y:{ formatter: v => fmtMins(v) } },
+  });
+  chartResp.render();
+}
+
+/* ── FUNNEL ── */
+async function loadFunnel() {
+  const d = await apiGet('funnel');
+  if (!d) return;
+  const colors = ['var(--primary)','var(--warning)','var(--success)'];
+  document.getElementById('funnelWrap').innerHTML = d.stages.map((s,i) => `
+    <div class="funnel-stage">
+      <div class="funnel-head">
+        <span>${s.label}</span>
+        <span style="color:${colors[i]}">${s.value} <span style="color:var(--muted);font-size:11px;">(${s.pct}%)</span></span>
+      </div>
+      <div class="funnel-bar"><div class="funnel-fill" data-w="${s.pct}"></div></div>
+    </div>`).join('');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelectorAll('.funnel-fill').forEach(el => { el.style.width = el.dataset.w + '%'; });
+  }));
+}
+
+/* ── LEADERBOARD ── */
+async function loadTable() {
+  document.getElementById('leaderboardBody').innerHTML =
+    `<tr><td colspan="14" class="tbl-loading"><i class="bx bx-loader-alt"></i>Loading…</td></tr>`;
+  const d = await apiGet('table', { rm_status: gRmStatus, rm_code: gRmCode });
+  if (!d || !d.rows) return;
+
+  if (!d.rows.length) {
+    document.getElementById('leaderboardBody').innerHTML =
+      `<tr><td colspan="14" class="tbl-loading">No data for this period</td></tr>`;
+    return;
+  }
+
+  const rkCls   = r  => r===1?'rk-1':r===2?'rk-2':r===3?'rk-3':'rk-n';
+  const brCls   = bc => 'br-'+(bc||'').toLowerCase();
+  const respCls = v  => v==null?'':v<5?'resp-fast':v<15?'resp-mid':'resp-slow';
+
+  document.getElementById('leaderboardBody').innerHTML = d.rows.map(r => `
+    <tr>
+      <td><span class="rk ${rkCls(r.rank)}">${r.rank}</span></td>
+      <td>
+        <a href="/dashboard/whatsapp_api/rm/${r.rm_code}/" style="text-decoration:none;">
+          <div class="rm-nm" style="color:var(--primary);display:flex;align-items:center;gap:4px;">
+            ${r.rm_name}
+            <i class="bx bx-link-external" style="font-size:10px;opacity:.5;"></i>
+          </div>
+        </a>
+        <div class="rm-cd">${r.rm_code}</div>
+        ${r.tl_name!=='—'?`<div class="rm-tl"><i class="bx bx-user" style="font-size:10px;"></i> ${r.tl_name}</div>`:''}
+      </td>
+      <td><span class="br-pill ${brCls(r.rm_branch_code)}">${r.rm_branch}</span></td>
+      <td style="font-size:12px;color:#495057;">${r.tl_name}</td>
+      <td>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;">
+          <span class="wa-dot ${r.active_wa?'wa-on':'wa-off'}"></span>
+          <span style="color:${r.active_wa?'var(--wa-green)':'#bbb'}">${r.active_wa?'Active':'Off'}</span>
+        </span>
+      </td>
+      <td><span style="font-weight:800;color:var(--warning);">${r.leads}</span></td>
+      <td><span style="font-weight:800;color:var(--primary);">${r.received}</span></td>
+      <td><span style="font-weight:800;color:var(--success);">${r.sent}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div class="mini-prog"><div class="mini-prog-fill" style="width:${r.reply_rate}%;background:var(--success);"></div></div>
+          <span style="font-size:12px;font-weight:800;color:var(--success);">${r.reply_rate}%</span>
+        </div>
+      </td>
+      <td>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div class="mini-prog"><div class="mini-prog-fill" style="width:${r.conv_rate}%;background:var(--info);"></div></div>
+          <span style="font-size:12px;font-weight:800;color:var(--info);">${r.conv_rate}%</span>
+        </div>
+      </td>
+      <td><span class="${respCls(r.avg_resp_min)}">${fmtMins(r.avg_resp_min)}</span></td>
+      <td><span style="background:rgba(10,179,156,.1);color:var(--success);font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;">${r.open}</span></td>
+      <td><span style="background:rgba(240,101,72,.1);color:var(--danger);font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;">${r.closed}</span></td>
+      <td style="font-size:11.5px;color:var(--muted);white-space:nowrap;">${r.last_active}</td>
+    </tr>`).join('');
+}
+
+/* ── EXPORT ── */
+function exportTable() {
+  const rows = [...document.querySelectorAll('#leaderboardTable tbody tr')]
+    .map(r => [...r.querySelectorAll('td')].map(td => '"'+td.innerText.trim().replace(/"/g,'""')+'"').join(','));
+  const head = [...document.querySelectorAll('#leaderboardTable thead th')].map(th => '"'+th.innerText.trim()+'"').join(',');
+  const a = Object.assign(document.createElement('a'),{
+    href: URL.createObjectURL(new Blob([[head,...rows].join('\n')],{type:'text/csv'})),
+    download: `rm_analytics_${gPeriod}_${new Date().toISOString().slice(0,10)}.csv`
+  });
+  a.click();
+}
+
+/* ══════════════ DONOR CHAT LOOKUP ══════════════ */
+const DS_URL = "{% url 'wa_api_donor_search' %}";
+let dsData = null;
+
+const dsEsc = v => String(v == null ? '' : v)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const dsRtCls = v => v == null ? 'n' : v < 5 ? 'f' : v < 15 ? 'm' : 's';
+
+function dsDur(m) {
+  if (m == null || m === '' || isNaN(m)) return '—';
+  if (m < 1440) return fmtMins(m);
+  const d = Math.floor(m / 1440), h = Math.round((m % 1440) / 60);
+  return h ? `${d}d ${h}h` : `${d}d`;
+}
+
+function dsBox(html, cls) {
+  document.getElementById('dsResult').innerHTML =
+    `<div class="ds-msgbox ${cls || ''}">${html}</div>`;
+}
+
+function dsClear() {
+  dsData = null;
+  document.getElementById('dsQuery').value = '';
+  document.getElementById('dsExportBtn').style.display = 'none';
+  dsBox('<i class="bx bxl-whatsapp"></i>Search a donor number to pull up their complete WhatsApp history.');
+}
+
+async function donorSearch(preset) {
+  const box = document.getElementById('dsQuery');
+  if (preset) box.value = preset;
+  const q = box.value.trim();
+
+  if (q.length < 3) {
+    dsBox('<i class="bx bx-error-circle"></i>Type at least 3 characters of the donor\'s mobile number.', 'err');
+    return;
+  }
+
+  document.getElementById('dsExportBtn').style.display = 'none';
+  dsBox('<i class="bx bx-loader-alt" style="animation:spin 1s linear infinite;"></i>Searching…');
+
+  let d = null;
+  try {
+    const r = await fetch(`${DS_URL}?q=${encodeURIComponent(q)}`);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    d = await r.json();
+  } catch (err) {
+    console.error(err);
+    dsBox('<i class="bx bx-error-circle"></i>Search failed. Please try again.', 'err');
+    return;
+  }
+
+  if (d.multiple) { dsRenderPicker(d); return; }
+  if (d.no_chat)  { dsRenderNoChat(d); return; }
+  if (!d.found)   { dsBox(`<i class="bx bx-user-x"></i>${dsEsc(d.error || 'No donor found.')}`, 'err'); return; }
+
+  dsData = d;
+  dsRender(d);
+  document.getElementById('dsExportBtn').style.display = 'inline-flex';
+}
+
+function dsRenderPicker(d) {
+  document.getElementById('dsResult').innerHTML = `
+    <div class="ds-sec">🔎 ${dsEsc(d.message)}</div>
+    <div class="ds-pick">
+      ${d.matches.map(m => `
+        <div class="ds-pick-c" onclick="donorSearch('${dsEsc(m.phone)}')">
+          <div style="font-size:13px;font-weight:800;color:#212529;">${dsEsc(m.name)}</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px;">${dsEsc(m.phone_fmt)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">
+            ${m.conv_count} conversation(s) · last ${dsEsc(m.last_msg_at)}
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function dsRenderNoChat(d) {
+  const rm = d.donor.assigned_rm;
+  document.getElementById('dsResult').innerHTML = `
+    <div class="ds-donor">
+      <div class="ds-av" style="background:var(--muted);"><i class="bx bx-user"></i></div>
+      <div>
+        <div class="ds-dn">${dsEsc(d.donor.name)}</div>
+        <div class="ds-dp">${dsEsc(d.donor.phone_fmt)}</div>
+      </div>
+      <div class="ds-tags">
+        ${d.donor.has_paid ? '<span class="ds-tag g">Paid donor</span>' : '<span class="ds-tag">Not paid</span>'}
+        <span class="ds-tag b">Source: ${dsEsc(d.donor.source)}</span>
+        ${rm ? `<span class="ds-tag w">Mapped RM: ${dsEsc(rm.rm_name)} (${dsEsc(rm.rm_code)})</span>` : ''}
+      </div>
+    </div>
+    <div class="ds-msgbox"><i class="bx bx-message-x"></i>${dsEsc(d.message)}</div>`;
+}
+
+function dsRender(d) {
+  const dn = d.donor, s = d.summary;
+
+  const tags = [
+    dn.is_blocked ? '<span class="ds-tag r"><i class="bx bx-block"></i> Blocked</span>' : '',
+    dn.has_paid ? '<span class="ds-tag g">Paid donor</span>' : '<span class="ds-tag">No payment yet</span>',
+    dn.assigned_rm
+      ? `<span class="ds-tag w">Mapped RM: ${dsEsc(dn.assigned_rm.rm_name)} (${dsEsc(dn.assigned_rm.rm_code)})</span>`
+      : '',
+    `<span class="ds-tag b"><a href="${dsEsc(dn.wa_link)}" target="_blank" rel="noopener"><i class="bx bxl-whatsapp"></i> Open chat</a></span>`,
+  ].join('');
+
+  const chips = [
+    ['RMs who chatted', s.rm_count],
+    ['Conversations',   s.conv_count],
+    ['Total messages',  s.total_msgs],
+    ['Avg RM reply',    fmtMins(s.avg_reply_min)],
+    ['Received (donor)', '↓ ' + s.in_count],
+    ['Sent (RM)',        '↑ ' + s.out_count],
+    ['First contact',   s.first_contact, true],
+    ['Last contact',    s.last_contact,  true],
+  ].map(([l, v, sm]) => `
+    <div class="ds-chip">
+      <div class="ds-chip-l">${l}</div>
+      <div class="ds-chip-v ${sm ? 'sm' : ''}">${dsEsc(v)}</div>
+    </div>`).join('');
+
+  const rmCards = d.rms.length ? d.rms.map(r => `
+    <div class="ds-rm">
+      <div class="ds-rm-t">
+        <span class="wa-dot ${r.wa_active ? 'wa-on' : 'wa-off'}"></span>
+        <div>
+          <div class="ds-rm-n"><a href="/dashboard/whatsapp_api/rm/${r.rm_code}/">${dsEsc(r.rm_name)}</a></div>
+          <div class="ds-rm-c">${dsEsc(r.rm_code)} · ${dsEsc(r.branch)} · TL: ${dsEsc(r.tl_name)}</div>
+        </div>
+      </div>
+      <div class="ds-rm-g">
+        <div class="ds-rm-b"><div class="ds-rm-bv">${r.total_msgs}</div><div class="ds-rm-bl">Msgs</div></div>
+        <div class="ds-rm-b"><div class="ds-rm-bv">${r.in_count}</div><div class="ds-rm-bl">Recv'd</div></div>
+        <div class="ds-rm-b"><div class="ds-rm-bv">${r.out_count}</div><div class="ds-rm-bl">Sent</div></div>
+      </div>
+      <div class="ds-rm-f">
+        <div>First chat: <b>${dsEsc(r.first_chat_at)}</b></div>
+        <div>Last chat: <b>${dsEsc(r.last_chat_at)}</b></div>
+        <div>Avg reply: <b>${fmtMins(r.avg_reply_min)}</b> · ${r.conv_count} conversation(s)</div>
+      </div>
+    </div>`).join('')
+    : '<div class="ds-msgbox" style="padding:14px;">No RM is attached to these conversations.</div>';
+
+  const convs = d.conversations.map((c, i) => {
+    const rows = c.messages.length ? c.messages.map(m => {
+      const body = m.body
+        ? `<div class="ds-body-txt">${dsEsc(m.body)}</div>`
+        : (m.media
+            ? `<div class="ds-body-txt med">📎 ${dsEsc(m.type)} ${m.media.url ? `· <a href="${dsEsc(m.media.url)}" target="_blank" rel="noopener">open file</a>` : ''} ${m.media.size_kb ? `(${m.media.size_kb} KB)` : ''}</div>`
+            : `<div class="ds-body-txt med">— no text —</div>`);
+      return `
+        <tr class="${m.direction === 'in' ? 'in-row' : 'out-row'}">
+          <td><span class="ds-time">${dsEsc(m.time)}<small>${dsEsc(m.date)}</small></span></td>
+          <td><span class="ds-dir ds-dir-${m.direction}">${m.direction === 'in' ? '↓ Donor' : '↑ ' + dsEsc(m.sender)}</span></td>
+          <td>${body}</td>
+          <td><span class="ds-st ${dsEsc(m.status)}">${dsEsc(m.status)}</span></td>
+          <td><span class="ds-rt ${dsRtCls(m.reply_time_min)}">${m.direction === 'in' ? fmtMins(m.reply_time_min) : '—'}</span></td>
+          <td><span class="ds-rt n">${dsDur(m.gap_min)}</span></td>
+        </tr>`;
+    }).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:18px;">No messages in this conversation.</td></tr>';
+
+    const rm = c.rm;
+    return `
+    <div class="ds-conv" id="dsConv${i}">
+      <div class="ds-conv-h" onclick="dsToggle(${i})">
+        <span class="chev"><i class="bx bx-chevron-right"></i></span>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#212529;">
+            ${rm ? dsEsc(rm.rm_name) + ' <span style="font-weight:600;color:var(--muted);font-size:11px;">(' + dsEsc(rm.rm_code) + ' · ' + dsEsc(rm.branch) + ')</span>' : 'Unassigned'}
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">
+            Started ${dsEsc(c.started_at)}
+          </div>
+        </div>
+        <div class="ds-conv-meta">
+          <span>Msgs <b>${c.total_msgs}</b></span>
+          <span>↓<b>${c.in_count}</b> ↑<b>${c.out_count}</b></span>
+          <span>1st reply <b>${fmtMins(c.reply_time_min)}</b></span>
+          <span>Duration <b>${dsDur(c.duration_min)}</b></span>
+          <span>Last <b>${dsEsc(c.last_msg_time || '—')}</b></span>
+          <span class="sp2 sp2-${dsEsc(c.status)}">${dsEsc(c.status)}</span>
+        </div>
+      </div>
+      <div class="ds-conv-body">
+        <div style="overflow-x:auto;">
+          <table class="ds-tbl">
+            <thead><tr>
+              <th>Time</th><th>Who</th><th>Message</th><th>Status</th><th>RM Reply In</th><th>Gap</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const bc = d.broadcasts.length ? `
+    <div class="ds-sec">📣 Broadcast Campaigns Sent <span class="n">(${d.broadcasts.length})</span></div>
+    <div class="ds-scroll">
+      <table class="ds-mini">
+        <thead><tr><th>Campaign</th><th>Template</th><th>Status</th><th>Sent</th><th>Replied</th><th>RM</th></tr></thead>
+        <tbody>${d.broadcasts.map(b => `
+          <tr>
+            <td>${dsEsc(b.campaign)}</td><td>${dsEsc(b.template)}</td>
+            <td>${dsEsc(b.status)}</td><td>${dsEsc(b.sent_at)}</td>
+            <td>${dsEsc(b.replied_at)}</td><td>${dsEsc(b.rm)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>` : '';
+
+  const bl = d.blocks.length ? `
+    <div class="ds-sec">🚫 Block History <span class="n">(${d.blocks.length})</span></div>
+    <div class="ds-scroll">
+      <table class="ds-mini">
+        <thead><tr><th>State</th><th>Reason</th><th>Blocked By</th><th>Blocked At</th><th>Unblocked At</th><th>By</th></tr></thead>
+        <tbody>${d.blocks.map(b => `
+          <tr>
+            <td>${b.is_active ? '<span class="ds-tag r">Active</span>' : '<span class="ds-tag">Lifted</span>'}</td>
+            <td>${dsEsc(b.reason)}</td><td>${dsEsc(b.blocked_by)}</td>
+            <td>${dsEsc(b.blocked_at)}</td><td>${dsEsc(b.unblocked_at || '—')}</td><td>${dsEsc(b.unblocked_by)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>` : '';
+
+  const warn = s.truncated
+    ? `<div class="ds-msgbox err" style="padding:10px 18px;">This donor has a very long history — only the most recent batch of messages is shown.</div>`
+    : '';
+
+  document.getElementById('dsResult').innerHTML = `
+    <div class="ds-donor">
+      <div class="ds-av"><i class="bx bxl-whatsapp"></i></div>
+      <div>
+        <div class="ds-dn">${dsEsc(dn.name)}</div>
+        <div class="ds-dp">${dsEsc(dn.phone_fmt)} · first seen ${dsEsc(dn.first_seen)}</div>
+      </div>
+      <div class="ds-tags">${tags}</div>
+    </div>
+    <div class="ds-chips">${chips}</div>
+    ${warn}
+    <div class="ds-sec">👥 Who Chatted With This Donor <span class="n">(${d.rms.length} RM)</span></div>
+    <div class="ds-rms">${rmCards}</div>
+    <div class="ds-sec">💬 Conversations &amp; Full Chat <span class="n">(${d.conversations.length} — click a row to open)</span></div>
+    <div class="ds-convs">${convs}</div>
+    ${bc}${bl}`;
+
+  if (d.conversations.length) dsToggle(0);
+}
+
+function dsToggle(i) {
+  const el = document.getElementById('dsConv' + i);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+
+/* ── EXPORT FULL TRANSCRIPT ── */
+function dsExport() {
+  if (!dsData) return;
+  const h = '"Donor","Phone","RM Name","RM Code","Branch","Conversation ID","Conv Status","Date & Time","Direction","Sender","Type","Message","Msg Status","RM Reply In (min)","Gap (min)"';
+  const rows = [];
+  dsData.conversations.forEach(c => {
+    const rm = c.rm || {};
+    c.messages.forEach(m => rows.push([
+      dsData.donor.name, dsData.donor.phone,
+      rm.rm_name || '', rm.rm_code || '', rm.branch || '',
+      c.id, c.status,
+      m.created_at, m.direction === 'in' ? 'Received' : 'Sent', m.sender,
+      m.type, m.body || (m.media ? '[media] ' + (m.media.url || '') : ''),
+      m.status, m.reply_time_min == null ? '' : m.reply_time_min,
+      m.gap_min == null ? '' : m.gap_min,
+    ].map(v => `"${String(v == null ? '' : v).replace(/"/g,'""')}"`).join(',')));
+  });
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([[h, ...rows].join('\n')], {type:'text/csv'})),
+    download: `donor_chat_${dsData.donor.phone}_${new Date().toISOString().slice(0,10)}.csv`
+  });
+  a.click();
+}
+
+document.getElementById('dsQuery').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); donorSearch(); }
+});
+
+/* ── LOAD ALL ── */
+function loadAll() {
+  const icon = document.getElementById('refreshIcon');
+  icon.style.animation = 'spin 1s linear infinite';
+  document.getElementById('lastUpdated').textContent = 'Refreshing…';
+  Promise.all([loadKPI(), loadMainChart(), loadBranchChart(), loadRespChart(), loadFunnel(), loadTable()])
+    .then(() => {
+      icon.style.animation = '';
+      document.getElementById('lastUpdated').textContent =
+        'Last updated: ' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadAll();
+  setInterval(loadAll, 5 * 60 * 1000);
+});
+</script>
+{% endblock %}

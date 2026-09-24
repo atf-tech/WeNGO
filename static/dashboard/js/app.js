@@ -592,6 +592,11 @@
     }
     e &&
       Array.from(e).forEach(function (o) {
+        var initialTarget = +o.getAttribute("data-target");
+        if (isNaN(initialTarget)) {
+          o.innerText = o.getAttribute("data-target") || "—";
+          return;
+        }
         !(function e() {
           var t = +o.getAttribute("data-target"),
             a = +o.innerText,

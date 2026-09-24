@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from dashboard.models import Services
 from django.shortcuts import render, get_object_or_404
 from website.models import *
@@ -30,9 +30,38 @@ def generate_unique_txnid():
 
 def service(request):
 
-    services = Services.objects.all().order_by("display_order")
+    return render(request, 'website/service.html')
 
-    return render(request, 'website/service.html',{"services": services})
+
+def search_services(request):
+    query = request.GET.get("q", "").strip()
+    services = Services.objects.all()
+
+    if query:
+        services = services.filter(service_name__icontains=query)
+
+    services = services.order_by("display_order", "service_name")
+
+    data = [
+        {
+            "name": s.service_name,
+            "slug": s.slug,
+            "amount": str(s.amount),
+            "image": s.image.url if s.image else None,
+        }
+        for s in services
+    ]
+
+    if request.GET.get("format") == "json":
+        return JsonResponse({"services": data})
+
+    context = {
+        "query": query,
+        "services": services,
+        "total": services.count(),
+    }
+
+    return render(request, "website/search.html", context)
 
 
 def service_detail(request, slug):
@@ -184,7 +213,7 @@ class CreateServicePaymentView(View):
             #     }, status=400)
             
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+            pass
         
 
 

@@ -1,0 +1,326 @@
+{% extends 'website/base.html' %} {% load static %}
+
+{% block title %} Search Services - WeNGO {% endblock %}
+
+{% block content %}
+{% include 'website/bottom_nav.html' %}
+<style>
+.wengo-search-page {
+    background: #ffffff;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+.wengo-search-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    padding: 14px 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.wengo-search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.wengo-search-input-wrap {
+    flex: 1;
+    position: relative;
+}
+
+    .wengo-search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999999;
+        pointer-events: none;
+        font-size: 18px;
+        z-index: 2;
+    }
+
+    .wengo-search-input {
+        width: 100%;
+        height: 48px;
+        padding: 0 16px 0 48px;
+        border: 2px solid #eeeeee;
+        border-radius: 24px;
+        font-size: 16px;
+        color: #222222;
+        background: #f8f9fb;
+        outline: none;
+        transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+.wengo-search-input:focus {
+    border-color: #ff6b00;
+    background: #ffffff;
+}
+
+.wengo-search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999999;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    padding: 4px;
+    line-height: 1;
+}
+
+.wengo-search-clear.visible {
+    display: block;
+}
+
+.wengo-search-body {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px 16px 0;
+}
+
+.wengo-search-meta {
+    font-size: 14px;
+    color: #777777;
+    margin: 0 0 16px;
+}
+
+.wengo-search-meta strong {
+    color: #222222;
+}
+
+.wengo-search-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #777777;
+}
+
+.wengo-search-empty-icon {
+    font-size: 56px;
+    margin-bottom: 14px;
+    opacity: 0.8;
+}
+
+.wengo-search-empty h3 {
+    font-size: 20px;
+    color: #222222;
+    margin: 0 0 8px;
+}
+
+.wengo-search-empty p {
+    margin: 0;
+    font-size: 15px;
+}
+
+.wengo-service-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #eeeeee;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+}
+
+.wengo-service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+    color: inherit;
+}
+
+.wengo-service-card-img {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.wengo-service-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.wengo-service-card:hover .wengo-service-card-img img {
+    transform: scale(1.04);
+}
+
+.wengo-service-card-body {
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.wengo-service-card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #222222;
+    margin: 0;
+    line-height: 1.35;
+}
+
+.wengo-service-card-amount {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ff6b00;
+}
+
+.wengo-service-card-link {
+    margin-top: auto;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ff6b00;
+    text-decoration: none;
+}
+
+@media (max-width: 767px) {
+    .wengo-search-header {
+        padding: 10px 12px;
+    }
+
+    .wengo-search-input {
+        height: 44px;
+        font-size: 15px;
+        padding: 0 14px 0 48px;
+    }
+
+    .wengo-search-body {
+        padding: 10px 5px 0;
+    }
+
+    .wengo-service-card-img {
+        height: 160px;
+    }
+}
+</style>
+
+<div class="wengo-search-page">
+    <div class="wengo-search-header">
+        <form class="wengo-search-form" id="searchForm" onsubmit="return false;">
+            <div class="wengo-search-input-wrap">
+                {% comment %} <span class="wengo-search-icon">
+                    <i class="feather-search" style="margin-right: 15px;"></i>
+                </span> {% endcomment %}
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="wengo-search-input"
+                    placeholder="Search Services..."
+                    value=""
+                    autocomplete="off"
+                    autofocus>
+                <button type="button" class="wengo-search-clear" id="searchClear">&times;</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="wengo-search-body" id="searchBody">
+        <div class="row g-3" id="searchResults"></div>
+        <div class="wengo-search-empty" id="searchEmpty" style="display:none;">
+            <div class="wengo-search-empty-icon">🔍</div>
+            <h3>No services found</h3>
+            <p>Try a different keyword or browse all services.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('searchClear');
+    const resultsRow = document.getElementById('searchResults');
+    const emptyState = document.getElementById('searchEmpty');
+    const searchUrl = "{% url 'search_services' %}";
+
+    if (!input || !clearBtn || !resultsRow || !emptyState) return;
+
+    function updateClear() {
+        if (input.value.trim().length > 0) {
+            clearBtn.classList.add('visible');
+        } else {
+            clearBtn.classList.remove('visible');
+        }
+    }
+
+    function renderCard(s) {
+        const imageUrl = s.image ? s.image : "{% static 'website/images/no-image.png' %}";
+        const detailUrl = "/service/" + s.slug + "/";
+        return `<div class="col-6 col-sm-6 col-md-4 col-lg-4">
+            <a href="${detailUrl}" class="wengo-service-card">
+                <div class="wengo-service-card-img">
+                    <img src="${imageUrl}" alt="${s.name}">
+                </div>
+                <div class="wengo-service-card-body">
+                    <h3 class="wengo-service-card-title">${s.name}</h3>
+                    <div class="wengo-service-card-amount">₹ ${s.amount}</div>
+                    <span class="wengo-service-card-link">View Details &rarr;</span>
+                </div>
+            </a>
+        </div>`;
+    }
+
+    function renderResults(data) {
+        resultsRow.innerHTML = "";
+
+        if (!data.services || data.services.length === 0) {
+            emptyState.style.display = "block";
+        } else {
+            emptyState.style.display = "none";
+            const html = data.services.map(renderCard).join("");
+            resultsRow.innerHTML = html;
+        }
+    }
+
+    let debounceTimer = null;
+
+    input.addEventListener("input", function () {
+        updateClear();
+
+        const q = input.value.trim();
+
+        clearTimeout(debounceTimer);
+
+        if (q.length === 0) {
+            resultsRow.innerHTML = "";
+            emptyState.style.display = "none";
+            return;
+        }
+
+        debounceTimer = setTimeout(function () {
+            const url = searchUrl + "?q=" + encodeURIComponent(q) + "&format=json";
+            fetch(url, { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest" } })
+                .then(function (res) { return res.json(); })
+                .then(function (data) { renderResults(data); })
+                .catch(function () {
+                    resultsRow.innerHTML = "";
+                    emptyState.style.display = "block";
+                });
+        }, 250);
+    });
+
+    clearBtn.addEventListener("click", function () {
+        input.value = "";
+        updateClear();
+        resultsRow.innerHTML = "";
+        emptyState.style.display = "none";
+    });
+})();
+</script>
+
+{% endblock %}

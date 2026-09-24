@@ -48,28 +48,57 @@ def _verified_total(queryset, amount_field):
 
 
 @superuser_required(login_url='/dashboard/login')
-def Website_Donations(request):
+def website_donations(request):
 
     now_local = timezone.localtime(timezone.now())
     today_local = now_local.date()
 
     # Default = Today
     selected_date_str = request.GET.get("selected_date")
-
+    
+    # Handle date range input (format: "YYYY-MM-DD to YYYY-MM-DD" or single date)
     if selected_date_str:
-        selected_date = datetime.strptime(selected_date_str,"%Y-%m-%d").date()
+        if " to " in selected_date_str:
+            # Date range format
+            start_str, end_str = selected_date_str.split(" to ")
+            try:
+                start_date = datetime.strptime(start_str.strip(), "%Y-%m-%d").date()
+                end_date = datetime.strptime(end_str.strip(), "%Y-%m-%d").date()
+                # For display purposes, we'll use the end date as the "selected" date
+                selected_date = end_date
+                # Store the range for filtering
+                date_range = (start_date, end_date)
+            except ValueError:
+                # Fallback to today if parsing fails
+                selected_date = today_local
+                date_range = (today_local, today_local)
+        else:
+            # Single date format (backward compatibility)
+            try:
+                selected_date = datetime.strptime(selected_date_str,"%Y-%m-%d").date()
+                date_range = (selected_date, selected_date)
+            except ValueError:
+                selected_date = today_local
+                date_range = (today_local, today_local)
     else:
         selected_date = today_local
+        date_range = (today_local, today_local)
+    
+    # Prepare display string for the template
+    if date_range[0] == date_range[1]:
+        selected_date_display = date_range[0].strftime("%d-%b-%Y")
+    else:
+        selected_date_display = f"{date_range[0].strftime('%d-%b-%Y')} to {date_range[1].strftime('%d-%b-%Y')}"
 
-    yesterday = selected_date - timedelta(days=1)
+    yesterday = date_range[0] - timedelta(days=1)
 
-    ## --- Selected Date ---
+    ## --- Selected Date Range ---
     start_today = timezone.make_aware(
-        datetime.combine(selected_date, time.min)
+        datetime.combine(date_range[0], time.min)
     )
 
     end_today = timezone.make_aware(
-        datetime.combine(selected_date, time.max)
+        datetime.combine(date_range[1], time.max)
     )
 
     # --- Yesterday ---
@@ -84,23 +113,22 @@ def Website_Donations(request):
     # --- Current month  ---
     start_this_month = timezone.make_aware(
         datetime.combine(
-            selected_date.replace(day=1),
+            date_range[0].replace(day=1),
             time.min,
         )
     )
 
     
-
     end_this_month = timezone.make_aware(
         datetime.combine(
-            selected_date,
+            date_range[1],
             time.max,
         )
     )
 
     # --- Previous month---
 
-    first_day_current_month = selected_date.replace(day=1)
+    first_day_current_month = date_range[0].replace(day=1)
     last_day_prev_month = first_day_current_month - timedelta(days=1)
 
     start_last_month = timezone.make_aware(
@@ -211,11 +239,6 @@ def Website_Donations(request):
     )
 
 
-
-    # =====================================
-    # TODAY HOURLY CHART DATA
-    # =====================================
-
     
 
     # =====================================
@@ -288,11 +311,17 @@ def Website_Donations(request):
         "service_chart_data": json.dumps(service_chart_data),
         "home_chart_data": json.dumps(home_chart_data),
 
-        "selected_date": selected_date.strftime("%Y-%m-%d"),
+        "selected_date": (
+            f"{date_range[0].strftime('%Y-%m-%d')} to "
+            f"{date_range[1].strftime('%Y-%m-%d')}"
+            if date_range[0] != date_range[1]
+            else date_range[0].strftime("%Y-%m-%d")
+        ),
+        "selected_date_display": selected_date_display,
     }
 
     return render(
-        request,
-        "dashboard/Website_Donations.html",
-        context,
+         request,
+         "dashboard/website_donations.html",
+         context,
     )

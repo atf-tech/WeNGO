@@ -105,7 +105,22 @@
     <script src="{% static 'website/js/main.js' %}"></script>
     <script src="{% static 'website/js/custom.js' %}"></script>
 
-    {% include 'website/includes/chat_widget.html' %}
+    {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'service' or request.resolver_match.url_name == 'about' or request.resolver_match.url_name == 'contact' or request.resolver_match.url_name == 'join_us' %}
+        {% include 'website/includes/chat_widget.html' %}
+    {% endif %}
+
+    <script>
+    (function() {
+      var path = window.location.pathname;
+      var hide = path.indexOf('/success/') !== -1 || path.indexOf('/search') !== -1;
+      if (hide) {
+        var style = document.createElement('style');
+        style.textContent = '#at-chat-wrapper, #at-chat-bubble, #at-preview-strip, #at-chat-window, .rbt-footer.footer-style-1, .copyright-area.copyright-style-1, .rbt-separator-mid { display: none !important; }';
+        document.head.appendChild(style);
+      }
+    })();
+    </script>
+
 
 </body>
 

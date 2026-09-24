@@ -7,11 +7,11 @@
   const isServiceArray = Array.isArray(window.serviceChartData) || Array.isArray(serviceChartData);
 
   // Help debugging without breaking rendering.
-  console.log('[Website_Donations] homeChartData:', homeChartData);
-  console.log('[Website_Donations] serviceChartData:', serviceChartData);
+  console.log('[website_donations] homeChartData:', homeChartData);
+  console.log('[website_donations] serviceChartData:', serviceChartData);
 
   if (!isHomeArray || !isServiceArray) {
-    console.error('[Website_Donations] Chart data is missing or not an array.');
+    console.error('[website_donations] Chart data is missing or not an array.');
     return;
   }
 
@@ -135,7 +135,7 @@
   // Render Chart
   var el = document.querySelector('#stacked_line');
   if (!el) {
-    console.error('[Website_Donations] #stacked_line container not found.');
+    console.error('[website_donations] #stacked_line container not found.');
     return;
   }
 

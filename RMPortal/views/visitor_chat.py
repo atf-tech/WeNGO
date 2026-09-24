@@ -638,7 +638,10 @@ def visitor_send(request, convo_id):
         convo.rm_first_response_at = now
         update_fields.append("rm_first_response_at")
         if convo.visitor_first_message_at:
-            convo.response_time_seconds = int((now - convo.visitor_first_message_at).total_seconds())
+            convo.response_time_seconds = max(
+                0,
+                int((now - convo.visitor_first_message_at).total_seconds()),
+            )
             update_fields.append("response_time_seconds")
 
     if convo.status == "waiting":

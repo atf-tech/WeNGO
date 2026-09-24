@@ -14,7 +14,7 @@ var options = {
     }],
 
     chart: {
-        height: 350,
+        height: 387,
         type: "bar",
         toolbar: {
             show: false

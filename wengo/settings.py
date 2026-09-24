@@ -107,6 +107,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'RMPortal.context_processors.rm_context',
+                'website.context_processors.global_services',
             ],
         },
     },

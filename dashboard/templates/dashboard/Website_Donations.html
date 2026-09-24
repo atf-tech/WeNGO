@@ -14,39 +14,41 @@ table.dataTable {
     width: 100%;
     overflow-x: auto;
 }
+
+
 </style>
 
-<div class="row mb-3">
-    <div class="col-12">
-        <div class="d-flex justify-content-end">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-end">
 
-            <form method="GET" class="d-flex align-items-center gap-2">
+                <form method="GET" class="d-flex align-items-center gap-2">
 
-                <label class="fw-semibold mb-0">
-                    Filter Date
-                </label>
+                    <label class="fw-semibold mb-0">
+                        Filter Date
+                    </label>
 
-                <input
-                    type="date"
-                    class="form-control"
-                    style="width:200px"
-                    name="selected_date"
-                    value="{{ selected_date }}"
-                    max="{% now 'Y-m-d' %}"
-                >
+                    <input
+                        type="text"
+                        class="form-control datepicker"
+                        style="width:200px"
+                        name="selected_date"
+                        value="{{ selected_date }}"
+                        placeholder="Select date or range"
+                        autocomplete="off">
 
-                <button
-                    type="submit"
-                    class="btn btn-primary">
-                    <i class="ri-filter-3-line"></i>
-                    Filter
-                </button>
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+                        <i class="ri-filter-3-line"></i>
+                        Filter
+                    </button>
 
-            </form>
+                </form>
 
+            </div>
         </div>
     </div>
-</div>
 
 
 <div class="row">
@@ -414,16 +416,36 @@ table.dataTable {
 
     <!--end-->
 
-    {%endblock%} {% block extra_js %}
+     {%endblock%} {% block extra_js %}
 
     <script>
       const homeChartData = {{ home_chart_data|safe }};
       const serviceChartData = {{ service_chart_data|safe }};
     </script>
-
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    
+        const datePicker = document.querySelector('.datepicker');
+    
+        if (!datePicker) {
+            return;
+        }
+      
+        flatpickr(datePicker, {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            maxDate: "today",
+        
+            locale: {
+                firstDayOfWeek: 1
+            }
+        });
+      
+    });
+    </script>
 
     <script src="{% static 'dashboard/js/Website-Donation-js/stacked_line_chart.js' %}"></script>
 
-    {% endblock %}
+  {% endblock %}
   </div>
 </div>

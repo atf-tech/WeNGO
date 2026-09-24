@@ -119,7 +119,7 @@ def send_whatsapp_media_message(to, media_id, media_type, caption=None, phone_nu
 
 
 def send_whatsapp_template(to, template_name, phone_number_id=None, access_token=None, language_code="en_US", components=None):
-    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
+    pid = phone_number_id or settings.WA_PHONE_NUMBER_ID
     url = f"https://graph.facebook.com/v21.0/{pid}/messages"
     payload = {
         "messaging_product": "whatsapp",
@@ -133,6 +133,46 @@ def send_whatsapp_template(to, template_name, phone_number_id=None, access_token
     if components:
         payload["template"]["components"] = components
     return _post_to_meta(url, payload, timeout=10, access_token=access_token)
+
+
+def block_whatsapp_user(phone_number, phone_number_id=None, access_token=None):
+    """
+    Block a user on WhatsApp's side via the official Cloud API.
+    NOTE: Meta only allows blocking users who messaged the business in the
+    last 24 hours — outside that window the call fails. Our own DB-side
+    block (BlockedContact) is the permanent backup either way.
+    Returns True if WhatsApp accepted the block.
+    """
+    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
+    url = f"https://graph.facebook.com/v21.0/{pid}/block_users"
+    payload = {
+        "messaging_product": "whatsapp",
+        "block_users": [{"user": phone_number}],
+    }
+    try:
+        _post_to_meta(url, payload, timeout=10, access_token=access_token)
+        return True
+    except Exception:
+        logger.exception("WhatsApp block failed")
+        return False
+
+
+def unblock_whatsapp_user(phone_number, phone_number_id=None, access_token=None):
+    """Remove a WhatsApp-side block. Returns True on success."""
+    pid, _ = _resolve_whatsapp_credentials(phone_number_id=phone_number_id, access_token=access_token)
+    url = f"https://graph.facebook.com/v21.0/{pid}/block_users"
+    payload = {
+        "messaging_product": "whatsapp",
+        "block_users": [{"user": phone_number}],
+    }
+    try:
+        _post_to_meta(url, payload, timeout=10, access_token=access_token)
+        return True
+    except Exception:
+        logger.exception("WhatsApp unblock failed")
+        return False
+
+
 
 
 

@@ -105,7 +105,6 @@
                         data-email="{{ rm.rm_email|escapejs|default_if_none:'' }}"
                         data-target="{{ rm.target_amount|default_if_none:0 }}"
                         data-branch="{{ rm.rm_branch|default_if_none:'' }}"
-                        data-password="{{ rm.rm_password|default_if_none:'' }}"
                         data-active="{{ rm.is_active|yesno:'true,false' }}"
                         data-wa_active="{{ rm.active_whatsapp|yesno:'true,false' }}"
                         data-chat_active="{{ rm.active_visitor_chat|yesno:'true,false' }}"
@@ -238,7 +237,7 @@
               </div>
                <div class="col-xxl-6">
                 <label for="rm-password" class="form-label">Password</label>
-                <input style="border-left: 4px solid #ff0000" type="password" class="form-control" id="rm-password" name="rm_password" placeholder="Enter password" onclick="this.type = this.type === 'password' ? 'text' : 'password'"/>
+                <input style="border-left: 4px solid #ff0000" type="password" class="form-control" id="rm-password" name="rm_password" placeholder="Enter password" autocomplete="new-password" onclick="this.type = this.type === 'password' ? 'text' : 'password'"/>
               </div> 
               <div class="col-xxl-6">
                 <label for="rm-password" class="form-label">Confirm Password</label>

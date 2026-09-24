@@ -10,7 +10,13 @@ def send_donation_success_email(donation, request, donation_type):
     date_label = get_date_label(donation_type)
     donation_type_label = DONATION_TYPE_LABELS.get(donation_type, "Donation")
 
-    date_value = getattr(donation, 'donation_date', None) or getattr(donation, 'service_date', None) or 'N/A'
+    date_value = (
+        getattr(donation, 'donation_date', None)
+        or getattr(donation, 'service_date', None)
+        or getattr(donation, 'submitted_at', None)
+        or getattr(donation, 'payment_date', None)
+        or 'N/A'
+    )
     if hasattr(date_value, 'strftime'):
         date_value = date_value.strftime('%d-%m-%Y')
 

@@ -62,11 +62,37 @@
                   <td tabindex="0" style="display:none;" class="truncate-td">{{ home.description|safe|truncatewords:20 }}</td>
 
                   <td>
-                    {% if home.home_image %}
-                      <img src="{{ home.home_image.url }}" width="80" height="60" alt="Home Image" style="object-fit:cover; border-radius:6px;" />
-                    {% else %}
-                      <span class="text-muted">No image</span>
-                    {% endif %}
+                        {% if home.home_image %}
+                            <div style="
+                            width:45px;
+                            height:45px;
+                            background:#d1fae5;
+                            border-radius:6px;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:14px;
+                            color:#16a34a;
+                        "
+                        title="Image Available">
+                            <i class="ri-image-line"></i>
+                        </div>
+                        {% else %}
+                            <div style="
+                            width:45px;
+                            height:45px;
+                            background:#f1f3f5;
+                            border-radius:6px;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:14px;
+                            color:#999;
+                        "
+                        title="No Image">
+                            <i class="ri-image-off-line"></i>
+                        </div>
+                        {% endif %}
                   </td>
 
                   <td>{{ home.members }}</td>
@@ -159,9 +185,35 @@
 
                     <td>
                         {% if s.image %}
-                            <img src="{{ s.image.url }}" width="80" height="60">
+                            <div style="
+                            width:45px;
+                            height:45px;
+                            background:#d1fae5;
+                            border-radius:6px;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:14px;
+                            color:#16a34a;
+                        "
+                        title="Image Available">
+                            <i class="ri-image-line"></i>
+                        </div>
                         {% else %}
-                            No Image
+                            <div style="
+                            width:45px;
+                            height:45px;
+                            background:#f1f3f5;
+                            border-radius:6px;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:14px;
+                            color:#999;
+                        "
+                        title="No Image">
+                            <i class="ri-image-off-line"></i>
+                        </div>
                         {% endif %}
                     </td>
 

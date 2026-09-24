@@ -305,6 +305,7 @@
 }
 @media (max-width: 767px) {
   .wg-summary-row { grid-template-columns: 1fr; }
+  .wg-summary-row:not(.wg-summary-row--visible) { display: none; }
 }
 
 .wg-order-box {
@@ -325,6 +326,10 @@
 }
 .wg-order-total-val {
   font-size: 26px; font-weight: 700; color: var(--wg-red);
+}
+
+@media (max-width: 767px) {
+  .wg-order-row:not(.is-active) { display: none; }
 }
 
 .wg-impact-box {
@@ -410,17 +415,21 @@
 .wg-donor__amt {  font-size: 10px; color: var(--wg-amber); font-weight: 700; white-space: nowrap; }
 .wg-form-body { padding: 14px 24px 26px; }
 .wg-form-card .form-label {  sans-serif; font-size: 12px; font-weight: 600; color: var(--wg-sub); margin-bottom: 4px; }
-.wg-form-card .form-control { border-radius: 10px; border: 1.5px solid var(--wg-line); font-size: 14px; padding: 10px 12px; }
-.wg-form-card .form-control:focus { border-color: var(--wg-red) !important; box-shadow: 0 0 0 3px rgba(255,110,209,0.15); }
+.wg-form-card .form-control { border-radius: 10px; border-left: 1.5px solid #d887b9; font-size: 14px; padding: 10px 12px; border-width: 3px; }
+.wg-form-card .form-control:focus { border-color: var(--wg-red) !important; border-left: 3px solid var(--wg-red) !important; box-shadow: 0 0 0 3px rgba(255,110,209,0.15); }
 .wg-phone-input { display: flex; gap: 8px; }
 .wg-phone-code {
   display: flex; align-items: center; gap: 4px; border: 1.5px solid var(--wg-line); border-radius: 10px;
   padding: 0 10px; font-size: 13px; color: var(--wg-text); flex-shrink: 0; background: var(--wg-surface);
 }
 .wg-step-actions { display: flex; gap: 10px; margin-top: 18px; }
+@media (max-width: 767px) {
+  .wg-step-actions { flex-direction: column; }
+  .wg-step-actions .wg-pay-btn, .wg-step-actions .wg-ghost-btn { width: 100%; }
+}
 .wg-step-actions .wg-pay-btn, .wg-step-actions .wg-ghost-btn { flex: 1; margin-bottom: 0; }
 .wg-ghost-btn {
-  background: var(--wg-white); border: 1.5px solid var(--wg-line); border-radius: 14px; padding: 15px 20px;
+  background: var(--wg-white); border: 1.5px solid var(--wg-line); border-radius: 14px; padding: 16px 20px;
   font-size: 14px; font-weight: 700; color: var(--wg-text);
   display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s;
 }
@@ -441,6 +450,11 @@
 
 #message, #message-popup {  sans-serif; font-size: 0.875rem; color: var(--wg-red); }
 .wg-form-step { display: block; }
+
+@media (max-width: 767px) {
+  .wg-pkg-row { display: none !important; }
+  .wg-impact-box { display: none !important; }
+}
 
 @media (min-width: 768px) {
     .px-md-4 {
@@ -640,11 +654,11 @@
             <div class="row g-2 mb-2">
               <div class="col-12 col-sm-6">
                 <label for="donor_name_popup" class="form-label">Donor Name</label>
-                <input type="text" class="form-control" name="donor_name" id="donor_name_popup" placeholder="e.g. John Joe" required />
+                <input type="text" class="form-control" name="donor_name" id="donor_name_popup" placeholder="John" required />
               </div>
               <div class="col-12 col-sm-6">
                 <label for="donor_email_popup" class="form-label">Email Address</label>
-                <input type="email" class="form-control" name = "donor_email" id="donor_email_popup" placeholder="e.g. john@gmail.com" required />
+                <input type="email" class="form-control" name = "donor_email" id="donor_email_popup" placeholder="john@gmail.com" required />
               </div>
             </div>
 
@@ -653,7 +667,7 @@
                 <label for="donor_mobile_popup" class="form-label">WhatsApp Number</label>
                 <div class="wg-phone-input">
                   <span class="wg-phone-code">🇮🇳 +91</span>
-                  <input type="tel" class="form-control" name="donor_mobile" id="donor_mobile_popup" placeholder="9876543210" required />
+                  <input type="tel" class="form-control" name="donor_mobile" id="donor_mobile_popup" placeholder="" required />
                 </div>
               </div>
 
@@ -670,7 +684,8 @@
               </div>
               <div class="col-12 col-sm-6">
                 <label for="pan_number_popup" class="form-label">PAN Number <span class="text-muted fw-normal">(optional)</span></label>
-                <input type="text" class="form-control text-uppercase" name="pan_number" id="pan_number_popup" maxlength="10" placeholder="ABCDE1234F" />
+                <input type="text" class="form-control text-uppercase"style=" border-radius: 10px; border-left: 1.5px solid #e6e3f1; font-size: 14px; padding: 10px 12px; border-width: 3px;" name="pan_number" id="pan_number_popup" maxlength="10" placeholder="ABCDE1234F" />
+                <small class="text-muted mt-1" style="font-size: 11px; display: block; margin-top: 4px; color: var(--wg-sub);"><i class="fa-solid fa-circle-info"></i> Provide your PAN to get an 80G tax exemption certificate</small>
               </div>
             </div>
 
@@ -869,6 +884,9 @@ function updateUI() {
   const impactEl = document.getElementById("at-impact-count");
   if (impactEl) impactEl.textContent = `${mealsCount} Meal${mealsCount === 1 ? "" : "s"}`;
 
+  const summaryRow = document.querySelector(".wg-summary-row");
+  if (summaryRow) summaryRow.classList.toggle("wg-summary-row--visible", mealsCount > 0);
+
   const allVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "veg";
   const allNonVeg = state.bf.on && state.lunch.on && state.dn.on && state.lunch.type === "nonveg";
   const pkgVeg = document.getElementById("at-pkg-veg");
@@ -1050,6 +1068,21 @@ document.getElementById("donation-form-popup").addEventListener("submit", async 
         alert("Payment error occurred");
     }
 });
+
+(function() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const dd = String(tomorrow.getDate()).padStart(2, '0');
+    const tomorrowStr = `${yyyy}-${mm}-${dd}`;
+
+    const serviceDateInput = document.getElementById("service_date_popup");
+    if (serviceDateInput) {
+        serviceDateInput.value = tomorrowStr;
+        serviceDateInput.min = tomorrowStr;
+    }
+})();
 
 updateUI();
 </script>

@@ -2,19 +2,19 @@ var options = {
   series: [
     {
       name: 'Leads',
-      data: [18, 22, 12],
+      data: [],
     },
     {
       name: 'Received',
-      data: [155, 63, 78],
+      data: [],
     },
     {
       name: 'Sent',
-      data: [208, 82, 115],
+      data: [],
     },
     {
       name: 'Conv %',
-      data: [95, 100, 88],
+      data: [],
     },
   ],
 
@@ -78,7 +78,7 @@ var options = {
   },
 
   xaxis: {
-    categories: ['Madurai', 'Chennai', 'Bangalore'],
+    categories: [],
 
     axisBorder: {
       show: false,
@@ -223,9 +223,51 @@ function tooltipRow(color, label, value) {
   `;
 }
 
-var chart = new ApexCharts(
+var branchWiseChart = new ApexCharts(
   document.querySelector('#branch_chart'),
   options
 );
 
-chart.render();
+branchWiseChart.render();
+window.branchWiseChart = branchWiseChart;
+
+function visitorChatChartQueryParams() {
+  const params = new URLSearchParams({
+    chart: typeof gChart !== 'undefined' ? gChart : 'daily',
+    period: typeof gPeriod !== 'undefined' ? gPeriod : 'today',
+    branch: typeof gBranch !== 'undefined' ? gBranch : '',
+  });
+
+  if (typeof gPeriod !== 'undefined' && gPeriod === 'custom') {
+    const from = document.getElementById('customFrom')?.value;
+    const to = document.getElementById('customTo')?.value;
+    if (from) params.set('from_date', from);
+    if (to) params.set('to_date', to);
+  }
+
+  return params;
+}
+
+window.loadBranchWiseChart = function () {
+  return fetch(`/dashboard/visitor_chat/api/charts/?${visitorChatChartQueryParams().toString()}`, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    credentials: 'same-origin'
+  })
+    .then(function (response) {
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      return response.json();
+    })
+    .then(function (data) {
+      if (!data || !data.branch || !window.branchWiseChart) return;
+
+      window.branchWiseChart.updateOptions({
+        xaxis: {
+          categories: data.branch.categories || []
+        }
+      });
+      window.branchWiseChart.updateSeries(data.branch.series || []);
+    })
+    .catch(function (error) {
+      console.error('Branch-wise chart error:', error);
+    });
+};

@@ -194,7 +194,7 @@
   --radius-big: 16px;
   --radius-small: 6px;
   --border-width: 2px;
-  --radius: 6px;
+  --radius: 13px;
   --f-light: 300;
   --f-regular: 400;
   --f-medium: 500;
@@ -250,7 +250,7 @@
   --gradient-5: linear-gradient(rgb(239, 241, 255) 0%, rgb(239, 241, 255) 100%);
   --gradient-6: linear-gradient(to right, rgba(255, 255, 255, 0.15), rgba(251, 199, 226, 0.15), rgba(220, 217, 254, 0.15));
   --gradient-7: linear-gradient(218.15deg, var(--color-secondary) 0%, var(--color-primary) 100%);
-  --gradient-8: linear-gradient(270deg, #9e77ff 0%, #4460ff 100%);
+  --gradient-8: linear-gradient(263deg, #8174ed 0%, #8174ed 100%);  
   --gradient-9: linear-gradient(180deg, #6827FF 0%, #E3F0FF 100%);
   --gradient-10: linear-gradient(180deg, #353e54d9 0%, #27304117 100%);
 }
@@ -304,7 +304,7 @@ a:focus,
 a:active {
   text-decoration: none;
   outline: none;
-  color: var(--color-primary);
+  /* color: var(--color-primary); */
 }
 
 a:focus {
@@ -623,6 +623,7 @@ html {
   margin: 0;
   padding: 0;
   font-size: 10px;
+  overflow-x: hidden;
 }
 
 body {
@@ -1667,8 +1668,8 @@ ul.rbt-dropdown-menu li .sub-menu li a, ul.rbt-dropdown-menu li a .right-icon, u
 
 @media only screen and (max-width: 767px) {
   .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
   }
 }
 .color-box-inner .title {
@@ -2489,21 +2490,33 @@ textarea:-ms-input-placeholder {
 }
 
 .rbt-section-gap {
-  padding: 120px 0;
+    padding: 45px 0;
+    margin-left: 82px;
+    border-radius: 20px;
+    margin-right: 82px;
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-bottom:50px;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .rbt-section-gap {
-    padding: 80px 0;
+        padding: 30px 20px;
+        margin-left: 30px;
+        margin-right: 30px;
+        border-radius: 18px;
   }
 }
 @media only screen and (max-width: 767px) {
   .rbt-section-gap {
-    padding: 80px 0;
+    padding: 0;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: 20px;
   }
 }
 
 .rbt-section-gap2 {
-  padding: 80px 0;
+  padding: 40px 0;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .rbt-section-gap2 {
@@ -2512,7 +2525,7 @@ textarea:-ms-input-placeholder {
 }
 @media only screen and (max-width: 767px) {
   .rbt-section-gap2 {
-    padding: 80px 0;
+    padding: 20px 0;
   }
 }
 
@@ -3229,7 +3242,10 @@ textarea:-ms-input-placeholder {
 }
 
 .mb--55 {
-  margin-bottom: 55px !important;
+  margin-bottom: 25px !important;
+  display: flex;
+  justify-content: center;
+  margin-left: 100px;
 }
 
 .mr--55 {
@@ -7810,13 +7826,13 @@ hr {
     Rbt Shadow
 -------------------------------*/
 .rbt-shadow-box {
-  border-radius: var(--radius);
+
   background: var(--color-white);
   overflow: hidden;
   box-shadow: var(--shadow-1);
-  padding: 30px;
+  /* padding: 30px; */
 }
-@media only screen and (min-width: 992px) and (max-width: 1199px) {
+/* @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .rbt-shadow-box {
     padding: 20px;
   }
@@ -7830,7 +7846,7 @@ hr {
   .rbt-shadow-box {
     padding: 20px;
   }
-}
+} */
 
 .bg-no-shadow {
   box-shadow: none !important;
@@ -11531,6 +11547,7 @@ ul.rbt-dropdown-menu.currency-menu li .sub-menu {
 .rbt-header .logo a img {
   max-height: 85px;
   object-fit: cover;
+  width:100px;
 }
 @media only screen and (max-width: 575px) {
   .rbt-header .logo a {
@@ -14035,6 +14052,20 @@ span.transparent-button:hover i {
     font-size: 14px;
     padding: 18px 10px 18px 10px;
   }
+  .section-title .subtitle {
+    font-size: 14px;
+    line-height: 15px;
+    font-weight: 500;
+    color: var(--color-heading);
+    margin-bottom: 15px;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    display: inline-block;
+    background: var(--color-primary);
+    color: var(--color-primary);
+  }
 }
 .rbt-new-badge.rbt-new-badge-one:before {
   position: absolute;
@@ -14057,13 +14088,13 @@ span.transparent-button:hover i {
 }
 
 .section-title .subtitle {
-  font-size: 14px;
+  font-size: 28px;
   line-height: 15px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-heading);
   margin-bottom: 15px;
   display: inline-block;
-  padding: 10px 20px;
+  padding: 20px 32px;
   border-radius: 100px;
   text-transform: uppercase;
   display: inline-block;
@@ -14724,23 +14755,15 @@ span.transparent-button:hover i {
   transition: 0.5s;
   object-fit: cover;
   border-radius: var(--radius);
+  padding : 6px;
 }
 .rbt-card .rbt-card-body {
   padding-top: 30px;
 }
-@media only screen and (min-width: 992px) and (max-width: 1199px) {
-  .rbt-card .rbt-card-body {
-    padding: 15px;
-  }
-}
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-  .rbt-card .rbt-card-body {
-    padding: 15px;
-  }
-}
+
 @media only screen and (max-width: 767px) {
   .rbt-card .rbt-card-body {
-    padding: 15px;
+    padding: 0px;
   }
 }
 .rbt-card .rbt-card-body .rbt-meta {
@@ -14772,6 +14795,13 @@ span.transparent-button:hover i {
 }
 .rbt-card .rbt-card-body .rbt-card-title a {
   color: var(--color-heading);
+  font-size: 23px;
+}
+/* Mobile only */
+@media (max-width: 767px) {
+    .rbt-card .rbt-card-body .rbt-card-title a {
+        font-size: 16px;
+    }
 }
 .rbt-card .rbt-card-body .rbt-card-title a:hover {
   color: var(--color-primary);

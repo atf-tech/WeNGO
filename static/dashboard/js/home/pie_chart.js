@@ -55,7 +55,7 @@ var options = {
 
             donut: {
 
-                size: "68%",
+                size: "60%",
 
                 labels: {
 

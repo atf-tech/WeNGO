@@ -160,6 +160,228 @@ RMPortal || index wengo
     overflow: hidden;
 }
 
+/* ══════════════════════════════════════════════════════════
+   MULTI-MEDIA TRAY — pick many files, review, then confirm
+══════════════════════════════════════════════════════════ */
+.mm-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 4000;
+    padding: 16px;
+}
+.mm-modal.open { display: flex; }
+
+.mm-box {
+    position: relative;
+    background: #202c33;
+    color: #e9edef;
+    border-radius: 14px;
+    width: 560px;
+    max-width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 14px 40px rgba(0,0,0,.6);
+    overflow: hidden;
+}
+
+.mm-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #2a3942;
+    position: relative;
+    z-index: 2;
+    background: #202c33;
+}
+.mm-title { font-size: 15px; font-weight: 700; }
+.mm-to { font-size: 12px; color: #8696a0; margin-top: 2px; }
+.mm-count {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: #00a884;
+    background: rgba(0,168,132,.12);
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+.mm-count.full { color: #ffb74d; background: rgba(255,183,77,.14); }
+.mm-x { cursor: pointer; font-size: 16px; color: #8696a0; padding: 0 2px; }
+.mm-x:hover { color: #fff; }
+
+.mm-grid {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 10px;
+    align-content: start;
+}
+
+.mm-tile {
+    position: relative;
+    background: #111b21;
+    border: 1px solid #2a3942;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+}
+.mm-tile.bad { border-color: #ef5350; }
+.mm-tile .mm-thumb {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    overflow: hidden;
+}
+.mm-tile .mm-thumb img,
+.mm-tile .mm-thumb video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.mm-tile .mm-name {
+    font-size: 10px;
+    line-height: 1.25;
+    padding: 4px 5px;
+    background: #182229;
+    color: #d1d7db;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mm-tile .mm-size { font-size: 9px; color: #8696a0; }
+.mm-tile.bad .mm-size { color: #ef5350; font-weight: 700; }
+.mm-tile .mm-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.72);
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+.mm-tile .mm-remove:hover { background: #e53935; }
+.mm-tile .mm-index {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: rgba(0,0,0,.72);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+.mm-tile .mm-play {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    transform: translate(-50%,-50%);
+    font-size: 22px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.8);
+    pointer-events: none;
+}
+
+.mm-note {
+    padding: 10px 16px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #ffcc80;
+    background: rgba(255,152,0,.10);
+    border-top: 1px solid #2a3942;
+}
+.mm-note b { color: #ffb74d; }
+
+.mm-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid #2a3942;
+}
+.mm-btn {
+    border: none;
+    padding: 9px 16px;
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+}
+.mm-btn:disabled { opacity: .45; cursor: not-allowed; }
+.mm-add    { background: #2a3942; color: #e9edef; }
+.mm-cancel { background: #2a3942; color: #e9edef; }
+.mm-send   { background: #00a884; color: #fff; margin-left: auto; }
+.mm-confirm-actions .mm-cancel,
+.mm-confirm-actions .mm-send { margin-left: 0; }
+
+/* Step 2 — final confirmation over the tray */
+.mm-confirm {
+    position: absolute;
+    inset: 0;
+    background: rgba(11,20,26,.94);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1;
+}
+.mm-confirm.open { display: flex; }
+.mm-confirm-card { text-align: center; max-width: 340px; }
+.mm-confirm-icon  { font-size: 34px; margin-bottom: 8px; }
+.mm-confirm-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.mm-confirm-text  { font-size: 13px; color: #c7d0d6; line-height: 1.55; margin-bottom: 18px; }
+.mm-confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+/* Sending overlay */
+.mm-sending {
+    position: absolute;
+    inset: 0;
+    background: rgba(11,20,26,.94);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: 14px;
+    z-index: 3;
+}
+.mm-sending.open { display: flex; }
+.mm-spinner {
+    width: 34px;
+    height: 34px;
+    border: 3px solid #2a3942;
+    border-top-color: #00a884;
+    border-radius: 50%;
+    animation: mmSpin .8s linear infinite;
+}
+@keyframes mmSpin { to { transform: rotate(360deg); } }
+
+/* Failed tick (media WhatsApp never accepted) */
+.msg-tick.failed,
+.chat-tick.failed { color: #ef5350; font-weight: 700; }
+
+@media (max-width: 768px) {
+    .mm-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+    .mm-actions { flex-wrap: wrap; }
+    .mm-send { margin-left: auto; }
+}
+
 </style>
 
 <div class="whatsapp-wrapper mx-n3 mt-n3">
@@ -380,6 +602,12 @@ RMPortal || index wengo
             <input type="hidden" id="activeConversationId">
             <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
                 <span class="chat-type-badge" id="chatTypeBadge"></span>
+                <button class="btn btn-sm btn-outline-danger" id="blockDonorBtn"
+                        style="display:none;font-size:11px;padding:3px 10px;"
+                        title="Block this contact — messages will no longer reach any RM"
+                        onclick="blockDonorContact()">
+                    🚫 Block
+                </button>
                 <button class="btn btn-sm btn-outline-danger" id="closeConvoBtn"
                         style="display:none;font-size:11px;padding:3px 10px;"
                         onclick="closeVisitorConversation()">
@@ -411,24 +639,67 @@ RMPortal || index wengo
                 <div class="attach-item" data-type="doc">📄 Document</div>
             </div>
 
-            <input type="file" id="fileImage" accept="image/*" hidden>
-            <input type="file" id="fileAudio" accept="audio/*" hidden>
-            <input type="file" id="fileVideo" accept="video/*" hidden>
+            <input type="file" id="fileImage" accept="image/*" multiple hidden>
+            <input type="file" id="fileAudio" accept="audio/*" multiple hidden>
+            <input type="file" id="fileVideo" accept="video/*" multiple hidden>
             <input type="file" id="fileDoc"
-                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" hidden>
-
-            <div id="previewModal" class="preview-modal">
-                <div class="preview-box">
-                    <div id="previewContent"></div>
-                    <div class="preview-actions">
-                        <button class="preview-cancel">Cancel</button>
-                        <button class="preview-send">Send</button>
-                    </div>
-                </div>
-            </div>
+                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" multiple hidden>
+            <!-- "Add more" inside the tray — any supported type in one pick -->
+            <input type="file" id="mmMoreInput"
+                   accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" multiple hidden>
         </div>
 
     </div><!-- end .chat-window -->
+
+
+    <!-- ══════════════════════════════════════
+         MULTI-MEDIA TRAY — review → confirm → send
+    ══════════════════════════════════════ -->
+    <div class="mm-modal" id="mediaTray">
+        <div class="mm-box">
+
+            <div class="mm-head">
+                <div>
+                    <div class="mm-title">Review before sending</div>
+                    <div class="mm-to" id="mmTo"></div>
+                </div>
+                <div class="mm-count" id="mmCount"></div>
+                <div class="mm-x" id="mmCloseBtn" title="Discard">✕</div>
+            </div>
+
+            <div class="mm-grid" id="mmGrid"></div>
+
+            <div class="mm-note">
+                ⚠️ Once sent, media <b>cannot be deleted</b> for the receiver.
+                Check every file, then confirm.
+            </div>
+
+            <div class="mm-actions">
+                <button class="mm-btn mm-add"    id="mmAddBtn">＋ Add more</button>
+                <button class="mm-btn mm-cancel" id="mmCancelBtn">Cancel</button>
+                <button class="mm-btn mm-send"   id="mmSendBtn">Send</button>
+            </div>
+
+            <!-- Step 2 — double confirmation -->
+            <div class="mm-confirm" id="mmConfirm">
+                <div class="mm-confirm-card">
+                    <div class="mm-confirm-icon">⚠️</div>
+                    <div class="mm-confirm-title" id="mmConfirmTitle"></div>
+                    <div class="mm-confirm-text"  id="mmConfirmText"></div>
+                    <div class="mm-confirm-actions">
+                        <button class="mm-btn mm-cancel" id="mmBackBtn">No, go back</button>
+                        <button class="mm-btn mm-send"   id="mmConfirmBtn">Yes, send</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mm-sending" id="mmSending">
+                <div class="mm-spinner"></div>
+                <div id="mmSendingText">Sending…</div>
+            </div>
+
+        </div>
+    </div>
 
 
     <audio id="notificationSound"
@@ -456,7 +727,6 @@ let lastRenderedDate      = null;
 let audioUnlocked         = false;
 let notificationGranted   = false;
 let rmOnline              = {{ rm.active_visitor_chat|yesno:"true,false" }};
-let selectedFile = null, selectedType = null;
 let visitorTabUnread = 0;
 
 
@@ -549,6 +819,7 @@ function setChatMode(mode) {
     chatMode = mode;
     const badge      = document.getElementById("chatTypeBadge");
     const closeBtn   = document.getElementById("closeConvoBtn");
+    const blockBtn   = document.getElementById("blockDonorBtn");
     const attachBtn  = document.getElementById("attachBtn");
     const micBtn     = document.getElementById("micBtn");
     const recInd     = document.getElementById("recordingIndicator");
@@ -559,6 +830,7 @@ function setChatMode(mode) {
         badge.style.background   = "#e3f2fd";
         badge.style.color        = "#1565c0";
         closeBtn.style.display   = "inline-block";
+        blockBtn.style.display   = "none";
         // hide WA-only controls, show visitor file btn
         attachBtn.style.display  = "none";
         micBtn.style.display     = "none";
@@ -570,9 +842,11 @@ function setChatMode(mode) {
         badge.style.background   = "#e8f5e9";
         badge.style.color        = "#1b5e20";
         closeBtn.style.display   = "none";
+        blockBtn.style.display   = "inline-block";
         // show WA-only controls, hide visitor file btn
         attachBtn.style.display  = "";
         micBtn.style.display     = "";
+        recInd.style.display     = "";
         document.getElementById("visitorFileBtn").style.display = "none";
     }
 }
@@ -594,6 +868,18 @@ function escapeHtml(t) {
     const d = document.createElement("div");
     d.innerText = t;
     return d.innerHTML;
+}
+
+function tickSymbol(status) {
+    if (status === "failed") return "⚠";
+    return status === "sent" || !status ? "✔" : "✔✔";
+}
+
+// Match the server-rendered inbox preview: single line, collapse newlines,
+// truncate to 40 chars (same as Django's |truncatechars:40).
+function previewText(s) {
+    s = (s || "").replace(/\s+/g, " ").trim();
+    return s.length > 40 ? s.slice(0, 39) + "…" : s;
 }
 
 function formatTimeSmart(iso) {
@@ -1436,8 +1722,9 @@ function connectWASocket(convoId) {
                 `.msg-row[data-msg-id="${data.message_id}"] .msg-tick`
             );
             if (tick) {
-                tick.className  = "msg-tick " + data.status;
-                tick.textContent = data.status === "sent" ? "✔" : "✔✔";
+                tick.className   = "msg-tick " + data.status;
+                tick.textContent = tickSymbol(data.status);
+                tick.title       = data.status === "failed" ? "Not delivered — send it again" : "";
             }
         }
     };
@@ -1543,6 +1830,46 @@ function sendVisitorMessage() {
             body: fd
         });
     }
+}
+
+
+/* ============================================================
+   BLOCK ABUSIVE DONOR (WhatsApp chat)
+============================================================ */
+function blockDonorContact() {
+    if (!activeConversationId || chatMode !== "whatsapp") return;
+    const name = document.getElementById("chatName").textContent.trim();
+    if (!confirm(`Block ${name}?\n\nTheir messages will never reach any RM again. Only admin can unblock.`)) return;
+
+    let reason = prompt("Reason for blocking (optional):", "");
+    if (reason === null) return;
+    reason = reason.trim();
+
+    const convoId = activeConversationId;
+    fetch(`/rm/conversation/${convoId}/block/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCSRFToken(),
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `reason=${encodeURIComponent(reason)}`
+    }).then(r => {
+        if (!r.ok) { alert("Block failed. Please try again."); return null; }
+        return r.json();
+    }).then(data => {
+        if (!data) return;
+        const item = document.querySelector(
+            `#waChatListBody .chat-item[data-conversation-id="${convoId}"]`
+        );
+        if (item) item.remove();
+        if (chatSocket) { chatSocket.close(); chatSocket = null; }
+        activeConversationId = null;
+        document.getElementById("chatName").textContent = "Select a chat";
+        document.getElementById("chatBody").innerHTML =
+            `<div style="text-align:center;color:#ef4444;margin-top:40px;">🚫 Contact blocked. Their messages will no longer appear.</div>`;
+        document.getElementById("blockDonorBtn").style.display = "none";
+        document.getElementById("chatTypeBadge").style.display = "none";
+    });
 }
 
 
@@ -1693,7 +2020,7 @@ function appendWAMessage(msg) {
             <div class="msg-meta">
                 <span class="msg-time">${formatTimeSmart(msg.time)}</span>
                 ${sideClass === "sent"
-                    ? `<span class="msg-tick ${msg.status || 'sent'}">${msg.status === "sent" ? "✔" : "✔✔"}</span>`
+                    ? `<span class="msg-tick ${msg.status || 'sent'}">${tickSymbol(msg.status)}</span>`
                     : ""}
             </div>
         </div>
@@ -1729,24 +2056,454 @@ function appendVisitorMessage(msg) {
     scrollToBottom();
 }
 
-/* ── VISITOR FILE UPLOAD (RM side) ── */
-var visitorFileInput = document.getElementById("visitorFileInput");
-if (visitorFileInput) {
-    visitorFileInput.addEventListener("change", function () {
-        const file = this.files[0];
-        if (!file || !activeVisitorConvoId) return;
-        const fd = new FormData();
-        fd.append("file", file);
-        fetch(`/rm/visitor-conversation/${activeVisitorConvoId}/send-file/`, {
-            method: "POST",
-            headers: { "X-CSRFToken": getCSRFToken() },
-            body: fd
-        });
-        this.value = "";
-    });
+/* ── VISITOR FILE UPLOAD (RM side) — goes through the media tray ── */
+document.getElementById("visitorFileInput").addEventListener("change", function () {
+    mmAddFiles(this.files);
+    this.value = "";
+});
+
+
+/* ============================================================
+   DATE SEPARATOR
+============================================================ */
+function insertDateSeparator(dateStr) {
+    const today = new Date(), msgDate = new Date(dateStr);
+    const yesterday = new Date(); yesterday.setDate(today.getDate() - 1);
+    let label = "";
+    if (today.toDateString() === msgDate.toDateString())          label = "Today";
+    else if (yesterday.toDateString() === msgDate.toDateString()) label = "Yesterday";
+    else label = msgDate.toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
+    document.getElementById("chatBody").insertAdjacentHTML(
+        "beforeend", `<div class="date-separator">${label}</div>`
+    );
 }
 
 
+/* ============================================================
+   SEARCH FILTERS
+============================================================ */
+function filterVisitors(q) {
+    q = q.toLowerCase();
+    let found = 0;
+    document.querySelectorAll("#visitorListBody .chat-item").forEach(item => {
+        const n = (item.getAttribute("data-name") || "").toLowerCase();
+        const show = !q || n.includes(q);
+        item.style.display = show ? "" : "none";
+        if (show) found++;
+    });
+    document.getElementById("visitorNoResult").style.display =
+        (found === 0 && q) ? "" : "none";
+}
+
+
+/* ============================================================
+   MOBILE BACK
+============================================================ */
+function mobileBack() {
+    document.getElementById("mainChatWindow").style.display = "none";
+    document.getElementById("mainChatList").style.display  = "";
+    // Reset active chat state so unread badges show correctly
+    activeVisitorConvoId = null;
+    activeVisitorSessionKey = null;
+    activeConversationId = null;
+    if (visitorChatSocket) { visitorChatSocket.close(); visitorChatSocket = null; }
+    if (chatSocket) { chatSocket.close(); chatSocket = null; }
+    // FIX #2c: Remove page bar when going back to list on mobile
+    var oldPageBar = document.getElementById("visitorCurrentPage");
+    if (oldPageBar) oldPageBar.remove();
+}
+
+
+/* ============================================================
+   SOUND + BROWSER NOTIFICATION
+============================================================ */
+// AudioContext for reliable sound playback (bypasses HTML5 audio autoplay quirks)
+var _audioCtx = null;
+var _notifyBuffer = null;
+
+function _getAudioContext() {
+    if (!_audioCtx) {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Resume if suspended (autoplay policy)
+    if (_audioCtx.state === "suspended") {
+        _audioCtx.resume();
+    }
+    return _audioCtx;
+}
+
+// Preload the notification sound into AudioContext buffer
+function _preloadNotifySound() {
+    var s = document.getElementById("notificationSound");
+    if (!s || !s.src) return;
+    fetch(s.src)
+        .then(function(r) { return r.arrayBuffer(); })
+        .then(function(buf) { return _getAudioContext().decodeAudioData(buf); })
+        .then(function(decoded) {
+            _notifyBuffer = decoded;
+            audioUnlocked = true;
+            console.log("[Sound] Notification sound preloaded via AudioContext");
+        })
+        .catch(function(e) { console.warn("[Sound] Preload failed:", e); });
+}
+
+function playNotificationSound() {
+    // Method 1: AudioContext (most reliable)
+    var ctx = _getAudioContext();
+    if (_notifyBuffer && ctx.state === "running") {
+        var source = ctx.createBufferSource();
+        source.buffer = _notifyBuffer;
+        source.connect(ctx.destination);
+        source.start(0);
+        console.log("[Sound] Playing via AudioContext");
+        return;
+    }
+
+    // Method 2: HTML5 Audio fallback
+    var s = document.getElementById("notificationSound");
+    if (!s) return;
+    s.currentTime = 0;
+    s.muted  = false;
+    s.volume = 1;
+    s.play().then(function() {
+        console.log("[Sound] Playing via HTML5 Audio");
+    }).catch(function(e) {
+        audioUnlocked = false;
+        console.warn("[Sound] HTML5 Audio play failed:", e.message);
+    });
+}
+
+function showBrowserNotification(title, body) {
+    if (!body) { body = title; title = "New Message 💬"; }
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+    // Use service worker notification — click handled by sw.js (focuses RM portal tab)
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.ready.then(function(reg) {
+            reg.showNotification(title, {
+                body: body,
+                icon: "/static/dashboard/images/logo/logo-sm.png",
+                vibrate: [200, 100, 200],
+                tag: "new-message",
+                renotify: true,
+                data: { url: window.location.href }
+            });
+        }).catch(function() {
+            _fallbackNotification(title, body);
+        });
+    } else {
+        _fallbackNotification(title, body);
+    }
+}
+
+function _fallbackNotification(title, body) {
+    var n = new Notification(title, {
+        body: body,
+        icon: "/static/dashboard/images/logo/logo-sm.png"
+    });
+    n.onclick = function () {
+        window.focus();
+        n.close();
+    };
+}
+
+
+﻿/* ============================================================
+   MEDIA UPLOAD (WhatsApp + Visitor — shared multi-media tray)
+============================================================ */
+document.getElementById("micBtn").addEventListener("click", async function () {
+    if (!navigator.mediaDevices) { alert("Voice recording not supported"); return; }
+    let mediaRecorder;
+    let audioChunks = [];
+    if (!this._recorder || this._recorder.state === "inactive") {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        this._recorder = mediaRecorder;
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(audioChunks, { type: "audio/webm" });
+            mmAddFiles([new File([blob], "voice.webm", { type: "audio/webm" })], "audio");
+        };
+        mediaRecorder.start();
+        document.getElementById("recordingIndicator").style.display = "inline-block";
+        this.textContent = "⏹";
+    } else {
+        this._recorder.stop();
+        document.getElementById("recordingIndicator").style.display = "none";
+        this.textContent = "🎤";
+    }
+});
+
+document.getElementById("attachBtn").addEventListener("click", function () {
+    const popup = document.getElementById("attachPopup");
+    popup.style.display = popup.style.display === "block" ? "none" : "block";
+});
+
+document.addEventListener("click", function (e) {
+    if (!e.target.closest("#attachBtn,#attachPopup")) {
+        document.getElementById("attachPopup").style.display = "none";
+    }
+});
+
+document.querySelectorAll(".attach-item").forEach(btn => {
+    btn.addEventListener("click", function () {
+        const type = this.dataset.type;
+        document.getElementById("attachPopup").style.display = "none";
+        const map = { image:"fileImage", audio:"fileAudio", video:"fileVideo", doc:"fileDoc" };
+        if (map[type]) document.getElementById(map[type]).click();
+    });
+});
+
+const fileTypeMap = {
+    fileImage: "image", fileAudio: "audio", fileVideo: "video", fileDoc: "document"
+};
+Object.keys(fileTypeMap).forEach(id => {
+    document.getElementById(id).addEventListener("change", function () {
+        mmAddFiles(this.files, fileTypeMap[id]);
+        this.value = "";
+    });
+});
+
+
+/* ============================================================
+   MULTI-MEDIA TRAY — pick many → preview → confirm → send
+   Shared by the WhatsApp tab and the visitor tab.
+============================================================ */
+const MM_MAX = 20;
+
+// WhatsApp Cloud API ceilings — Meta rejects anything bigger, so stop it here.
+const MM_LIMITS = {
+    image:    5  * 1024 * 1024,
+    video:    16 * 1024 * 1024,
+    audio:    16 * 1024 * 1024,
+    document: 100 * 1024 * 1024
+};
+const MM_VISITOR_LIMIT = 25 * 1024 * 1024;
+
+let mmItems   = [];      // [{ id, file, type, url, tooBig }]
+let mmTarget  = null;    // { mode, convoId, name } — locked when the first file is picked
+let mmSending = false;
+let mmNextId  = 1;
+
+function mmLimitFor(type) {
+    if (mmTarget && mmTarget.mode === "visitor") return MM_VISITOR_LIMIT;
+    return MM_LIMITS[type] || MM_VISITOR_LIMIT;
+}
+
+function mmTypeOf(file) {
+    const mime = file.type || "";
+    if (mime.startsWith("image/")) return "image";
+    if (mime.startsWith("video/")) return "video";
+    if (mime.startsWith("audio/")) return "audio";
+    return "document";
+}
+
+function mmHumanSize(bytes) {
+    if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + " MB";
+    return Math.max(1, Math.round(bytes / 1024)) + " KB";
+}
+
+function mmAddFiles(fileList, forcedType) {
+    const files = Array.from(fileList || []);
+    if (!files.length) return;
+
+    if (!mmTarget) {
+        const mode    = chatMode === "visitor" ? "visitor" : "whatsapp";
+        const convoId = mode === "visitor" ? activeVisitorConvoId : activeConversationId;
+        if (!convoId) { alert("Open a chat first."); return; }
+        mmTarget = {
+            mode: mode,
+            convoId: convoId,
+            name: document.getElementById("chatName").textContent.trim() || "this chat"
+        };
+    }
+
+    let skipped = 0;
+    files.forEach(function (file) {
+        if (mmItems.length >= MM_MAX) { skipped++; return; }
+        const type = forcedType || mmTypeOf(file);
+        mmItems.push({
+            id: mmNextId++,
+            file: file,
+            type: type,
+            url: URL.createObjectURL(file),
+            tooBig: file.size > mmLimitFor(type)
+        });
+    });
+
+    if (skipped) {
+        alert("You can send " + MM_MAX + " files at a time — " + skipped + " file(s) were left out.");
+    }
+
+    mmRender();
+    document.getElementById("mediaTray").classList.add("open");
+}
+
+function mmRender() {
+    const grid = document.getElementById("mmGrid");
+    grid.innerHTML = "";
+
+    mmItems.forEach(function (item, i) {
+        let thumb;
+        if (item.type === "image") {
+            thumb = `<img src="${item.url}" alt="">`;
+        } else if (item.type === "video") {
+            thumb = `<video src="${item.url}" muted preload="metadata"></video><span class="mm-play">▶</span>`;
+        } else if (item.type === "audio") {
+            thumb = "🎵";
+        } else {
+            thumb = "📄";
+        }
+
+        const sizeText = item.tooBig
+            ? "Too large · max " + Math.round(mmLimitFor(item.type) / 1024 / 1024) + " MB"
+            : mmHumanSize(item.file.size);
+
+        const tile = document.createElement("div");
+        tile.className = "mm-tile" + (item.tooBig ? " bad" : "");
+        tile.innerHTML =
+            `<div class="mm-index">${i + 1}</div>
+             <div class="mm-remove" data-id="${item.id}" title="Remove">✕</div>
+             <div class="mm-thumb">${thumb}</div>
+             <div class="mm-name">${escapeHtml(item.file.name)}
+                 <div class="mm-size">${escapeHtml(sizeText)}</div>
+             </div>`;
+        grid.appendChild(tile);
+    });
+
+    const count = document.getElementById("mmCount");
+    count.textContent = mmItems.length + " / " + MM_MAX + " selected";
+    count.className   = "mm-count" + (mmItems.length >= MM_MAX ? " full" : "");
+
+    document.getElementById("mmTo").textContent =
+        (mmTarget && mmTarget.mode === "visitor" ? "To website visitor · " : "To ") +
+        (mmTarget ? mmTarget.name : "");
+
+    const oversized = mmItems.filter(function (i) { return i.tooBig; }).length;
+    const sendBtn   = document.getElementById("mmSendBtn");
+    sendBtn.disabled    = mmItems.length === 0 || oversized > 0;
+    sendBtn.textContent = oversized
+        ? "Remove " + oversized + " oversized file" + (oversized > 1 ? "s" : "")
+        : "Send " + mmItems.length + " file" + (mmItems.length === 1 ? "" : "s") + " ▸";
+}
+
+function mmRemove(id) {
+    const idx = mmItems.findIndex(function (i) { return i.id === id; });
+    if (idx === -1) return;
+    URL.revokeObjectURL(mmItems[idx].url);
+    mmItems.splice(idx, 1);
+    if (!mmItems.length) { mmDiscard(); return; }
+    mmRender();
+}
+
+function mmDiscard() {
+    mmItems.forEach(function (i) { URL.revokeObjectURL(i.url); });
+    mmItems  = [];
+    mmTarget = null;
+    document.getElementById("mmConfirm").classList.remove("open");
+    document.getElementById("mmSending").classList.remove("open");
+    document.getElementById("mediaTray").classList.remove("open");
+}
+
+/* ── Step 2: the double confirmation ─ */
+function mmShowConfirm() {
+    if (!mmItems.length || mmSending) return;
+
+    document.getElementById("mmConfirmTitle").textContent =
+        "Send " + mmItems.length + " file" + (mmItems.length === 1 ? "" : "s") + " now?";
+    document.getElementById("mmConfirmText").textContent =
+        "Once sent, media cannot be deleted for the recipient.";
+    document.getElementById("mmConfirm").classList.add("open");
+}
+
+function mmSend() {
+    if (mmSending || !mmItems.length || !mmTarget) return;
+
+    const isVisitor = mmTarget.mode === "visitor";
+    const fd = new FormData();
+    mmItems.forEach(function (item) {
+        fd.append("files", item.file);
+        if (!isVisitor) fd.append("message_types", item.type);
+    });
+
+    mmSending = true;
+    document.getElementById("mmConfirm").classList.remove("open");
+    document.getElementById("mmSendingText").textContent =
+        "Sending " + mmItems.length + " file" + (mmItems.length === 1 ? "" : "s") + "…";
+    document.getElementById("mmSending").classList.add("open");
+
+    const url = isVisitor
+        ? `/rm/visitor-conversation/${mmTarget.convoId}/send-file/`
+        : `/rm/conversation/${mmTarget.convoId}/send-media/`;
+
+    fetch(url, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() },
+        body: fd
+    })
+        .then(function (r) {
+            return r.json().catch(function () { return {}; })
+                .then(function (data) { return { ok: r.ok, data: data }; });
+        })
+        .then(function (res) {
+            mmSending = false;
+            document.getElementById("mmSending").classList.remove("open");
+            if (!res.ok) {
+                alert((res.data && res.data.error) || "Sending failed. Nothing was sent — please try again.");
+                return;
+            }
+            mmDiscard();
+        })
+        .catch(function () {
+            mmSending = false;
+            document.getElementById("mmSending").classList.remove("open");
+            alert("Network problem — the files were not sent. Please try again.");
+        });
+}
+
+document.getElementById("mmGrid").addEventListener("click", function (e) {
+    const btn = e.target.closest(".mm-remove");
+    if (btn) mmRemove(parseInt(btn.dataset.id, 10));
+});
+
+document.getElementById("mmAddBtn").addEventListener("click", function () {
+    if (mmItems.length >= MM_MAX) {
+        alert("Already at the " + MM_MAX + "-file limit. Remove one to add another.");
+        return;
+    }
+    const inputId = (mmTarget && mmTarget.mode === "visitor") ? "visitorFileInput" : "mmMoreInput";
+    document.getElementById(inputId).click();
+});
+
+document.getElementById("mmMoreInput").addEventListener("change", function () {
+    mmAddFiles(this.files);
+    this.value = "";
+});
+
+document.getElementById("mmSendBtn").addEventListener("click", mmShowConfirm);
+document.getElementById("mmConfirmBtn").addEventListener("click", mmSend);
+document.getElementById("mmBackBtn").addEventListener("click", function () {
+    document.getElementById("mmConfirm").classList.remove("open");
+});
+document.getElementById("mmCancelBtn").addEventListener("click", mmCancelTray);
+document.getElementById("mmCloseBtn").addEventListener("click", mmCancelTray);
+
+function mmCancelTray() {
+    if (mmSending) return;
+    if (mmItems.length && !confirm("Discard the " + mmItems.length + " selected file(s)?")) return;
+    mmDiscard();
+}
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && document.getElementById("mediaTray").classList.contains("open")) {
+        if (document.getElementById("mmConfirm").classList.contains("open")) {
+            document.getElementById("mmConfirm").classList.remove("open");
+        } else {
+            mmCancelTray();
+        }
+    }
+});
 /* ============================================================
    DATE SEPARATOR
 ============================================================ */
@@ -1909,7 +2666,7 @@ if (micBtn) {
             mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
             mediaRecorder.onstop = () => {
                 const blob = new Blob(audioChunks, { type: "audio/webm" });
-                uploadMedia(new File([blob], "voice.webm", { type: "audio/webm" }), "audio");
+                mmAddFiles([new File([blob], "voice.webm", { type: "audio/webm" })], "audio");
             };
             mediaRecorder.start();
             var recInd = document.getElementById("recordingIndicator");
@@ -1924,92 +2681,7 @@ if (micBtn) {
     });
 }
 
-var attachBtn = document.getElementById("attachBtn");
-if (attachBtn) {
-    attachBtn.addEventListener("click", function () {
-        const popup = document.getElementById("attachPopup");
-        if (popup) {
-            popup.style.display = popup.style.display === "block" ? "none" : "block";
-        }
-    });
-}
 
-document.addEventListener("click", function (e) {
-    if (!e.target.closest("#attachBtn,#attachPopup")) {
-        var popup = document.getElementById("attachPopup");
-        if (popup) popup.style.display = "none";
-    }
-});
-
-document.querySelectorAll(".attach-item").forEach(btn => {
-    btn.addEventListener("click", function () {
-        const type = this.dataset.type;
-        var popup = document.getElementById("attachPopup");
-        if (popup) popup.style.display = "none";
-        const map = { image:"fileImage", audio:"fileAudio", video:"fileVideo", doc:"fileDoc" };
-        if (map[type]) {
-            var fileInput = document.getElementById(map[type]);
-            if (fileInput) fileInput.click();
-        }
-    });
-});
-
-const fileTypeMap = {
-    fileImage: "image", fileAudio: "audio", fileVideo: "video", fileDoc: "document"
-};
-Object.keys(fileTypeMap).forEach(id => {
-    var fileInput = document.getElementById(id);
-    if (fileInput) {
-        fileInput.addEventListener("change", function () {
-            if (this.files.length) {
-                selectedFile = this.files[0];
-                selectedType = fileTypeMap[id];
-                showPreview(selectedFile, selectedType);
-                this.value = "";
-            }
-        });
-    }
-});
-
-function uploadMedia(file, messageType) {
-    if (!activeConversationId) return;
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("message_type", messageType);
-    fetch(`/rm/conversation/${activeConversationId}/send-media/`, {
-        method: "POST",
-        headers: { "X-CSRFToken": getCSRFToken() },
-        body: fd
-    });
-}
-
-function showPreview(file, type) {
-    const pc = document.getElementById("previewContent");
-    pc.innerHTML = "";
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        if (type === "image")        pc.innerHTML = `<img src="${e.target.result}">`;
-        else if (type === "video")   pc.innerHTML = `<video controls><source src="${e.target.result}"></video>`;
-        else if (type === "audio")   pc.innerHTML = `<audio controls><source src="${e.target.result}"></audio>`;
-        else pc.innerHTML = `<div class="preview-file-name">${escapeHtml(file.name)}</div>`;
-        document.getElementById("previewModal").style.display = "flex";
-    };
-    reader.readAsDataURL(file);
-}
-
-document.querySelectorAll(".preview-cancel").forEach(btn => {
-    btn.addEventListener("click", function () {
-        selectedFile = selectedType = null;
-        document.getElementById("previewModal").style.display = "none";
-    });
-});
-document.querySelectorAll(".preview-send").forEach(btn => {
-    btn.addEventListener("click", function () {
-        if (selectedFile && selectedType) uploadMedia(selectedFile, selectedType);
-        selectedFile = selectedType = null;
-        document.getElementById("previewModal").style.display = "none";
-    });
-});
 
 
 /* ============================================================

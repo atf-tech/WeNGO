@@ -157,6 +157,50 @@ class MessageMedia(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class BlockedContact(models.Model):
+    """A donor blocked for abuse. While an active block exists, the webhook
+    drops every inbound message from this number (backup for the WhatsApp
+    Cloud API block, which can only be applied within a 24-hr window)."""
+
+    donor = models.ForeignKey(
+        Donor,
+        on_delete=models.CASCADE,
+        related_name="blocks"
+    )
+    blocked_by = models.ForeignKey(
+        RM,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="blocked_contacts"
+    )
+    reason = models.TextField(blank=True)
+
+    is_active = models.BooleanField(default=True)
+    wa_api_blocked = models.BooleanField(default=False)
+
+    blocked_at = models.DateTimeField(auto_now_add=True)
+    unblocked_at = models.DateTimeField(null=True, blank=True)
+    unblocked_by = models.CharField(max_length=150, blank=True)
+
+    def __str__(self):
+        state = "blocked" if self.is_active else "unblocked"
+        by = self.blocked_by.rm_name if self.blocked_by else "—"
+        return f"{self.donor.phone_number} ({state}, by {by})"
+
+    @staticmethod
+    def is_blocked(phone_number):
+        return BlockedContact.objects.filter(
+            donor__phone_number=phone_number,
+            is_active=True
+        ).exists()
+
+    class Meta:
+        ordering = ["-blocked_at"]
+        indexes = [
+            models.Index(fields=["donor", "is_active"]),
+        ]
+
 
 # Visitor Live Chat Models
 

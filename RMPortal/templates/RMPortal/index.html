@@ -38,16 +38,19 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .sdp-icon-right{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.78rem;pointer-events:none;transition:transform .2s;}
 .sdp-field.open .sdp-icon-right{transform:translateY(-50%) rotate(180deg);}
 
+/* ── Floating portal calendar ── */
 .sdp-dropdown{
-  position:absolute;top:calc(100% + 6px);left:0;z-index:9999;
+  position:fixed;z-index:99998;
   background:#fff;border-radius:14px;
-  box-shadow:0 8px 36px rgba(44,74,143,.18);
+  box-shadow:0 8px 36px rgba(44,74,143,.25);
   padding:0;width:310px;display:none;
   animation:dpFadeIn .15s ease;
   overflow:hidden;
 }
 .sdp-dropdown.open{display:block;}
+.sdp-dropdown.above{animation:dpFadeInUp .15s ease;}
 @keyframes dpFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dpFadeInUp{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
 .sdp-tabs{display:flex;border-bottom:1px solid var(--border);}
 .sdp-tab{
@@ -638,17 +641,8 @@ table.dataTable.table-striped>tbody>tr.odd>* {
       </div>
 
       <div class="table-responsive">
-        <table id="donor_receipt_table" class="table table-bordered table-striped table-hover align-middle dt-responsive nowrap" style="width:100%">
-          <thead>
-            <tr>
-              <th>SR No.</th><th>Date</th><th>Donor Name</th><th>Mobile</th>
-              <th>Email</th><th>Donor Address</th><th>Receipt No</th>
-              <th>Update</th><th>Download Receipt</th>
-            </tr>
-          </thead>
-          <tbody>
-           
-          </tbody>
+        <table id="donor_receipt_table" class="table table-bordered table-striped table-hover align-middle" style="width:100%">
+          {% include 'partials/donation_table.html' %}
         </table>
       </div>
     </div>
@@ -676,15 +670,12 @@ table.dataTable.table-striped>tbody>tr.odd>* {
         <button class="btn btn-success btn-sm" onclick="saveAndDownload()"><i class="fa fa-save me-1"></i>Save Details</button>
         <button class="btn btn-primary btn-sm" onclick="saveAndDownload(true)"><i class="fa fa-file-pdf me-1"></i>Save &amp; Download Receipt</button>
       </div>
-
-
-
     </div>
   </div>
   </div>
 </div>
 
-</div>
+
 
   <div class="col-x10-7">
         <div class="card">
@@ -748,6 +739,173 @@ table.dataTable.table-striped>tbody>tr.odd>* {
             </div>
 
 
+            <div
+  class="modal fade"
+  id="editDonation"
+  tabindex="-1"
+  aria-labelledby="editDonationLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editDonationLabel">Edit Donation</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="editDonationForm" onsubmit="return false;">
+          {% csrf_token %}
+          <input type="hidden" name="donation_id" id="donation-id" />
+          <input type="hidden" name="edit-id" value="update" />
+          <input type="hidden" name="donation_source" id="donation-source" />
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">RM Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="donation-rm-name"
+                name="rm_name"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">RM Code</label>
+              <input
+                type="text"
+                class="form-control"
+                id="donation-rm-code"
+                name="rm_code"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Amount</label>
+              <input
+                type="number"
+                class="form-control"
+                id="donation-amount"
+                name="amount"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Mode of Payment</label>
+              <input
+                type="text"
+                class="form-control"
+                id="donation-payment-mode"
+                name="payment_mode"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Donor Name</label>
+              <input
+                style="border-left: 4px solid #ff0000"
+                type="text"
+                class="form-control"
+                id="donation-donor-name"
+                name="donor_name"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Donor Mobile</label>
+              <input
+                style="border-left: 4px solid #ff0000"
+                type="text"
+                class="form-control"
+                id="donation-donor-mobile"
+                name="donor_mobile"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Donor Email</label>
+              <input
+                style="border-left: 4px solid #ff0000"
+                type="email"
+                class="form-control"
+                id="donation-donor-email"
+                name="donor_email"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Donor Address</label>
+              <textarea
+                style="border-left: 4px solid #ff0000"
+                class="form-control"
+                id="donation-donor-address"
+                name="donor_address"
+              ></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Package</label>
+              <select
+                class="form-select"
+                id="donation-donor-package"
+                name="donor_package"
+                style="border-left: 4px solid #ff0000"
+              >
+                <option value="">-- Select Package --</option>
+                <option value="birthday">Birthday Package</option>
+                <option value="food">Food Package</option>
+                <option value="service">Service</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Payment Transaction ID</label>
+              <input
+                type="text"
+                class="form-control"
+                id="donation-ptid"
+                name="easebuzz_transaction_id"
+                readonly
+              />
+            </div>
+            <div class="col-md-6" hidden>
+              <label class="form-label">UQ.T.ID</label>
+              <input
+                type="text"
+                class="form-control"
+                id="donation-uqtid"
+                name="txnid"
+                readonly
+              />
+            </div>
+            <div class="col-12">
+              <hr class="my-1">
+              <label class="form-label fw-semibold">PAN No / Aadhaar No
+                <span class="text-muted fw-normal fs-12">(optional — required for 80G receipt)</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="donation-pan-no"
+                name="pan_no"
+                placeholder="e.g. ABCDE1234F or 1234 5678 9012"
+                maxlength="20"
+                autocomplete="off"
+              />
+              <div class="form-text text-info">
+                <i class="ri-information-line"></i> Enter PAN / Aadhaar to generate an 80G receipt. Leave blank for normal receipt.
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 d-flex justify-content-end">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -796,9 +954,10 @@ function toggleSDP(e){
   if(e) e.stopPropagation();
   const dd=document.getElementById('sdpDropdown');
   const field=document.getElementById('sdpField');
+  const input=document.getElementById('sdpDisplay');
   const isOpen=dd.classList.contains('open');
   if(isOpen){
-    dd.classList.remove('open');
+    dd.classList.remove('open','above');
     field.classList.remove('open');
     return;
   }
@@ -806,6 +965,26 @@ function toggleSDP(e){
   sdpYear=today.getFullYear();
   sdpMonth=today.getMonth();
   renderSDP();
+
+  // ── Position the fixed dropdown relative to the input ──
+  const rect=input.getBoundingClientRect();
+  const ddW=310;
+  const ddH=dd.offsetHeight||400;
+  const gap=6;
+  let left=rect.left+window.scrollX;
+  let topBelow=rect.bottom+gap;
+  let topAbove=rect.top-gap-ddH;
+
+  // Flip above if not enough space below
+  if(topBelow+ddH>window.innerHeight&&topAbove>0){
+    dd.style.top=topAbove+'px';
+    dd.classList.add('above');
+  }else{
+    dd.style.top=topBelow+'px';
+    dd.classList.remove('above');
+  }
+  dd.style.left=Math.min(left,window.innerWidth-ddW-12)+'px';
+
   dd.classList.add('open');
   field.classList.add('open');
 }
@@ -890,25 +1069,167 @@ function sdpPickDay(y,m,d){
   updateHint();
 }
 
+// ── AJAX Filtering ──
+
+function getCurrentSearchParam() {
+  return document.getElementById('customSearch').value.trim();
+}
+
+function getCurrentDateFrom() {
+  return document.getElementById('sdpFrom').value;
+}
+
+function getCurrentDateTo() {
+  return document.getElementById('sdpTo').value;
+}
+
+function fetchDonations(dateFrom, dateTo, searchTerm, updateUI) {
+  // Build the AJAX URL
+  const pathname = window.location.pathname;
+  // Remove trailing slash if present and add ajax-filter/
+  let ajaxUrl = pathname;
+  if (!ajaxUrl.endsWith('/')) ajaxUrl += '/';
+  ajaxUrl += 'ajax-filter/?';
+
+  let params = [];
+  if (dateFrom && dateTo) {
+    params.push('date_from=' + encodeURIComponent(dateFrom));
+    params.push('date_to=' + encodeURIComponent(dateTo));
+  }
+  if (searchTerm) {
+    params.push('search=' + encodeURIComponent(searchTerm));
+  }
+  ajaxUrl += params.join('&');
+
+  fetch(ajaxUrl)
+    .then(function(r) {
+      if (!r.ok) throw new Error('Filter request failed');
+      return r.json();
+    })
+    .then(function(data) {
+      renderDonationTable(data.donations);
+      if (updateUI && data.filter_display) {
+        const disp = document.getElementById('sdpDisplay');
+        disp.textContent = data.filter_display;
+        disp.classList.add('active');
+      }
+    })
+    .catch(function(err) {
+      console.error('Filter error:', err);
+    });
+}
+
+function renderDonationTable(donations) {
+  if (!table) return;
+  
+  // Clear existing table data
+  table.clear();
+  
+  if (!donations || donations.length === 0) {
+    table.draw();
+    // Show "no records" in the table body
+    $('#donor_receipt_table tbody').html(
+      '<tr><td colspan="18" class="text-center text-muted py-4">No donations found for the selected filter.</td></tr>'
+    );
+    return;
+  }
+  
+  // Build rows and add via DataTables API
+  var rows = [];
+  donations.forEach(function(d, idx) {
+    // Build status badge HTML
+    var statusHtml = '<span class="badge rounded-pill bg-success-subtle text-success">Success</span>';
+    var s = (d.status || '').toLowerCase();
+    if (s === 'failed' || s === 'failure') {
+      statusHtml = '<span class="badge rounded-pill bg-danger-subtle text-danger">Failed</span>';
+    } else if (s === 'usercancelled' || s === 'user_cancelled') {
+      statusHtml = '<span class="badge rounded-pill bg-dark-subtle text-body">User Cancelled</span>';
+    } else if (s === 'dropped') {
+      statusHtml = '<span class="badge rounded-pill bg-dark-subtle text-secondary">Dropped</span>';
+    } else if (s === 'pending') {
+      statusHtml = '<span class="badge rounded-pill bg-warning-subtle text-warning">Pending</span>';
+    }
+    
+    // PAN badge
+    var panHtml = d.pan_no 
+      ? '<span class="badge bg-success-subtle text-success">' + escapeHtml(d.pan_no) + '</span>'
+      : '<span class="text-muted">-</span>';
+    
+    // Donor complete flag
+    var donorComplete = d.donor_name && d.donor_name !== '-' && d.donor_mobile && d.donor_mobile !== '-' && d.donor_email && d.donor_email !== '-';
+    
+    // Download receipt button
+    var receiptBtn;
+    if (donorComplete) {
+      var btnClass = d.pan_no ? 'btn-success' : 'btn-outline-secondary';
+      var receiptLabel = d.pan_no ? '<i class="ri-file-shield-2-line"></i> 80G Receipt' : '<i class="ri-file-text-line"></i> Normal Receipt';
+      var emailDisabled = (!d.donor_email || d.donor_email === '-') ? 'disabled title="No donor email"' : '';
+      var emailBtn = '<button type="button" class="btn btn-sm w-100 btn-outline-primary send-email-btn" data-id="' + escapeHtml(d.donation_id) + '" data-source="' + escapeHtml(d.source) + '" ' + emailDisabled + '><i class="ri-mail-send-line"></i> Send Mail</button>';
+      receiptBtn = '<div class="d-flex flex-column gap-1">' +
+        '<button type="button" class="btn btn-sm w-100 receipt-download-btn ' + btnClass + '" data-donation-id="' + escapeHtml(d.donation_id) + '" data-source="' + escapeHtml(d.source) + '">' + receiptLabel + '</button>' +
+        emailBtn +
+        '</div>';
+    } else {
+      receiptBtn = '<button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Please update donor details"><i class="ri-file-text-line"></i> Normal Receipt</button>';
+    }
+    
+    rows.push([
+      (idx + 1).toString(),
+      d.sort_key || '',
+      d.submitted_at || '-',
+      d.source || '-',
+      d.package_type || '-',
+      '₹' + (d.amount || '0'),
+      statusHtml,
+      d.ptid || '-',
+      d.mode || '-',
+      d.donor_name || '-',
+      d.donor_mobile || '-',
+      d.donor_email || '-',
+      d.donor_address || '-',
+      d.receipt_no || '-',
+      d.virtual_label || '-',
+      panHtml,
+      '<button type="button" class="btn btn-primary btn-icon edit-donation-btn" data-bs-toggle="modal" data-bs-target="#editDonation" data-id="' + escapeHtml(d.donation_id) + '" data-source="' + escapeHtml(d.source) + '" data-rm-name="' + escapeHtml(d.rm_name || '') + '" data-rm-code="' + escapeHtml(d.rm_code || '') + '" data-amount="' + escapeHtml(d.amount || '') + '" data-payment-mode="' + escapeHtml(d.mode || '') + '" data-donor-package="' + escapeHtml(d.package_type || '') + '" data-donor-name="' + escapeHtml(d.donor_name || '') + '" data-donor-mobile="' + escapeHtml(d.donor_mobile || '') + '" data-donor-email="' + escapeHtml(d.donor_email || '') + '" data-donor-address="' + escapeHtml(d.donor_address || '') + '" data-ptid="' + escapeHtml(d.ptid || '') + '" data-uqtid="' + escapeHtml(d.uqid || '') + '" data-pan-no="' + escapeHtml(d.pan_no || '') + '"><i class="ri-edit-box-line"></i></button>',
+      receiptBtn
+    ]);
+  });
+  
+  table.rows.add(rows);
+  table.draw();
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'<').replace(/>/g,'>').replace(/"/g,'"');
+}
+
 function applySDP(){
   if(sdpMode==='single'&&!sdpFrom){alert('Please select a date.');return;}
   if(sdpMode==='range'&&(!sdpFrom||!sdpTo)){alert('Please select both start and end dates.');return;}
 
   const from=sdpFrom,to=sdpMode==='single'?sdpFrom:sdpTo;
-  document.getElementById('sdpFrom').value=fmtISO(from);
-  document.getElementById('sdpTo').value=fmtISO(to);
+  const dateFrom=fmtISO(from);
+  const dateTo=fmtISO(to);
 
-  const disp=sdpMode==='single'
-    ?fmtDate(from)
-    :fmtDate(from)+' → '+fmtDate(to);
-  const sdpDisp=document.getElementById('sdpDisplay');
-  sdpDisp.textContent=disp;
-  sdpDisp.classList.add('active');
+  // Store in hidden fields
+  document.getElementById('sdpFrom').value = dateFrom;
+  document.getElementById('sdpTo').value = dateTo;
 
+  // Update display
+  const disp = sdpMode==='single'
+    ? fmtDate(from)
+    : fmtDate(from)+' → '+fmtDate(to);
+  document.getElementById('sdpDisplay').textContent = disp;
+  document.getElementById('sdpDisplay').classList.add('active');
+
+  // Close dropdown
   document.getElementById('sdpDropdown').classList.remove('open');
   document.getElementById('sdpField').classList.remove('open');
 
-  console.log('Filter from:',fmtISO(from),'to:',fmtISO(to));
+  // Fetch via AJAX
+  const currentSearch = getCurrentSearchParam();
+  fetchDonations(dateFrom, dateTo, currentSearch, false);
 }
 
 function clearSDP(){
@@ -920,6 +1241,10 @@ function clearSDP(){
   sdpDisp.classList.remove('active');
   renderSDP();
   updateHint();
+
+  // Reset to today - fetch with no date params
+  const currentSearch = getCurrentSearchParam();
+  fetchDonations('', '', currentSearch, true);
 }
 
 document.addEventListener('click',function(e){
@@ -932,67 +1257,158 @@ document.addEventListener('click',function(e){
 var table;
 $(document).ready(function(){
   table=$('#donor_receipt_table').DataTable({
-    responsive: true,
+    responsive: false,
+    scrollX: true,
     pageLength: 10,
     lengthChange: false,
     searching: true,
     autoWidth: false,
     columnDefs: [
-      { orderable: false, targets: [7,8] },
-      { className: 'all dt-center', targets: [7,8] },
-      { responsivePriority: 1, targets: 8 },
-      { responsivePriority: 2, targets: 7 }
+      { orderable: false, targets: [16,17] }
     ]
   });
+  // Hook Enter key to search
   document.getElementById('customSearch').addEventListener('keyup',function(e){if(e.key==='Enter')doSearch();});
 });
-function doSearch(){table.search(document.getElementById('customSearch').value).draw();}
-function clearSearch(){document.getElementById('customSearch').value='';table.search('').draw();}
-
-var _updateBtn=null;
-function openUpdateModal(btn,receiptNo){
-  _updateBtn=btn;
-  document.getElementById('modal_receipt_no').textContent=receiptNo;
-  var cells=btn.closest('tr').querySelectorAll('td');
-  document.getElementById('upd_name').value    =cells[2].textContent.trim()==='-'?'':cells[2].textContent.trim();
-  document.getElementById('upd_mobile').value  =cells[3].textContent.trim()==='-'?'':cells[3].textContent.trim();
-  document.getElementById('upd_email').value   =cells[4].textContent.trim()==='-'?'':cells[4].textContent.trim();
-  document.getElementById('upd_address').value =cells[5].textContent.trim()==='-'?'':cells[5].textContent.trim();
-  document.getElementById('upd_pan').value     ='';
-  new bootstrap.Modal(document.getElementById('updateModal')).show();
+function doSearch(){
+  const searchVal = document.getElementById('customSearch').value.trim();
+  const dateFrom = document.getElementById('sdpFrom').value;
+  const dateTo = document.getElementById('sdpTo').value;
+  fetchDonations(dateFrom, dateTo, searchVal, false);
+}
+function clearSearch(){
+  document.getElementById('customSearch').value = '';
+  const dateFrom = document.getElementById('sdpFrom').value;
+  const dateTo = document.getElementById('sdpTo').value;
+  fetchDonations(dateFrom, dateTo, '', false);
 }
 
-function saveAndDownload(download=false){
-  if(!_updateBtn)return;
-  var cells=_updateBtn.closest('tr').querySelectorAll('td');
-  cells[2].textContent=document.getElementById('upd_name').value||'-';
-  cells[3].textContent=document.getElementById('upd_mobile').value||'-';
-  cells[4].textContent=document.getElementById('upd_email').value||'-';
-  cells[5].textContent=document.getElementById('upd_address').value||'-';
-  // PAN column removed from table; skip writing back to row
-  bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide();
-  if(download)setTimeout(()=>printReceipt(_updateBtn),350);
-}
+// Show "no records" when table has no initial data
+$(document).ready(function(){
+  if ($('#donor_receipt_table tbody tr').length === 0) {
+    $('#donor_receipt_table tbody').html(
+      '<tr><td colspan="18" class="text-center text-muted py-4">No donations found for the selected filter.</td></tr>'
+    );
+  }
+});
 
-function downloadReceipt(btn){printReceipt(btn);}
+// On page load, pre-fill UI from Django template context
+(function initFromUrl() {
+  const dateFrom = '{{ filter_date_from|escapejs }}';
+  const dateTo = '{{ filter_date_to|escapejs }}';
+  const searchTerm = '{{ filter_search|escapejs }}';
+  const filterDisplay = '{{ filter_display|escapejs }}';
+  const isDefault = '{{ is_default_filter|yesno:"true,false" }}';
 
-function printReceipt(btn){
-  var cells=btn.closest('tr').querySelectorAll('td');
-  var now=new Date();
-  var nowStr=now.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  var dateStr=now.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  document.getElementById('rcp_receipt_no').textContent =cells[6].textContent.trim();
-  document.getElementById('rcp_name').textContent       =cells[2].textContent.trim()!=='-'?cells[2].textContent.trim():'(Not provided)';
-  document.getElementById('rcp_mobile').textContent     =cells[3].textContent.trim()!=='-'?cells[3].textContent.trim():'(Not provided)';
-  document.getElementById('rcp_email').textContent      =cells[4].textContent.trim()!=='-'?cells[4].textContent.trim():'(Not provided)';
-  document.getElementById('rcp_address').textContent    =cells[5].textContent.trim()!=='-'?cells[5].textContent.trim():'(Not provided)';
-  document.getElementById('rcp_virtual').textContent    ='(Not provided)';
-  document.getElementById('rcp_pan').textContent        ='(Not provided)';
-  document.getElementById('rcp_don_date').textContent   =dateStr;
-  document.getElementById('rcp_date_printed').textContent='Date: '+dateStr;
-  document.getElementById('rcp_gen_time').textContent   =nowStr;
-  window.print();
-}
+  // Pre-fill search input
+  if (searchTerm) {
+    document.getElementById('customSearch').value = searchTerm;
+  }
+
+  // Pre-fill date display
+  if (dateFrom && dateTo) {
+    document.getElementById('sdpFrom').value = dateFrom;
+    document.getElementById('sdpTo').value = dateTo;
+    const disp = document.getElementById('sdpDisplay');
+    disp.textContent = filterDisplay || 'Select date / range';
+    disp.classList.add('active');
+  } else if (isDefault === 'true') {
+    // Default today - set display to today's date from filter_display
+    const disp = document.getElementById('sdpDisplay');
+    if (filterDisplay) {
+      disp.textContent = filterDisplay;
+      disp.classList.add('active');
+    }
+  }
+})();
+
+// Populate editDonation modal from edit button data-* attributes
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.edit-donation-btn');
+  if (!btn) return;
+  document.getElementById('donation-id').value = btn.getAttribute('data-id') || '';
+  document.getElementById('donation-source').value = btn.getAttribute('data-source') || '';
+  document.getElementById('donation-rm-name').value = btn.getAttribute('data-rm-name') || '';
+  document.getElementById('donation-rm-code').value = btn.getAttribute('data-rm-code') || '';
+  document.getElementById('donation-amount').value = btn.getAttribute('data-amount') || '';
+  document.getElementById('donation-payment-mode').value = btn.getAttribute('data-payment-mode') || '';
+  document.getElementById('donation-donor-name').value = btn.getAttribute('data-donor-name') || '';
+  document.getElementById('donation-donor-mobile').value = btn.getAttribute('data-donor-mobile') || '';
+  document.getElementById('donation-donor-email').value = btn.getAttribute('data-donor-email') || '';
+  document.getElementById('donation-donor-address').value = btn.getAttribute('data-donor-address') || '';
+  document.getElementById('donation-donor-package').value = btn.getAttribute('data-donor-package') || '';
+  document.getElementById('donation-ptid').value = btn.getAttribute('data-ptid') || '';
+  document.getElementById('donation-uqtid').value = btn.getAttribute('data-uqtid') || '';
+  document.getElementById('donation-pan-no').value = btn.getAttribute('data-pan-no') || '';
+});
+
+// Receipt download via backend PDF (stays on same page)
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.receipt-download-btn');
+  if (!btn) return;
+  var donationId = btn.getAttribute('data-donation-id');
+  var source = btn.getAttribute('data-source');
+  fetch('/rm/download-receipt/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: 'donation_id=' + encodeURIComponent(donationId) + '&donation_source=' + encodeURIComponent(source)
+  }).then(function(r) {
+    if (!r.ok) throw new Error('Download failed');
+    return r.blob();
+  }).then(function(blob) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'receipt.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }).catch(function(err) { alert('Error downloading receipt: ' + err); });
+});
+
+// Edit Donation form submit via fetch (prevent browser navigation to JSON)
+document.getElementById('editDonationForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var formData = new FormData(this);
+  fetch('/rm/update-donation/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: new URLSearchParams(formData)
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.success) {
+      alert('Donation updated successfully! Receipt: ' + data.receipt_no);
+      bootstrap.Modal.getInstance(document.getElementById('editDonation')).hide();
+      location.reload();
+    } else {
+      alert('Update failed: ' + (data.error || 'unknown error'));
+    }
+  }).catch(function(err) { alert('Error updating donation: ' + err); });
+});
+
+// Send email functionality
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.send-email-btn');
+  if (!btn || btn.disabled) return;
+  var donationId = btn.getAttribute('data-id');
+  var source = btn.getAttribute('data-source');
+  fetch('/rm/send-email/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: 'donation_id=' + encodeURIComponent(donationId) + '&donation_source=' + encodeURIComponent(source)
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.success) { alert('Email sent successfully!'); }
+    else { alert('Failed to send email: ' + (data.error || 'unknown error')); }
+  }).catch(function(err) { alert('Error sending email: ' + err); });
+});
 </script>
 
 

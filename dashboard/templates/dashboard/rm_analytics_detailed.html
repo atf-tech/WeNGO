@@ -1,0 +1,403 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+
+{% block title %}Dashboard || RM Analytics - {{ rm.rm_name }}{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --primary: #405189; --success: #0ab39c; --info: #299cdb;
+    --warning: #f7b84b; --danger: #f06548; --wa-green: #25d366;
+    --muted: #878a99; --border: #e9ebec;
+  }
+  .rm-detail-header {
+    background: linear-gradient(135deg, #405189, #28367a);
+    border-radius: 14px; padding: 22px 28px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 20px rgba(64,81,137,.3);
+  }
+  .rm-detail-header h4 { color: #fff; font-size: 20px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px; }
+  .rm-detail-header p  { color: rgba(255,255,255,.6); font-size: 13px; margin: 4px 0 0; }
+  .rm-profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .rm-profile-item { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .rm-profile-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .rm-profile-value { font-size: 15px; font-weight: 700; color: #212529; }
+  .rm-profile-value .wa-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+  .rm-profile-value .wa-on { background: var(--wa-green); }
+  .rm-profile-value .wa-off { background: #d1d5db; }
+  .rm-back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--primary); text-decoration: none; margin-bottom: 14px; }
+  .rm-back-link:hover { text-decoration: underline; }
+  .rm-chart-card { background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.04); margin-bottom: 20px; }
+  .rm-chart-head { padding: 14px 18px 10px; border-bottom: 1px solid #f3f6f9; display: flex; align-items: center; justify-content: space-between; }
+  .rm-chart-head h6 { font-size: 14px; font-weight: 700; color: #212529; margin: 0; }
+  .rm-chart-body { padding: 14px; }
+  .rm-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  @media(max-width: 1200px) { .rm-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media(max-width: 600px) { .rm-kpi-grid { grid-template-columns: 1fr; } }
+  .rm-kpi-card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 16px 18px; border-left: 3px solid transparent; transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; }
+  .rm-kpi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+  .rm-kpi-card.c-warn { border-left-color: var(--warning); }
+  .rm-kpi-card.c-blue { border-left-color: var(--primary); }
+  .rm-kpi-card.c-green { border-left-color: var(--success); }
+  .rm-kpi-card.c-info { border-left-color: var(--info); }
+  .rm-kpi-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .rm-kpi-value { font-size: 28px; font-weight: 800; color: #212529; line-height: 1; margin-bottom: 7px; }
+  .rm-kpi-footer { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .rm-kpi-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .rm-kpi-badge.pos { background: rgba(10,179,156,.12); color: var(--success); }
+  .rm-kpi-badge.neg { background: rgba(240,101,72,.12); color: var(--danger); }
+  .rm-kpi-sub { font-size: 11.5px; color: var(--muted); }
+  .rm-conv-tabs { display: flex; gap: 0; margin-bottom: 16px; }
+  .rm-conv-tab { padding: 8px 16px; font-size: 12.5px; font-weight: 600; border: 1px solid var(--border); background: #fff; cursor: pointer; color: var(--muted); transition: background .15s, color .15s; }
+  .rm-conv-tab:first-child { border-radius: 8px 0 0 8px; border-right: none; }
+  .rm-conv-tab:last-child { border-radius: 0 8px 8px 0; border-left: none; }
+  .rm-conv-tab:not(:last-child) { border-right: none; }
+  .rm-conv-tab.active { background: var(--primary); color: #fff; }
+  .rm-conv-tab:not(.active):hover { background: #eef1fb; color: var(--primary); }
+  .rm-conv-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .rm-conv-table thead tr { background: #f8f9ff; }
+  .rm-conv-table thead th { padding: 9px 12px; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; border-bottom: 1px solid var(--border); white-space: nowrap; text-align: left; }
+  .rm-conv-table tbody tr { border-bottom: 1px solid #f5f6f8; transition: background .12s; }
+  .rm-conv-table tbody tr:last-child { border-bottom: none; }
+  .rm-conv-table tbody tr:hover { background: #fafbff; }
+  .rm-conv-table tbody td { padding: 9px 12px; vertical-align: middle; }
+  .rm-status { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: capitalize; }
+  .rm-status-open { background: rgba(10,179,156,.12); color: var(--success); }
+  .rm-status-closed { background: rgba(240,101,72,.12); color: var(--danger); }
+  .rm-loading { text-align: center; padding: 36px; color: var(--muted); }
+  .rm-loading i { font-size: 28px; animation: spin 1s linear infinite; display: block; margin-bottom: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .rm-no-data { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+  .rm-resp-badge { font-size: 11.5px; font-weight: 800; }
+  .rm-resp-fast { color: var(--success); }
+  .rm-resp-mid { color: var(--warning); }
+  .rm-resp-slow { color: var(--danger); }
+  .rm-resp-none { color: var(--muted); }
+  .rm-conv-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .rm-conv-btn { padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: #fff; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--muted); transition: all .15s; }
+  .rm-conv-btn:hover { border-color: var(--primary); color: var(--primary); background: #f8f9ff; }
+  .rm-conv-messages { display: none; padding: 14px; background: #f8f9ff; border: 1px solid var(--border); border-radius: 8px; margin-top: 8px; }
+  .rm-conv-messages.open { display: block; }
+  .rm-msg-row { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 12px; }
+  .rm-msg-row:last-child { border-bottom: none; }
+  .rm-msg-dir { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 12px; white-space: nowrap; height: fit-content; margin-top: 2px; }
+  .rm-msg-dir-in { background: rgba(41,156,219,.12); color: var(--info); }
+  .rm-msg-dir-out { background: rgba(37,211,102,.14); color: #128c3e; }
+  .rm-msg-body { color: #212529; line-height: 1.5; word-break: break-word; flex: 1; }
+  .rm-msg-time { font-size: 10.5px; color: var(--muted); white-space: nowrap; margin-top: 2px; }
+  .rm-trend-pills { display: flex; gap: 0; margin-bottom: 16px; }
+  .rm-trend-pill { padding: 6px 14px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: #fff; cursor: pointer; color: var(--muted); transition: all .15s; }
+  .rm-trend-pill:first-child { border-radius: 8px 0 0 8px; border-right: none; }
+  .rm-trend-pill:last-child { border-radius: 0 8px 8px 0; border-left: none; }
+  .rm-trend-pill:not(:last-child) { border-right: none; }
+  .rm-trend-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .rm-trend-pill:not(.active):hover { background: #eef1fb; color: var(--primary); }
+  .rm-stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+  @media(max-width: 900px) { .rm-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .rm-stat-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; text-align: center; }
+  .rm-stat-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+  .rm-stat-val { font-size: 18px; font-weight: 800; color: #212529; }
+  .rm-stat-val .sub { font-size: 11px; font-weight: 600; color: var(--muted); }
+</style>
+
+<!-- BACK LINK -->
+<a href="/dashboard/whatsapp_api/" class="rm-back-link">
+  <i class="bx bx-arrow-left"></i> Back to WhatsApp Analytics
+</a>
+
+<!-- RM HEADER -->
+<div class="rm-detail-header">
+  <div>
+    <h4><i class="bx bxl-whatsapp" style="color:#25d366;font-size:24px;"></i> {{ rm.rm_name }}</h4>
+    <p>RM Code: {{ rm.rm_code }} &nbsp;·&nbsp; Branch: {{ rm.rm_branch|title }} &nbsp;·&nbsp; TL: {{ rm.tl_name|default:"—" }}</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:6px;">
+      <span class="wa-dot {{ rm.active_whatsapp|yesno:'wa-on,wa-off' }}"></span>
+      WhatsApp: {{ rm.active_whatsapp|yesno:"Active,Inactive" }}
+    </span>
+    <span style="font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:6px;">
+      <span class="wa-dot {{ rm.is_active|yesno:'wa-on,wa-off' }}"></span>
+      Account: {{ rm.is_active|yesno:"Active,Inactive" }}
+    </span>
+  </div>
+</div>
+
+<!-- RM PROFILE GRID -->
+<div class="rm-profile-grid">
+  <div class="rm-profile-item">
+    <div class="rm-profile-label">Mobile</div>
+    <div class="rm-profile-value">{{ rm.rm_mob_no|default:"—" }}</div>
+  </div>
+  <div class="rm-profile-item">
+    <div class="rm-profile-label">Email</div>
+    <div class="rm-profile-value">{{ rm.rm_email|default:"—" }}</div>
+  </div>
+  <div class="rm-profile-item">
+    <div class="rm-profile-label">Gender</div>
+    <div class="rm-profile-value">{{ rm.rm_gender|default:"—"|title }}</div>
+  </div>
+  <div class="rm-profile-item">
+    <div class="rm-profile-label">Branch</div>
+    <div class="rm-profile-value">{{ rm.rm_branch|title }}</div>
+  </div>
+  <div class="rm-profile-item">
+    <div class="rm-profile-label">Target</div>
+    <div class="rm-profile-value">₹{{ rm.target_amount|floatformat:0|default:"0" }}</div>
+  </div>
+  <div class="rm-profile-item">
+    <div class="rm-profile-label">Visitor Chat</div>
+    <div class="rm-profile-value">
+      <span class="wa-dot {{ rm.active_visitor_chat|yesno:'wa-on,wa-off' }}"></span>
+      {{ rm.active_visitor_chat|yesno:"Active,Inactive" }}
+    </div>
+  </div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="rm-kpi-grid" id="rmKpiCards">
+  <div class="rm-kpi-card c-blue"><div class="rm-loading"><i class="bx bx-loader-alt"></i>Loading…</div></div>
+  <div class="rm-kpi-card c-green"><div class="rm-loading"><i class="bx bx-loader-alt"></i>Loading…</div></div>
+  <div class="rm-kpi-card c-info"><div class="rm-loading"><i class="bx bx-loader-alt"></i>Loading…</div></div>
+  <div class="rm-kpi-card c-warn"><div class="rm-loading"><i class="bx bx-loader-alt"></i>Loading…</div></div>
+</div>
+
+<!-- TREND CHART -->
+<div class="rm-chart-card">
+  <div class="rm-chart-head">
+    <h6>📈 RM Performance Trend</h6>
+    <div class="rm-trend-pills" id="rmTrendPills">
+      <button class="rm-trend-pill active" data-tr="today">Today</button>
+      <button class="rm-trend-pill" data-tr="yesterday">Yesterday</button>
+      <button class="rm-trend-pill" data-tr="week">This Week</button>
+      <button class="rm-trend-pill" data-tr="month">This Month</button>
+      <button class="rm-trend-pill" data-tr="last_month">Last Month</button>
+    </div>
+  </div>
+  <div class="rm-chart-body"><div id="rmTrendChart" style="min-height:300px;"></div></div>
+</div>
+
+<!-- STATS BY PERIOD -->
+<div class="rm-chart-card">
+  <div class="rm-chart-head">
+    <h6>📊 Stats by Period</h6>
+  </div>
+  <div class="rm-chart-body">
+    <div class="rm-stats-grid" id="rmPeriodStats">
+      <div class="rm-stat-card"><div class="rm-stat-label">Today Leads</div><div class="rm-stat-val" id="stTodayLeads">—</div></div>
+      <div class="rm-stat-card"><div class="rm-stat-label">Today Received</div><div class="rm-stat-val" id="stTodayRecv">—</div></div>
+      <div class="rm-stat-card"><div class="rm-stat-label">Today Sent</div><div class="rm-stat-val" id="stTodaySent">—</div></div>
+      <div class="rm-stat-card"><div class="rm-stat-label">Week Leads</div><div class="rm-stat-val" id="stWeekLeads">—</div></div>
+      <div class="rm-stat-card"><div class="rm-stat-label">Month Leads</div><div class="rm-stat-val" id="stMonthLeads">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONVERSATIONS -->
+<div class="rm-chart-card">
+  <div class="rm-chart-head">
+    <h6>💬 Conversations</h6>
+    <div class="rm-conv-tabs" id="rmConvTabs">
+      <button class="rm-conv-tab active" data-cp="today">Today</button>
+      <button class="rm-conv-tab" data-cp="yesterday">Yesterday</button>
+      <button class="rm-conv-tab" data-cp="week">This Week</button>
+      <button class="rm-conv-tab" data-cp="month">This Month</button>
+      <button class="rm-conv-tab" data-cp="last_month">Last Month</button>
+    </div>
+  </div>
+  <div class="rm-chart-body" style="padding:0;">
+    <div style="overflow-x:auto;">
+      <table class="rm-conv-table" id="rmConvTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Donor</th><th>Phone</th><th>First Msg</th><th>Last Msg</th>
+            <th>Msgs</th><th>Reply</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rmConvBody">
+          <tr><td colspan="9" class="rm-loading"><i class="bx bx-loader-alt"></i>Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ── STATE ── */
+let rmCode = "{{ rm.rm_code }}";
+let rmTrendRange = "today";
+let rmConvPeriod = "today";
+let rmTrendChart = null;
+
+const RM_API = {
+  profile:  `/dashboard/whatsapp_api/api/rm/${rmCode}/profile/`,
+  stats:    `/dashboard/whatsapp_api/api/rm/${rmCode}/stats/`,
+  trend:    `/dashboard/whatsapp_api/api/rm/${rmCode}/trend/`,
+  convs:    `/dashboard/whatsapp_api/api/rm/${rmCode}/conversations/`,
+};
+
+function apiGet(url, extra={}) {
+  const p = new URLSearchParams(extra);
+  return fetch(`${url}?${p}`)
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    .catch(err => { console.error(err); return null; });
+}
+
+/* ── KPI CARDS ── */
+async function loadKPI() {
+  const d = await apiGet(RM_API.profile);
+  if (!d) return;
+
+  const cards = [
+    { c:'c-blue',   icon:'bx-user-plus',     label:'Total Leads',
+      val: d.total_leads, sub: d.total_leads ? 'Conversations started' : 'No data' },
+    { c:'c-green',  icon:'bx-message-arrow-right', label:'Sent',
+      val: d.total_sent, sub: d.total_sent ? 'Messages sent' : 'No data' },
+    { c:'c-info',   icon:'bx-message-arrow-left',  label:'Received',
+      val: d.total_recv, sub: d.total_recv ? 'Messages received' : 'No data' },
+    { c:'c-warn',   icon:'bx-time-five',     label:'Avg Response',
+      val: d.avg_resp_min != null ? d.avg_resp_min + ' min' : '—',
+      sub: d.avg_resp_min == null ? 'No data yet' :
+           d.avg_resp_min < 5 ? '🟢 Excellent' :
+           d.avg_resp_min < 15 ? '🟡 Acceptable' : '🔴 Needs improvement' },
+  ];
+
+  document.getElementById('rmKpiCards').innerHTML = cards.map(c => `
+    <div class="rm-kpi-card ${c.c}">
+      <div class="rm-kpi-label">${c.label}</div>
+      <div class="rm-kpi-value">${c.val}</div>
+      <div class="rm-kpi-footer"><span class="rm-kpi-sub">${c.sub}</span></div>
+      <i class="bx ${c.icon} rm-kpi-icon" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:40px;opacity:.07;"></i>
+    </div>`).join('');
+}
+
+/* ── TREND CHART ── */
+document.querySelectorAll('#rmTrendPills .rm-trend-pill').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#rmTrendPills .rm-trend-pill').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    rmTrendRange = this.dataset.tr;
+    loadTrendChart();
+  });
+});
+
+async function loadTrendChart() {
+  const d = await apiGet(RM_API.trend, { "trend_range": rmTrendRange });
+  if (!d || !d.labels || !d.labels.length) {
+    document.getElementById('rmTrendChart').innerHTML = '<div class="rm-no-data">No trend data for this period</div>';
+    return;
+  }
+  if (rmTrendChart) { rmTrendChart.destroy(); rmTrendChart = null; }
+  document.getElementById('rmTrendChart').innerHTML = '';
+
+  rmTrendChart = new ApexCharts(document.querySelector('#rmTrendChart'), {
+    series: [
+      { name:'Received', type:'bar', data: d.received },
+      { name:'Sent',     type:'bar', data: d.sent },
+      { name:'Leads',    type:'area', data: d.leads },
+    ],
+    chart: { type:'line', height:300, toolbar:{show:false}, animations:{enabled:true,speed:400} },
+    colors: ['#405189','#0ab39c','#f7b84b'],
+    stroke: { width:[0,0,3], curve:'smooth' },
+    fill: { type:['solid','solid','gradient'], opacity:[.85,.85,.25],
+      gradient:{ shade:'light', type:'vertical', shadeIntensity:.4, gradientToColors:['rgba(247,184,75,0)'], stops:[0,100] } },
+    plotOptions: { bar:{ columnWidth:'40%', borderRadius:3 } },
+    dataLabels: { enabled:false },
+    grid: { borderColor:'#f3f6f9', row:{ colors:['#fafbff','transparent'] } },
+    xaxis: { categories:d.labels, labels:{style:{fontSize:'11.5px',colors:'#878a99'}}, axisBorder:{show:false}, axisTicks:{show:false} },
+    yaxis: { labels:{ style:{colors:'#878a99',fontSize:'11.5px'}, formatter: v => Math.round(v) } },
+    legend: { show:true, position:'top', horizontalAlign:'right' },
+    tooltip: { shared:true, intersect:false },
+  });
+  rmTrendChart.render();
+}
+
+/* ── PERIOD STATS ── */
+async function loadPeriodStats() {
+  const d = await apiGet(RM_API.stats);
+  if (!d) return;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('stTodayLeads',   d.today.leads);
+  set('stTodayRecv',    d.today.received);
+  set('stTodaySent',    d.today.sent);
+  set('stWeekLeads',    d.week.leads);
+  set('stMonthLeads',   d.month.leads);
+}
+
+/* ── CONVERSATIONS ── */
+document.querySelectorAll('#rmConvTabs .rm-conv-tab').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#rmConvTabs .rm-conv-tab').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    rmConvPeriod = this.dataset.cp;
+    loadConversations();
+  });
+});
+
+async function loadConversations() {
+  const tbody = document.getElementById('rmConvBody');
+  tbody.innerHTML = '<tr><td colspan="9" class="rm-loading"><i class="bx bx-loader-alt"></i>Loading…</td></tr>';
+  const d = await apiGet(RM_API.convs, { period: rmConvPeriod });
+  if (!d || !d.conversations) {
+    tbody.innerHTML = '<tr><td colspan="9" class="rm-no-data">Failed to load conversations</td></tr>';
+    return;
+  }
+  if (!d.conversations.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="rm-no-data">No conversations for this period</td></tr>';
+    return;
+  }
+
+  const respCls = v => v == null ? 'rm-resp-none' : v < 5 ? 'rm-resp-fast' : v < 15 ? 'rm-resp-mid' : 'rm-resp-slow';
+
+  tbody.innerHTML = d.conversations.map((c, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td style="font-weight:700;color:#212529;">${c.donor_name}</td>
+      <td style="font-size:12px;color:#495057;">${c.donor_phone}</td>
+      <td style="font-size:11.5px;color:#495057;white-space:nowrap;">${c.first_msg_time}</td>
+      <td style="font-size:11.5px;color:#495057;white-space:nowrap;">${c.last_msg_time}</td>
+      <td><span style="font-weight:800;color:var(--primary);">${c.total_msgs}</span></td>
+      <td><span class="${respCls(c.reply_time_min)}">${c.reply_time_min != null ? c.reply_time_min + ' min' : '—'}</span></td>
+      <td><span class="rm-status rm-status-${c.status}">${c.status}</span></td>
+      <td class="rm-conv-actions">
+        <button class="rm-conv-btn" onclick="toggleMsgs(${c.id})"><i class="bx bx-message-detail"></i> Messages</button>
+      </td>
+    </tr>
+    <tr><td colspan="9" style="padding:0;border:none;">
+      <div class="rm-conv-messages" id="rmMsg${c.id}"></div>
+    </td></tr>
+  `).join('');
+}
+
+async function toggleMsgs(convId) {
+  const el = document.getElementById('rmMsg' + convId);
+  if (!el) return;
+  el.classList.toggle('open');
+  if (el.dataset.loaded) return;
+  el.innerHTML = '<div class="rm-loading"><i class="bx bx-loader-alt"></i>Loading…</div>';
+  const d = await apiGet(`/dashboard/whatsapp_api/api/rm/${rmCode}/conversation/${convId}/messages/`);
+  if (!d || !d.messages) {
+    el.innerHTML = '<div class="rm-no-data">No messages</div>';
+    return;
+  }
+  el.innerHTML = d.messages.map(m => `
+    <div class="rm-msg-row">
+      <span class="rm-msg-dir rm-msg-dir-${m.direction}">${m.direction === 'in' ? '↓ In' : '↑ Out'}</span>
+      <div>
+        <div class="rm-msg-body">${m.body || '—'}</div>
+        <div class="rm-msg-time">${m.created_at}${m.reply_time_min != null ? ' · Reply: ' + m.reply_time_min + ' min' : ''}</div>
+      </div>
+    </div>
+  `).join('');
+  el.dataset.loaded = '1';
+}
+
+/* ── INIT ── */
+loadKPI();
+loadTrendChart();
+loadPeriodStats();
+loadConversations();
+</script>
+{% endblock %}

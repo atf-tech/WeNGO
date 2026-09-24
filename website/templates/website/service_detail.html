@@ -1,292 +1,2441 @@
-    {% extends 'website/base.html' %} {% load static %}
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}{{ service.service_name }} - WeNGO{% endblock %}
+
+{% block content %}
+{% include 'website/bottom_nav.html' %}
+
+<style>
+
+/* =========================================================
+   SERVICE DETAIL PAGE
+   ========================================================= */
+
+:root {
+    --service-primary: #ff6b00;
+    --service-primary-dark: #e85d00;
+    --service-blue: #1e90ff;
+    --service-dark: #172033;
+    --service-text: #5f6878;
+    --service-muted: #8b94a3;
+    --service-light: #f7f9fc;
+    --service-border: #e5e9f0;
+    --service-white: #ffffff;
+    --service-success: #16a34a;
+
+    --service-radius: 18px;
+    --service-small-radius: 10px;
+
+    --service-shadow:
+        0 12px 35px rgba(23, 32, 51, 0.08);
+}
 
 
-    {% block title %} {{ service.service_name }} - WeNGO {% endblock %}
+/* =========================================================
+   BREADCRUMB / HERO
+   ========================================================= */
+
+.service-detail-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        135deg,
+        #fff8f2 0%,
+        #ffffff 55%,
+        #f5f9ff 100%
+    );
+}
+
+.service-detail-hero .breadcrumb-inner {
+    opacity: 0.15;
+}
+
+.service-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0px 0 0px;
+}
+
+.service-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.service-breadcrumb a {
+    color: var(--service-text);
+    font-size: 13px;
+}
+
+.service-breadcrumb a:hover {
+    color: var(--service-primary);
+}
+
+.service-breadcrumb .separator {
+    color: #aeb5c0;
+    font-size: 13px;
+}
+
+.service-breadcrumb .current {
+    color: var(--service-primary);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.service-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    align-items: center;
+    gap: 45px;
+}
+
+.service-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    margin-bottom: 13px;
+
+    border-radius: 30px;
+    background: rgba(255, 107, 0, 0.09);
+    color: var(--service-primary);
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.service-category i {
+    font-size: 13px;
+}
+
+.service-hero-title {
+    margin: 0 0 10px;
+
+    color: var(--service-dark);
+    font-size: clamp(28px, 3vw, 44px);
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.service-hero-description {
+    max-width: 680px;
+    margin: 0;
+
+    color: var(--service-text);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.service-hero-image-wrap {
+    position: relative;
+
+    padding: 8px;
+    border-radius: 22px;
+
+    background: #ffffff;
+    box-shadow: var(--service-shadow);
+}
+
+.service-hero-image {
+    display: block;
+
+    width: 100%;
+    height: 290px;
+
+    object-fit: cover;
+    object-position: center;
+
+    border-radius: 17px;
+}
 
 
-    {% block content %}
+/* =========================================================
+   MAIN AREA
+   ========================================================= */
+
+.service-detail-area {
+    padding: 45px 0 70px;
+    background: #ffffff;
+}
+
+.service-main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 30px;
+    align-items: start;
+}
 
 
-    <!-- Start breadcrumb Area -->
-    <div class="rbt-breadcrumb-default rbt-breadcrumb-style-3 version-02">
-        <div class="breadcrumb-inner">
-            <img src="{% static 'website/images/bg/breadcrumb-bg-01.png' %}" alt="Bg Image">
-        </div>
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-7">
-                    <div class="content text-start">
-                        <ul class="page-list mb--80 mb_md--60 mb_sm--40">
-                            <li class="rbt-breadcrumb-item"><a href="/">Home</a></li>
-                            <li>
-                                <div class="icon-right"><i class="feather-chevron-right"></i></div>
-                            </li>
-                            <li class="rbt-breadcrumb-item active">{{ service.service_name }}</li>
-                        </ul>
-                        <h2 class="w-600 mb--10">{{ service.service_name }}</h2>
-                        <p class="mb--20">{{ service.description|safe}}</p>
+/* =========================================================
+   DONATION CARD
+   ========================================================= */
 
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="radius-10 overflow-hidden p-4 bg-color-white-opacity mt_md--60 mt_sm--60 mt_mobile--40">
-                        <div class="content">
-                            {% if service.image %}
-                                <img src="{{ service.image.url }}" alt="{{ service.service_name }}">
-                            {% else %}
-                                <img src="{% static 'website/images/no-image.png' %}" alt="{{ service.service_name }}">
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>  
-            </div>
-        </div>
+.donation-card {
+    background: var(--service-white);
+    border: 1px solid var(--service-border);
+    border-radius: var(--service-radius);
+    padding: 22px;
+    box-shadow: var(--service-shadow);
+}
+
+
+/* =========================================================
+   FORM HEADER
+   ========================================================= */
+
+.form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 15px;
+    margin-bottom: 17px;
+
+    border-bottom: 1px solid #edf0f4;
+}
+
+.form-header-left {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.form-header-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+    background: rgba(255, 107, 0, 0.10);
+    color: var(--service-primary);
+
+    font-size: 17px;
+}
+
+.form-header h2 {
+    margin: 0;
+
+    color: var(--service-dark);
+    font-size: 21px;
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+.form-header p {
+    margin: 3px 0 0;
+
+    color: var(--service-muted);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   FORM LABELS
+   ========================================================= */
+
+.service-form-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #30394b;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.service-form-label .required {
+    color: var(--service-primary);
+}
+
+
+/* =========================================================
+   FORM INPUTS
+   ========================================================= */
+
+.service-form-control {
+    width: 100%;
+    height: 50px;
+
+    padding: 10px 14px;
+
+    border: 1px solid #dfe4ec;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: var(--service-dark);
+    font-size: 16px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.service-form-control::placeholder {
+    color: #a5acb8;
+    font-size: 14px;
+}
+
+.service-form-control:focus {
+    border-color: var(--service-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(255, 107, 0, 0.08);
+}
+
+textarea.service-form-control {
+    height: 72px;
+    min-height: 72px;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   SERVICE BOX
+   ========================================================= */
+
+.service-selected-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-top: 15px;
+    padding: 12px 14px;
+
+    border: 1px solid #ffe1ca;
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff9f4,
+            #fff5ed
+        );
+}
+
+.service-selected-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
+}
+
+.service-selected-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: rgba(255, 107, 0, 0.12);
+    color: var(--service-primary);
+
+    font-size: 16px;
+}
+
+.service-selected-info {
+    min-width: 0;
+}
+
+.service-selected-label {
+    display: block;
+
+    margin-bottom: 1px;
+
+    color: #9098a5;
+    font-size: 10px;
+    font-weight: 650;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.service-selected-name {
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--service-dark);
+    font-size: 13px;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.service-selected-price {
+    flex-shrink: 0;
+
+    color: var(--service-primary);
+    font-size: 16px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.service-selected-price small {
+    color: #8e96a3;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   QUANTITY SECTION
+   ========================================================= */
+
+.quantity-section {
+    margin-top: 15px;
+}
+
+.quantity-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 6px;
+}
+
+.quantity-heading label {
+    margin: 0;
+
+    color: #30394b;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.quantity-heading span {
+    color: #8b94a3;
+    font-size: 10px;
+}
+
+.quantity-main-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+
+/* =========================================================
+   QUANTITY CONTROLS
+   ========================================================= */
+
+.qty-manual-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.qty-label-or {
+    display: none;
+}
+
+.qty-input-group {
+    display: flex;
+    align-items: center;
+
+    height: 38px;
+
+    overflow: hidden;
+
+    border: 1px solid #dfe4ec;
+    border-radius: 9px;
+
+    background: #ffffff;
+}
+
+.qty-input-group button {
+    width: 35px;
+    height: 38px;
+
+    border: 0;
+
+    background: #f7f8fa;
+    color: #30394b;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.qty-input-group button:hover {
+    background: #fff0e5;
+    color: var(--service-primary);
+}
+
+#quantity-input {
+    width: 50px;
+    height: 38px;
+
+    padding: 0;
+
+    border: 0;
+    border-left: 1px solid #edf0f4;
+    border-right: 1px solid #edf0f4;
+
+    background: #ffffff;
+
+    color: var(--service-dark);
+
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+
+    outline: none;
+}
+
+#quantity-input::-webkit-inner-spin-button,
+#quantity-input::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+}
+
+
+/* =========================================================
+   QUICK BUTTONS
+   ========================================================= */
+
+.qty-quick-btns {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    flex-wrap: wrap;
+}
+
+.qty-quick-btns .qty-btn {
+    min-width: 40px;
+    height: 29px;
+
+    padding: 0 8px;
+
+    border: 1px solid #dfe4ec;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #5f6878;
+
+    font-size: 10px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.qty-quick-btns .qty-btn:hover {
+    border-color: var(--service-primary);
+    background: #fff5ed;
+    color: var(--service-primary);
+}
+
+.qty-quick-btns .qty-btn.active {
+    border-color: var(--service-primary);
+    background: var(--service-primary);
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+#qty-validation-msg {
+    display: block;
+
+    margin-top: 6px;
+    padding: 5px 8px;
+
+    border-radius: 6px;
+
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.08);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   DONATION AMOUNT
+   ========================================================= */
+
+.donation-amount-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 57px;
+
+    padding: 10px 14px;
+
+    border: 1px solid #e5e9f0;
+    border-radius: 11px;
+
+    background: #f7f9fc;
+}
+
+.donation-amount-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.donation-amount-label {
+    color: #30394b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.amount-breakdown {
+    color: #8b94a3;
+    font-size: 10px;
+}
+
+.donation-total {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+
+    color: var(--service-primary);
+}
+
+.donation-total .currency {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.donation-total strong {
+    color: var(--service-dark);
+    font-size: 21px;
+    font-weight: 800;
+}
+
+
+/* Keep hidden actual amount input */
+#donation-amount {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.service-submit-wrap {
+    margin-top: 15px;
+}
+
+.service-submit-btn {
+    width: 100%;
+    min-height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--service-primary),
+            var(--service-primary-dark)
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 7px 18px rgba(255, 107, 0, 0.20);
+
+    transition: all 0.25s ease;
+}
+
+.service-submit-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 23px rgba(255, 107, 0, 0.28);
+}
+
+.service-submit-btn:active {
+    transform: translateY(0);
+}
+
+.service-submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.service-submit-btn i {
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   RIGHT SIDEBAR
+   ========================================================= */
+
+.service-sidebar {
+    position: sticky;
+    top: 95px;
+
+    overflow: hidden;
+
+    border: 1px solid var(--service-border);
+    border-radius: var(--service-radius);
+
+    background: #ffffff;
+
+    box-shadow: var(--service-shadow);
+}
+
+.sidebar-image-wrap {
+    padding: 10px;
+}
+
+.sidebar-image {
+    display: block;
+
+    width: 100%;
+    height: 205px;
+
+    object-fit: cover;
+
+    border-radius: 13px;
+}
+
+.sidebar-content {
+    padding: 7px 20px 20px;
+}
+
+.sidebar-title {
+    margin: 0 0 10px;
+
+    color: var(--service-dark);
+    font-size: 19px;
+    line-height: 1.3;
+    font-weight: 750;
+}
+
+.sidebar-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 13px;
+
+    border-bottom: 1px solid #edf0f4;
+}
+
+.sidebar-price {
+    color: var(--service-primary);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.sidebar-price small {
+    color: #8c94a3;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.sidebar-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 20px;
+
+    background: rgba(255, 107, 0, 0.08);
+    color: var(--service-primary);
+
+    font-size: 9px;
+    font-weight: 650;
+}
+
+.sidebar-description {
+    margin: 13px 0 0;
+
+    color: var(--service-text);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   WHATSAPP CONTACT
+   ========================================================= */
+
+.sidebar-contact {
+    margin-top: 15px;
+    padding-top: 14px;
+
+    border-top: 1px solid #edf0f4;
+}
+
+.sidebar-contact-title {
+    margin-bottom: 8px;
+
+    color: #7e8795;
+    font-size: 10px;
+    text-align: center;
+}
+
+.whatsapp-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    min-height: 39px;
+
+    border-radius: 8px;
+
+    background: #f1faf5;
+    color: #159447;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.whatsapp-link:hover {
+    background: #e3f6eb;
+    color: #11823e;
+}
+
+.whatsapp-link i {
+    font-size: 17px;
+}
+
+.whatsapp-link strong {
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   TRUST NOTE
+   ========================================================= */
+
+.payment-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    margin-top: 9px;
+
+    color: #9aa2ae;
+    font-size: 9px;
+    text-align: center;
+}
+
+.payment-note i {
+    color: var(--service-success);
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   DESKTOP FORM SPACING
+   ========================================================= */
+
+.donation-form-row {
+    row-gap: 12px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .service-detail-area {
+        padding: 35px 0 55px;
+    }
+
+    .service-main-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .service-sidebar {
+        position: relative;
+        top: auto;
+        display: none;
+    }
+
+    .sidebar-image {
+        height: 240px;
+    }
+
+    .service-hero-grid {
+        grid-template-columns: 1fr 0.85fr;
+        gap: 25px;
+    }
+
+    .service-hero-image {
+        height: 240px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .service-hero-content {
+        padding: 0px 0 0px;
+    }
+
+    .service-breadcrumb {
+        margin-bottom: 17px;
+    }
+
+    .service-breadcrumb a,
+    .service-breadcrumb .current {
+        font-size: 11px;
+    }
+
+    .service-hero-grid {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 20px;
+
+        align-items: stretch;
+    }
+
+    .service-hero-image-wrap {
+        padding: 6px;
+        border-radius: 16px;
+    }
+
+    .service-hero-image {
+        height: 190px;
+        border-radius: 12px;
+    }
+
+    .service-category {
+        margin-bottom: 9px;
+        padding: 5px 9px;
+
+        font-size: 9px;
+    }
+
+    .service-hero-title {
+        margin-bottom: 7px;
+        font-size: 26px;
+    }
+
+    .service-hero-description {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+
+    /* MAIN */
+
+    .service-detail-area {
+        padding: 25px 0 40px;
+    }
+
+    .service-main-grid {
+        gap: 20px;
+    }
+
+
+    /* FORM CARD */
+
+    .donation-card {
+        padding: 15px;
+
+        border-radius: 15px;
+    }
+
+    .form-header {
+        margin-bottom: 14px;
+        padding-bottom: 11px;
+    }
+
+    .form-header-icon {
+        width: 34px;
+        height: 34px;
+
+        border-radius: 9px;
+        font-size: 15px;
+    }
+
+    .form-header h2 {
+        font-size: 20px;
+    }
+
+    .form-header p {
+        font-size: 13px;
+    }
+
+
+    /* INPUTS */
+
+    .service-form-label {
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .service-form-control {
+        height: 46px;
+
+        padding: 10px 12px;
+
+        border-radius: 8px;
+
+        font-size: 15px;
+    }
+
+    .service-form-control::placeholder {
+        font-size: 13px;
+    }
+
+    textarea.service-form-control {
+        height: 62px;
+        min-height: 62px;
+    }
+
+
+    /* SERVICE */
+
+    .service-selected-box {
+        margin-top: 13px;
+        padding: 9px 10px;
+    }
+
+    .service-selected-icon {
+        width: 30px;
+        height: 30px;
+
+        border-radius: 8px;
+
+        font-size: 14px;
+    }
+
+    .service-selected-name {
+        max-width: 190px;
+        font-size: 11px;
+    }
+
+    .service-selected-label {
+        font-size: 8px;
+    }
+
+    .service-selected-price {
+        font-size: 14px;
+    }
+
+    .service-selected-price small {
+        font-size: 8px;
+    }
+
+
+    /* QUANTITY */
+
+    .quantity-section {
+        margin-top: 12px;
+    }
+
+    .quantity-heading {
+        margin-bottom: 5px;
+    }
+
+    .quantity-heading label {
+        font-size: 11px;
+    }
+
+    .quantity-heading span {
+        font-size: 9px;
+    }
+
+    .quantity-main-row {
+        gap: 6px;
+    }
+
+    .qty-input-group {
+        height: 36px;
+    }
+
+    .qty-input-group button {
+        width: 32px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    #quantity-input {
+        width: 43px;
+        height: 36px;
+        font-size: 12px;
+    }
+
+    .qty-quick-btns {
+        gap: 4px;
+    }
+
+    .qty-quick-btns .qty-btn {
+        min-width: 34px;
+        height: 27px;
+
+        padding: 0 6px;
+
+        font-size: 9px;
+    }
+
+
+    /* AMOUNT */
+
+    .donation-amount-display {
+        min-height: 52px;
+
+        padding: 9px 11px;
+
+        border-radius: 9px;
+    }
+
+    .donation-amount-label {
+        font-size: 11px;
+    }
+
+    .amount-breakdown {
+        font-size: 9px;
+    }
+
+    .donation-total .currency {
+        font-size: 13px;
+    }
+
+    .donation-total strong {
+        font-size: 19px;
+    }
+
+
+    /* BUTTON */
+
+    .service-submit-wrap {
+        margin-top: 12px;
+    }
+
+    .service-submit-btn {
+        min-height: 44px;
+
+        border-radius: 9px;
+
+        font-size: 13px;
+    }
+
+
+    /* SIDEBAR */
+
+    .sidebar-image-wrap {
+        padding: 8px;
+    }
+
+    .sidebar-image {
+        height: 200px;
+        border-radius: 11px;
+    }
+
+    .sidebar-content {
+        padding: 5px 15px 16px;
+    }
+
+    .sidebar-title {
+        font-size: 17px;
+    }
+
+    .sidebar-price {
+        font-size: 18px;
+    }
+
+    .sidebar-description {
+        font-size: 11px;
+    }
+
+    .whatsapp-link {
+        min-height: 38px;
+        font-size: 11px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .donation-card {
+        padding: 13px;
+    }
+
+    .service-selected-name {
+        max-width: 140px;
+    }
+
+    .quantity-main-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .qty-quick-btns {
+        width: 100%;
+    }
+
+    .qty-quick-btns .qty-btn {
+        flex: 1;
+    }
+}
+
+</style>
+
+
+<!-- =========================================================
+     HERO / BREADCRUMB
+     ========================================================= -->
+
+<div class="rbt-breadcrumb-default rbt-breadcrumb-style-3 version-02 service-detail-hero">
+
+    <div class="breadcrumb-inner">
+        <img
+            src="{% static 'website/images/bg/breadcrumb-bg-01.png' %}"
+            alt="Background"
+        >
     </div>
-    <!-- End Breadcrumb Area -->
+
+    <div class="container">
+
+        <div class="service-hero-content">
+
+            <!-- Breadcrumb -->
+            <div class="service-breadcrumb">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <span class="separator">
+                    <i class="feather-chevron-right"></i>
+                </span>
+
+                <span class="current">
+                    {{ service.service_name }}
+                </span>
+
+            </div>
 
 
-    <div class="rbt-course-details-area ptb--60">
-        <div class="container">
-            <div class="row g-5">
+            <!-- Hero -->
+            <div class="service-hero-grid">
 
-                <div class="col-lg-8">
-                    <div class="course-details-content">
-                        <div class="rbt-course-feature-box rbt-shadow-box thuumbnail">
-                            <div id="billing-form">
-                                <h3 class="title">Donation Form</h3>
-                                <hr class="mb--30">
-                                <form method="POST" id="donation-form">
-                                    {% csrf_token %}
-                                <div class="row">
-                                
-                                    <div class="col-md-4 col-12 mb--20">
-                                        <label>Donor Name</label>
-                                        <input required type="text" name="donor_name" placeholder="First Name">
-                                    </div>
+                <div class="service-hero-text">
 
-                                    <div class="col-md-4 col-12 mb--20">
-                                        <label>Donor Mobile No</label>
-                                        <input required type="number" name="donor_mobile" placeholder="Phone number">
-                                    </div>
+                    <div class="service-category">
+                        <i class="feather-heart"></i>
+                        Food & Service Donation
+                    </div>
 
-                                    <div class="col-md-4 col-12 mb--20">
-                                        <label>Donor Email Address</label>
-                                        <input required type="email" name="donor_email" placeholder="Email Address">
-                                    </div>
+                    <h1 class="service-hero-title">
+                        {{ service.service_name }}
+                    </h1>
+                    <div class="sidebar-price-row">
 
-                                    <div class="col-md-6 col-12 mb--20">
-                                        <label>Service Date</label>
-                                        <input type="date" name="service_date">
-                                    </div>
+                            <div class="sidebar-price">
 
-                                    <div class="col-md-6 col-12 mb--20">
-                                        <label>Pan Number</label>
+                                ₹ {{ service.amount|floatformat }}
+
+                                <small>
+                                    / feed
+                                </small>
+
+                            </div>
+
+
+                            <span class="sidebar-tag">
+
+                                <i class="feather-heart"></i>
+
+                                Make a difference
+
+                            </span>
+
+                        </div>
+
+                    <p class="service-hero-description">
+                        {{ service.description|safe }}
+                    </p>
+
+                </div>
+
+
+                <div class="service-hero-image-wrap">
+
+                    {% if service.image %}
+
+                        <img
+                            class="service-hero-image"
+                            src="{{ service.image.url }}"
+                            alt="{{ service.service_name }}"
+                        >
+
+                    {% else %}
+
+                        <img
+                            class="service-hero-image"
+                            src="{% static 'website/images/no-image.png' %}"
+                            alt="{{ service.service_name }}"
+                        >
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
+
+<div class="service-detail-area">
+
+    <div class="container">
+
+        <div class="service-main-grid">
+
+
+            <!-- =================================================
+                 LEFT — DONATION FORM
+                 ================================================= -->
+
+            <div>
+
+                <div class="donation-card">
+
+                    <!-- Simple Header -->
+                    <div class="form-header">
+
+                        <div class="form-header-left">
+
+                            <div class="form-header-icon">
+                                <i class="feather-heart"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Donation Details
+                                </h2>
+
+                                <p>
+                                    Enter your details and continue your donation.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FORM -->
+                    <form
+                        method="POST"
+                        id="donation-form"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <!-- ================================
+                             DONOR DETAILS
+                             ================================ -->
+
+                        <div class="row donation-form-row">
+
+                            <!-- Donor Name -->
+                            <div class="col-md-4 col-12">
+
+                                <label
+                                    for="donor_name"
+                                    class="service-form-label"
+                                >
+                                    Donor Name
+                                    <span class="required">*</span>
+                                </label>
+
+                                <input
+                                    required
+                                    type="text"
+                                    id="donor_name"
+                                    name="donor_name"
+                                    class="service-form-control"
+                                    placeholder="Enter your name"
+                                >
+
+                            </div>
+
+
+                            <!-- Mobile -->
+                            <div class="col-md-4 col-12">
+
+                                <label
+                                    for="donor_mobile"
+                                    class="service-form-label"
+                                >
+                                    Mobile Number
+                                    <span class="required">*</span>
+                                </label>
+
+                                <input
+                                    required
+                                    type="tel"
+                                    id="donor_mobile"
+                                    name="donor_mobile"
+                                    class="service-form-control"
+                                    placeholder="Enter mobile number"
+                                    maxlength="10"
+                                >
+
+                            </div>
+
+
+                            <!-- Email -->
+                            <div class="col-md-4 col-12">
+
+                                <label
+                                    for="donor_email"
+                                    class="service-form-label"
+                                >
+                                    Email Address
+                                    <span class="required">*</span>
+                                </label>
+
+                                <input
+                                    required
+                                    type="email"
+                                    id="donor_email"
+                                    name="donor_email"
+                                    class="service-form-control"
+                                    placeholder="Enter email address"
+                                >
+
+                            </div>
+
+
+                            <!-- Service Date -->
+                            <div class="col-md-6 col-12">
+
+                                <label
+                                    for="service_date"
+                                    class="service-form-label"
+                                >
+                                    Service Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="service_date"
+                                    name="service_date"
+                                    class="service-form-control"
+                                >
+
+                            </div>
+
+
+                            <!-- PAN -->
+                            <div class="col-md-6 col-12">
+
+                                <label
+                                    for="pan_number"
+                                    class="service-form-label"
+                                >
+                                    PAN Number
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="pan_number"
+                                    name="pan_number"
+                                    maxlength="10"
+                                    placeholder="ABCDE1234F"
+                                    class="service-form-control"
+                                >
+
+                            </div>
+
+
+                            <!-- Address -->
+                            <div class="col-12">
+
+                                <label
+                                    for="address"
+                                    class="service-form-label"
+                                >
+                                    Address
+                                </label>
+
+                                <textarea
+                                    id="address"
+                                    required
+                                    name="address"
+                                    class="service-form-control"
+                                    placeholder="Enter your address"
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             SELECTED SERVICE
+                             ================================================= -->
+
+                        {% comment %} <div class="service-selected-box">
+
+                            <div class="service-selected-left">
+
+                                <div class="service-selected-icon">
+                                    <i class="feather-package"></i>
+                                </div>
+
+                                <div class="service-selected-info">
+
+                                    <span class="service-selected-label">
+                                        Selected Service
+                                    </span>
+
+                                    <span class="service-selected-name">
+                                        {{ service.service_name }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="service-selected-price">
+
+                                ₹<span id="unit-price">
+                                    {{ service.amount|floatformat }}
+                                </span>
+
+                                <small>
+                                    / feed
+                                </small>
+
+                            </div>
+
+                        </div> {% endcomment %}
+
+
+                        <!-- =================================================
+                             QUANTITY
+                             ================================================= -->
+
+                        <div class="quantity-section">
+
+                            <div class="quantity-heading">
+
+                                <label>
+                                    Select Quantity
+                                </label>
+
+                                <span>
+                                    Minimum {{ service.min_quantity }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="quantity-main-row">
+
+                                <!-- Quick buttons -->
+                                <div
+                                    class="qty-quick-btns"
+                                    id="qty-quick-btns"
+                                >
+                                </div>
+
+
+                                <!-- Manual quantity -->
+                                <div class="qty-manual-wrap">
+
+                                    <div class="qty-input-group">
+
+                                        <button
+                                            type="button"
+                                            id="qty-minus"
+                                            aria-label="Decrease quantity"
+                                        >
+                                            −
+                                        </button>
+
                                         <input
-                                            type="text"
-                                            name="pan_number"
-                                            maxlength="10"
-                                            placeholder="ABCDE1234F">
+                                            type="number"
+                                            id="quantity-input"
+                                            name="quantity"
+                                            value="{{ service.min_quantity }}"
+                                            min="{{ service.min_quantity }}"
+                                            placeholder="Qty"
+                                        >
+
+                                        <button
+                                            type="button"
+                                            id="qty-plus"
+                                            aria-label="Increase quantity"
+                                        >
+                                            +
+                                        </button>
+
                                     </div>
 
-                                    <div class="col-12 mb--20">
-                                        <label>Address</label>
-                                        <textarea required placeholder="Address line 1" name="address"></textarea>
-                                    </div>
-
-                                    <!-- ── Food Item Display ── -->
-                                    <div class="col-md-12 col-12 mb--20">
-                                        <label>Provide Service</label>
-                                        <div class="rbt-food-item-box">
-                                            <div class="food-item-info">
-                                                <span class="food-item-name">
-                                                    <i class="feather-package"></i> {{ service.service_name }}
-                                                </span>
-                                                <span class="food-item-price">
-                                                    ₹<span id="unit-price" data-unit="feed">{{ service.amount }}</span> per feed
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- ── Quantity Selector ── -->
-                                    <div class="col-md-12 col-12 mb--20">
-                                        <label>Select Quantity (No. of Pieces)</label>
-                                        <div class="quantity-selector">
-                                            <div class="qty-quick-btns">
-                                                <button type="button" class="qty-btn" data-qty="10">10</button>
-                                                <button type="button" class="qty-btn" data-qty="20">20</button>
-                                                <button type="button" class="qty-btn" data-qty="30">30</button>
-                                                <button type="button" class="qty-btn" data-qty="50">50</button>
-                                            </div>
-                                            <div class="qty-manual-wrap">   
-                                                <span class="qty-label-or">or enter custom</span>
-                                                <div class="qty-input-group">
-                                                    <button type="button" id="qty-minus">−</button>
-                                                    <input type="number" id="quantity-input" name="quantity" value="{{ service.min_quantity }}" min="{{ service.min_quantity }}" placeholder="Qty">  
-                                                    <button type="button" id="qty-plus">+</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- ── Donation Amount (auto-calculated) ── -->
-                                    <div class="col-md-12 col-12 mb--20">
-                                        <label>Donation Amount</label>
-                                        <div class="donation-amount-display">
-                                            <input type="number" id="donation-amount" name="donation_amount" readonly>
-                                            <span class="amount-breakdown" id="amount-breakdown">10 Birds Pair × ₹80 =
-                                                ₹800</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12 text-center mb--20">
-                                        <div class="submit-btn">
-                                            <button type="submit" class="rbt-btn btn-gradient hover-icon-reverse">
-                                                <span class="icon-reverse-wrapper">
-                                                    <span class="btn-text">Donate Now</span>
-                                                    <span class="btn-icon"><i class="feather-arrow-right"></i></span>
-                                                    <span class="btn-icon"><i class="feather-arrow-right"></i></span>
-                                                </span>
-                                            </button>
-                                            </a>
-                                        </div>
-                                    </div>
                                 </div>
-                                </form>
+
                             </div>
+
+
+                            <span
+                                id="qty-validation-msg"
+                                style="display:none;"
+                            ></span>
+
                         </div>
-                    </div>
+
+
+                        <!-- =================================================
+                             DONATION AMOUNT
+                             ================================================= -->
+
+                        <div class="quantity-section">
+
+                            <label class="service-form-label">
+                                Donation Amount
+                            </label>
+
+                            <div class="donation-amount-display">
+
+                                <div class="donation-amount-left">
+
+                                    <span class="donation-amount-label">
+                                        Total Donation
+                                    </span>
+
+                                    <span
+                                        class="amount-breakdown"
+                                        id="amount-breakdown"
+                                    >
+                                        —
+                                    </span>
+
+                                </div>
+
+
+                                <div class="donation-total">
+
+                                    <span class="currency">
+                                        ₹
+                                    </span>
+
+                                    <strong id="donation-display">
+                                        0
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Hidden actual payment amount -->
+                            <input
+                                type="number"
+                                id="donation-amount"
+                                name="donation_amount"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- =================================================
+                             SUBMIT
+                             ================================================= -->
+
+                        <div class="service-submit-wrap">
+
+                            <button
+                                type="submit"
+                                class="service-submit-btn"
+                                id="donate-button"
+                            >
+
+                                <span>
+                                    Donate Now
+                                </span>
+
+                                <i class="feather-arrow-right"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="payment-note">
+
+                            <i class="feather-shield"></i>
+
+                            Secure donation payment
+
+                        </div>
+
+                    </form>
+
                 </div>
 
-                <div class="col-lg-4">
-                    <div style="top: 100px;" class="course-sidebar sticky-top rbt-shadow-box  rbt-gradient-border">
-                        <div class="inner">
-
-                            <!-- Start Viedo Wrapper  -->
-
-                            <div class="video-content">
-                                <img class="w-100 rbt-radius"  src="{{ service.image.url }}"
-                                    alt="Video Images">
-                            </div>
-                            <!-- End Viedo Wrapper  -->
-
-                            <div class="content-item-content">
-                                <h4 class="w-600 mb--10 mt--10">{{ service.service_name }}</h4>
-                                <div class="rbt-price-wrapper d-flex flex-wrap align-items-center justify-content-between">
-                                    <div class="rbt-price">
-                                        <span class="current-price">₹ {{ service.amount }}</span>
-                                    </div>
-                                    <div class="discount-time">
-                                        <span class="rbt-badge color-primary bg-color-primary-opacity"><i
-                                                class="feather-heart"></i> Give a little. Change a lot.</span>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-                                <div class="rbt-widget-details has-show-more">
-                                    <p class="">{{ service.description|safe }}</p>
-                                </div>
-
-                                <div class="social-share-wrapper text-center">
-
-                                    <hr class="mt--20">
-                                    <div class="contact-with-us text-center">
-                                        <p>For details about the Service Please reach us</p>
-                                        <p class="rbt-badge-2 mt--10 justify-content-center w-100">
-                                            <i class="fab fa-whatsapp mr--5"></i> Whatsapp
-                                            <a href="https://wa.me/919087249777?text=Hello%20I%20would%20like%20to%20make%20a%20donation.%20Please%20share%20the%20details."
-                                                target="_blank"><strong>+91 908 724 9777</strong></a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+
+
+
+            <!-- =================================================
+                 RIGHT — SERVICE SIDEBAR
+                 ================================================= -->
+
+            <div>
+
+                <div class="service-sidebar">
+
+                    <!-- Image -->
+                    <div class="sidebar-image-wrap">
+
+                        {% if service.image %}
+
+                            <img
+                                class="sidebar-image"
+                                src="{{ service.image.url }}"
+                                alt="{{ service.service_name }}"
+                            >
+
+                        {% else %}
+
+                            <img
+                                class="sidebar-image"
+                                src="{% static 'website/images/no-image.png' %}"
+                                alt="{{ service.service_name }}"
+                            >
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Content -->
+                    <div class="sidebar-content">
+
+                        <h3 class="sidebar-title">
+                            {{ service.service_name }}
+                        </h3>
+
+
+                        <div class="sidebar-price-row">
+
+                            <div class="sidebar-price">
+
+                                ₹ {{ service.amount|floatformat }}
+
+                                <small>
+                                    / feed
+                                </small>
+
+                            </div>
+
+
+                            <span class="sidebar-tag">
+
+                                <i class="feather-heart"></i>
+
+                                Make a difference
+
+                            </span>
+
+                        </div>
+
+
+                        <p class="sidebar-description">
+                            {{ service.description|safe }}
+                        </p>
+
+
+                        <!-- WhatsApp -->
+                        <div class="sidebar-contact">
+
+                            <div class="sidebar-contact-title">
+                                Need more details about this service?
+                            </div>
+
+                            <a
+                                class="whatsapp-link"
+                                href="https://wa.me/919087249777?text=Hello%20I%20would%20like%20to%20make%20a%20donation.%20Please%20share%20the%20details."
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+
+                                <i class="fab fa-whatsapp"></i>
+
+                                WhatsApp
+
+                                <strong>
+                                    +91 908 724 9777
+                                </strong>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 
+</div>
+
+
+
+<!-- =========================================================
+     EASEBUZZ
+     ========================================================= -->
 
 <script src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/v2.0.0/easebuzz-checkout-v2.min.js"></script>
 
+
 <script>
+
 const easebuzzCheckout = new EasebuzzCheckout(
     "{{ easebuzz.merchant_key }}",
     "{{ easebuzz.env }}"
 );
 
-document.getElementById("donation-form").addEventListener("submit", async function (e) {
-    e.preventDefault();
 
-    try {
-        const payload = {
-            service_slug: "{{ service.slug }}",
-            donor_name: document.querySelector('[name="donor_name"]').value,
-            donor_mobile: document.querySelector('[name="donor_mobile"]').value,
-            donor_email: document.querySelector('[name="donor_email"]').value,
-            service_date: document.querySelector('[name="service_date"]').value,
-            pan_number: document.querySelector('[name="pan_number"]').value,
-            address: document.querySelector('[name="address"]').value,
-            quantity: document.querySelector('[name="quantity"]').value,
-            donation_amount: document.querySelector('[name="donation_amount"]').value
-        };
+/* =========================================================
+   DOM REFERENCES
+   ========================================================= */
 
-        const response = await fetch("/donation/payment/initiate/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
+const qtyInput = document.getElementById("quantity-input");
+const qtyMinus = document.getElementById("qty-minus");
+const qtyPlus = document.getElementById("qty-plus");
+const qtyQuick = document.getElementById("qty-quick-btns");
 
-        const result = await response.json();
+const donationAmount = document.getElementById("donation-amount");
+const amountBreakdown = document.getElementById("amount-breakdown");
 
-        /* temp #############  this is future detele code */   
-        if (result.status === "success") {
-            window.location.href = result.redirect_url;
-        } else {
-            alert(result.error || "Something went wrong");
-        }
+const donationDisplay = document.getElementById("donation-display");
 
-        /*if (!result.key) {
-            alert(result.error || "Payment initiation failed");
-            return;
-        }*/
+const validationMsg =
+    document.getElementById("qty-validation-msg");
 
-      /*easebuzzCheckout.initiatePayment(
-            { access_key: result.key },
-            {
-                onResponse: async function (res) {
 
-                    console.log("Easebuzz response:", res);
+/* =========================================================
+   SERVICE VALUES
+   ========================================================= */
 
-                    // Always send callback to backend
-                    await fetch("{% url 'donation_payment_callback' %}", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(res)
+const minQty =
+    parseInt("{{ service.min_quantity }}", 10);
+
+const unitPrice =
+    parseFloat("{{ service.amount|floatformat }}");
+
+
+/* =========================================================
+   FORMAT CURRENCY
+   ========================================================= */
+
+function fmt(n) {
+
+    return "₹ " + n.toLocaleString("en-IN");
+
+}
+
+
+/* =========================================================
+   RECALCULATE DONATION
+   ========================================================= */
+
+function recalc() {
+
+    const qty =
+        parseInt(qtyInput.value, 10);
+
+
+    if (
+        isNaN(qty) ||
+        qty < minQty
+    ) {
+
+        donationAmount.value = "";
+
+        donationDisplay.textContent = "0";
+
+        amountBreakdown.textContent = "—";
+
+        return;
+    }
+
+
+    const total =
+        qty * unitPrice;
+
+
+    donationAmount.value =
+        total;
+
+
+    donationDisplay.textContent =
+        total.toLocaleString("en-IN");
+
+
+    amountBreakdown.textContent =
+        qty +
+        " × " +
+        fmt(unitPrice) +
+        " = " +
+        fmt(total);
+
+}
+
+
+/* =========================================================
+   VALIDATE QUANTITY
+   ========================================================= */
+
+function validateQty() {
+
+    const qty =
+        parseInt(qtyInput.value, 10);
+
+
+    if (
+        isNaN(qty) ||
+        qty < minQty
+    ) {
+
+        validationMsg.textContent =
+            "Please enter at least " +
+            minQty +
+            " pieces.";
+
+        validationMsg.style.display =
+            "block";
+
+        donationAmount.value = "";
+
+        donationDisplay.textContent =
+            "0";
+
+        amountBreakdown.textContent =
+            "—";
+
+        return false;
+    }
+
+
+    validationMsg.style.display =
+        "none";
+
+
+    recalc();
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   QUICK QUANTITY BUTTONS
+   ========================================================= */
+
+(function buildQuickBtns() {
+
+    for (let i = 0; i < 5; i++) {
+
+        const val =
+            minQty + i * 10;
+
+
+        const btn =
+            document.createElement("button");
+
+
+        btn.type = "button";
+
+        btn.className = "qty-btn";
+
+        btn.dataset.qty = val;
+
+        btn.textContent = val;
+
+
+        btn.addEventListener(
+            "click",
+            function () {
+
+                qtyInput.value =
+                    this.dataset.qty;
+
+
+                document
+                    .querySelectorAll(
+                        ".qty-quick-btns .qty-btn"
+                    )
+                    .forEach(function (item) {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
                     });
 
-                    const txnid = res.txnid || "";
 
-                    if (res.status === "success") {
-                        window.location.href = "/payment/success/";} 
-                    else {
-                        window.location.href = "/payment/failed/";
-                    }
-                }
+                this.classList.add(
+                    "active"
+                );
+
+
+                validateQty();
+
             }
-        );*/
+        );
 
-    } catch (err) {
-        console.error(err);
-        alert("Payment error occurred");
+
+        qtyQuick.appendChild(btn);
+
     }
-});
+
+})();
+
+
+/* =========================================================
+   PLUS
+   ========================================================= */
+
+qtyPlus.addEventListener(
+    "click",
+    function () {
+
+        let val =
+            parseInt(
+                qtyInput.value,
+                10
+            );
+
+
+        if (isNaN(val)) {
+
+            val = minQty;
+
+        }
+
+
+        qtyInput.value =
+            val + 1;
+
+
+        updateQuickButton();
+
+        validateQty();
+
+    }
+);
+
+
+/* =========================================================
+   MINUS
+   ========================================================= */
+
+qtyMinus.addEventListener(
+    "click",
+    function () {
+
+        let val =
+            parseInt(
+                qtyInput.value,
+                10
+            );
+
+
+        if (
+            isNaN(val) ||
+            val <= minQty
+        ) {
+
+            qtyInput.value =
+                minQty;
+
+        } else {
+
+            qtyInput.value =
+                val - 1;
+
+        }
+
+
+        updateQuickButton();
+
+        validateQty();
+
+    }
+);
+
+
+/* =========================================================
+   UPDATE QUICK BUTTON ACTIVE STATE
+   ========================================================= */
+
+function updateQuickButton() {
+
+    const currentQty =
+        parseInt(
+            qtyInput.value,
+            10
+        );
+
+
+    document
+        .querySelectorAll(
+            ".qty-quick-btns .qty-btn"
+        )
+        .forEach(function (button) {
+
+            if (
+                parseInt(
+                    button.dataset.qty,
+                    10
+                ) === currentQty
+            ) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            } else {
+
+                button.classList.remove(
+                    "active"
+                );
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   MANUAL INPUT
+   ========================================================= */
+
+qtyInput.addEventListener(
+    "input",
+    function () {
+
+        updateQuickButton();
+
+        validateQty();
+
+    }
+);
+
+
+qtyInput.addEventListener(
+    "blur",
+    function () {
+
+        let val =
+            parseInt(
+                qtyInput.value,
+                10
+            );
+
+
+        if (
+            isNaN(val) ||
+            val < minQty
+        ) {
+
+            qtyInput.value =
+                minQty;
+
+        }
+
+
+        updateQuickButton();
+
+        validateQty();
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL CALCULATION
+   ========================================================= */
+
+validateQty();
+
+updateQuickButton();
+
+
+/* =========================================================
+   FORM SUBMIT
+   ========================================================= */
+
+document
+    .getElementById("donation-form")
+    .addEventListener(
+        "submit",
+        async function (e) {
+
+            e.preventDefault();
+
+
+            /* Validate quantity */
+
+            if (!validateQty()) {
+
+                validationMsg.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+                return;
+
+            }
+
+
+            /* Get button */
+
+            const donateButton =
+                document.getElementById(
+                    "donate-button"
+                );
+
+
+            /* Prevent double click */
+
+            donateButton.disabled =
+                true;
+
+
+            donateButton.querySelector(
+                "span"
+            ).textContent =
+                "Processing...";
+
+
+            try {
+
+                /* =========================================
+                   PAYMENT PAYLOAD
+                   ========================================= */
+
+                const payload = {
+
+                    service_slug:
+                        "{{ service.slug }}",
+
+                    donor_name:
+                        document.querySelector(
+                            '[name="donor_name"]'
+                        ).value,
+
+                    donor_mobile:
+                        document.querySelector(
+                            '[name="donor_mobile"]'
+                        ).value,
+
+                    donor_email:
+                        document.querySelector(
+                            '[name="donor_email"]'
+                        ).value,
+
+                    service_date:
+                        document.querySelector(
+                            '[name="service_date"]'
+                        ).value,
+
+                    pan_number:
+                        document.querySelector(
+                            '[name="pan_number"]'
+                        ).value,
+
+                    address:
+                        document.querySelector(
+                            '[name="address"]'
+                        ).value,
+
+                    quantity:
+                        document.querySelector(
+                            '[name="quantity"]'
+                        ).value,
+
+                    donation_amount:
+                        document.querySelector(
+                            '[name="donation_amount"]'
+                        ).value
+
+                };
+
+
+                /* =========================================
+                   INITIATE PAYMENT
+                   ========================================= */
+
+                const response =
+                    await fetch(
+                        "/donation/payment/initiate/",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                /* =========================================
+                   SUCCESS
+                   ========================================= */
+
+                if (
+                    result.status ===
+                    "success"
+                ) {
+
+                    window.location.href =
+                        result.redirect_url;
+
+                }
+
+                /* =========================================
+                   ERROR
+                   ========================================= */
+
+                else {
+
+                    alert(
+                        result.error ||
+                        "Something went wrong"
+                    );
+
+
+                    donateButton.disabled =
+                        false;
+
+
+                    donateButton.querySelector(
+                        "span"
+                    ).textContent =
+                        "Donate Now";
+
+                }
+
+
+            } catch (err) {
+
+                console.error(err);
+
+
+                alert(
+                    "Payment error occurred"
+                );
+
+
+                donateButton.disabled =
+                    false;
+
+
+                donateButton.querySelector(
+                    "span"
+                ).textContent =
+                    "Donate Now";
+
+            }
+
+        }
+    );
+
 </script>
-    {% endblock %}
 
-
+{% endblock %}

@@ -12,34 +12,36 @@
   <meta name="mapbox-token" content="{{ MAPBOX_TOKEN|default:'' }}" />
   <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
   <meta content="Themesbrand" name="author" />
-  <!-- App favicon -->
-  <link rel="shortcut icon" href="{% static 'dashboard/images/favicon.ico' %}" />
+   <!-- App favicon -->
+   <link rel="shortcut icon" href="{% static 'dashboard/images/favicon.ico' %}">
 
-  <!--datatable css-->
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"/>
-    <!--datatable responsive css-->
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css"/>
-
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
-
-  <!-- Layout config Js -->
-  <script src="{% static 'dashboard/js/layout.js' %}"></script>
-  <!-- Bootstrap Css -->
-  <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
-  <!-- Icons Css -->
-  <link href="{% static 'dashboard/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
-  <!-- App Css-->
-  <link href="{% static 'dashboard/css/app.min.css' %}" rel="stylesheet" type="text/css" />
-  <!-- custom Css-->
-  <link href="{% static 'dashboard/css/custom.min.css' %}" rel="stylesheet" type="text/css" />
-  <!--index Css-->
-  <link href="{% static 'dashboard/css/index-whatsapp.css' %}" rel="stylesheet" type="text/css" />
+   <!--datatable css-->
+     <link
+       rel="stylesheet"
+       href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"/>
+     <!--datatable responsive css-->
+     <link
+       rel="stylesheet"
+       href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css"/>
+ 
+     <link
+       rel="stylesheet"
+       href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
+ 
+   <!-- Layout config Js -->
+   <script src="{% static 'dashboard/js/layout.js' %}"></script>
+   <!-- Bootstrap Css -->
+   <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+   <!-- Icons Css -->
+   <link href="{% static 'dashboard/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+   <!-- App Css-->
+   <link href="{% static 'dashboard/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+   <!-- custom Css-->
+   <link href="{% static 'dashboard/css/custom.min.css' %}" rel="stylesheet" type="text/css" />
+   <!-- Flatpickr CSS for date range picker -->
+   <link href="{% static 'dashboard/libs/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css" />
+   <!--index Css-->
+   <link href="{% static 'dashboard/css/index-whatsapp.css' %}" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -141,10 +143,12 @@
     <script src="{% static 'dashboard/js/pages/datatables.init.js' %}"></script>
     
 
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-    
-     <!-- App js -->
+   <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+   <!-- Flatpickr JS for date range picker -->
+   <script src="{% static 'dashboard/libs/flatpickr/flatpickr.min.js' %}"></script>
+     
+      <!-- App js -->
   <script src="{% static 'dashboard/js/app.js' %}"></script>
   <script src="{% static 'dashboard/js/custom.js' %}"></script>
   {% block extra_js %}{% endblock %}
