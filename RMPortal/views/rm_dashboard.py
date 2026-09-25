@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 from dashboard.models import RM
 from easypay.models import RMPayment, RMGPayPayment
 from receipt.views.success_mail import send_donation_success_email
+from .auth import rm_login_required
 import json
 
 
@@ -131,6 +132,7 @@ def _build_gpay_search_q(search_term: str) -> Q:
     return q
 
 
+@rm_login_required
 def rmportal_index(request, rm_code=None):
 
     rm = getattr(request, "rm", None)
@@ -549,6 +551,7 @@ def _get_filtered_donations(rm, filter_start_dt, filter_end_dt, search_term=""):
 # ──────────────────────────────────────────────────────────
 import json as json_module
 
+@rm_login_required
 def ajax_filter_donations(request, rm_code):
     """Return JSON with filtered donations for smooth AJAX updates."""
     rm = RM.objects.filter(rm_code=rm_code).first()
@@ -599,6 +602,7 @@ def ajax_filter_donations(request, rm_code):
 # Update Donation (used by editDonation modal)
 # ──────────────────────────────────────────────────────────
 @require_POST
+@rm_login_required
 def update_donation(request):
     donation_id = request.POST.get("donation_id", "").strip()
     source = request.POST.get("donation_source", "").strip()
@@ -619,7 +623,7 @@ def update_donation(request):
             pk = int(donation_id.replace("link-", ""))
         except ValueError:
             return JsonResponse({"success": False, "error": "Invalid donation ID"}, status=400)
-        donation = get_object_or_404(RMPayment, pk=pk)
+        donation = get_object_or_404(RMPayment, pk=pk, rm_code=request.rm.rm_code)
         update_fields = []
         if donor_name:
             donation.donor_name = donor_name
@@ -644,7 +648,7 @@ def update_donation(request):
             pk = int(donation_id.replace("gpay-", ""))
         except ValueError:
             return JsonResponse({"success": False, "error": "Invalid donation ID"}, status=400)
-        donation = get_object_or_404(RMGPayPayment, pk=pk)
+        donation = get_object_or_404(RMGPayPayment, pk=pk, rm_code=request.rm.rm_code)
         update_fields = []
         if donor_name:
             donation.donor_name = donor_name
@@ -674,6 +678,7 @@ def update_donation(request):
 # Send Donation Receipt Email (used by send-email-btn)
 # ──────────────────────────────────────────────────────────
 @require_POST
+@rm_login_required
 def send_donation_email(request):
     donation_id = request.POST.get("donation_id", "").strip()
     source = request.POST.get("donation_source", "").strip()
@@ -686,13 +691,13 @@ def send_donation_email(request):
             pk = int(donation_id.replace("link-", ""))
         except ValueError:
             return JsonResponse({"success": False, "error": "Invalid donation ID"}, status=400)
-        donation = get_object_or_404(RMPayment, pk=pk)
+        donation = get_object_or_404(RMPayment, pk=pk, rm_code=request.rm.rm_code)
     elif source.lower() == "gpay":
         try:
             pk = int(donation_id.replace("gpay-", ""))
         except ValueError:
             return JsonResponse({"success": False, "error": "Invalid donation ID"}, status=400)
-        donation = get_object_or_404(RMGPayPayment, pk=pk)
+        donation = get_object_or_404(RMGPayPayment, pk=pk, rm_code=request.rm.rm_code)
     else:
         return JsonResponse({"success": False, "error": f"Unknown source: {source}"}, status=400)
 
@@ -710,6 +715,7 @@ from receipt.views.generate_pdf import generate_donation_pdf, get_donation_pdf_f
 from django.http import HttpResponse
 
 @require_POST
+@rm_login_required
 def download_receipt(request):
     donation_id = request.POST.get("donation_id", "").strip()
     source = request.POST.get("donation_source", "").strip()
@@ -722,13 +728,13 @@ def download_receipt(request):
             pk = int(donation_id.replace("link-", ""))
         except ValueError:
             return JsonResponse({"success": False, "error": "Invalid donation ID"}, status=400)
-        donation = get_object_or_404(RMPayment, pk=pk)
+        donation = get_object_or_404(RMPayment, pk=pk, rm_code=request.rm.rm_code)
     elif source.lower() == "gpay":
         try:
             pk = int(donation_id.replace("gpay-", ""))
         except ValueError:
             return JsonResponse({"success": False, "error": "Invalid donation ID"}, status=400)
-        donation = get_object_or_404(RMGPayPayment, pk=pk)
+        donation = get_object_or_404(RMGPayPayment, pk=pk, rm_code=request.rm.rm_code)
     else:
         return JsonResponse({"success": False, "error": f"Unknown source: {source}"}, status=400)
 
